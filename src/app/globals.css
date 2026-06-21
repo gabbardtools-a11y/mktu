@@ -1,0 +1,166 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  /* Light theme - based on the original site */
+  --navy-darkest: #f4f6fa;
+  --navy-dark: #e8ebf0;
+  --navy-medium: #dde1e8;
+  --background: #f4f6fa;
+  --foreground: #1a1a2e;
+  --card: #ffffff;
+  --card-foreground: #1a1a2e;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a2e;
+  --primary: #d4a843;
+  --primary-foreground: #ffffff;
+  --secondary: #e8ebf0;
+  --secondary-foreground: #1a1a2e;
+  --muted: #e8ebf0;
+  --muted-foreground: #6b7280;
+  --accent: #e8ebf0;
+  --accent-foreground: #1a1a2e;
+  --destructive: #e74c3c;
+  --border: #d1d5db;
+  --input: #d1d5db;
+  --ring: #d4a843;
+  --gold: #d4a843;
+  --gold-light: #e8c96a;
+  --gold-dark: #b8902f;
+  --chart-1: #d4a843;
+  --chart-2: #e8c96a;
+  --chart-3: #4a9eff;
+  --chart-4: #6366f1;
+  --chart-5: #22d3ee;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a1a2e;
+  --sidebar-primary: #d4a843;
+  --sidebar-primary-foreground: #0a0e1a;
+  --sidebar-accent: #e8ebf0;
+  --sidebar-accent-foreground: #1a1a2e;
+  --sidebar-border: #d1d5db;
+  --sidebar-ring: #d4a843;
+  --scrollbar-track: #f4f6fa;
+  --scrollbar-thumb: #d1d5db;
+  --scrollbar-thumb-hover: #9ca3af;
+}
+
+.dark {
+  --navy-darkest: #0f1629;
+  --navy-dark: #141c33;
+  --navy-medium: #1e2945;
+  --background: #0f1629;
+  --foreground: #e8e8ec;
+  --card: #151d30;
+  --card-foreground: #e8e8ec;
+  --popover: #111827;
+  --popover-foreground: #e8e8ec;
+  --primary: #d4a843;
+  --primary-foreground: #0a0e1a;
+  --secondary: #1a2342;
+  --secondary-foreground: #e8e8ec;
+  --muted: #1a2342;
+  --muted-foreground: #8b92a8;
+  --accent: #1a2342;
+  --accent-foreground: #e8e8ec;
+  --destructive: #e74c3c;
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #d4a843;
+  --gold: #d4a843;
+  --gold-light: #e8c96a;
+  --gold-dark: #b8902f;
+  --chart-1: #d4a843;
+  --chart-2: #e8c96a;
+  --chart-3: #4a9eff;
+  --chart-4: #6366f1;
+  --chart-5: #22d3ee;
+  --sidebar: #0f1629;
+  --sidebar-foreground: #e8e8ec;
+  --sidebar-primary: #d4a843;
+  --sidebar-primary-foreground: #0a0e1a;
+  --sidebar-accent: #1a2342;
+  --sidebar-accent-foreground: #e8e8ec;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: #d4a843;
+  --scrollbar-track: #0f1629;
+  --scrollbar-thumb: #1e293b;
+  --scrollbar-thumb-hover: #2d3748;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+}
+
+/* Apply dark theme by default on the root html element.
+   The Header component will manage toggling based on localStorage. */
+html {
+  color-scheme: dark;
+}
