@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Package, Briefcase, Sparkles } from "lucide-react";
 import { Header } from "@/components/mktu/header";
-import { Hero } from "@/components/mktu/hero";
+// Hero removed — user requested permanent removal
 import { SearchSection, type FilterType } from "@/components/mktu/search-section";
 import { ClassCard } from "@/components/mktu/class-card";
 import { ClassDetailDialog } from "@/components/mktu/class-detail-dialog";
@@ -98,8 +98,6 @@ export default function Home() {
       />
 
       <main className="flex-1">
-        <Hero />
-
         <section
           id="class-grid"
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 scroll-mt-16"
