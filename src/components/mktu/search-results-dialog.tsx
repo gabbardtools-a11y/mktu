@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Search, X, Check, ChevronDown, ChevronUp } from "lucide-react";
 import {
@@ -39,6 +39,14 @@ export function SearchResultsDialog({
   toggleItemInCart,
 }: SearchResultsDialogProps) {
   const [expandedClasses, setExpandedClasses] = useState<Set<number>>(new Set());
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Сброс скролла наверх при открытии / смене запроса
+  useEffect(() => {
+    if (open && scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [open, query]);
 
   const results = useMemo<ClassSearchResult[]>(() => {
     const q = query.trim().toLowerCase();
@@ -47,11 +55,6 @@ export function SearchResultsDialog({
     const matched: ClassSearchResult[] = [];
 
     for (const cls of mktuClasses) {
-      // Check if query matches class name or description
-      const nameMatch = cls.name.toLowerCase().includes(q);
-      const descMatch = cls.description.toLowerCase().includes(q);
-
-      // Find matching items
       const nameMatch = cls.name.toLowerCase().includes(q);
       const descMatch = cls.description.toLowerCase().includes(q);
       const matchedItems = cls.items.filter((item) =>
@@ -59,8 +62,8 @@ export function SearchResultsDialog({
       );
 
       if (nameMatch || descMatch || matchedItems.length > 0) {
-        // If only name/desc matches (no items), show first 10 items
-        const itemsToShow = matchedItems.length > 0 ? matchedItems : cls.items.slice(0, 10);
+        const itemsToShow =
+          matchedItems.length > 0 ? matchedItems : cls.items.slice(0, 10);
         matched.push({
           classId: cls.id,
           className: cls.name,
@@ -115,8 +118,12 @@ export function SearchResultsDialog({
           </div>
         </DialogHeader>
 
-        <div className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-4 overscroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
-          <div className="max-w-4xl mx-auto space-y-3">
+        <div
+          ref={scrollRef}
+          className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-4 overscroll-contain"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          <div className="max-w-4xl mx-auto space-y-3 pb-4">
             {results.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-foreground/40 text-lg mb-2">
@@ -145,6 +152,7 @@ export function SearchResultsDialog({
                   >
                     {/* Class header — click to expand */}
                     <button
+                      type="button"
                       onClick={() => toggleExpand(result.classId)}
                       className="w-full flex items-center gap-3 p-4 text-left transition-colors hover:bg-muted/30"
                     >
@@ -204,9 +212,11 @@ export function SearchResultsDialog({
                         className="overflow-hidden"
                       >
                         <div className="px-4 pb-4 pt-1 border-t border-border/50">
-                          <div className="max-h-96 overflow-y-auto mt-2 space-y-0.5">
-                          <div className="max-h-96 overflow-y-auto mt-2 space-y-0.5 overscroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
-                            {result.matchedItems.map((item, i) => {
+                          <div
+                            className="max-h-[60vh] overflow-y-auto mt-2 space-y-0.5 overscroll-contain rounded-md"
+                            style={{ WebkitOverflowScrolling: "touch" }}
+                          >
+                            {result.matchedItems.map((item) => {
                               const checked = isItemSelectedInCart(
                                 result.classId,
                                 item,
@@ -295,12 +305,10 @@ export function SearchResultsDialog({
                       </motion.div>
                     )}
                   </div>
-                  )
                 );
               })
             )}
           </div>
-        </div>
         </div>
 
         {/* Footer */}
