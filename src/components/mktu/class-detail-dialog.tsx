@@ -72,7 +72,7 @@ export function ClassDetailDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-3xl max-h-[85vh] flex flex-col p-0 gap-0 bg-background border-gold/20"
+        className="!max-w-none !w-screen !h-screen !max-h-none !rounded-none !translate-x-0 !translate-y-0 !left-0 !top-0 flex flex-col p-0 gap-0 bg-background border-gold/20"
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader className="p-6 pb-4 border-b border-border flex-shrink-0">
