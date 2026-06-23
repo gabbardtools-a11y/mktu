@@ -63,6 +63,13 @@ export function SearchSection({
             <Input
               value={query}
               onChange={(e) => onQueryChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && query.trim()) {
+                  document
+                    .getElementById("goods-section")
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+              }}
               placeholder="Поиск по классам и позициям — например: косметика, программное обеспечение, кофе..."
               className="pl-12 pr-12 h-14 text-base bg-card border-border focus-visible:border-gold/40 focus-visible:ring-gold/20"
             />
@@ -83,6 +90,22 @@ export function SearchSection({
               )}
             </div>
           </div>
+
+          {/* Найти button — triggers search and scrolls to results */}
+          <button
+            type="button"
+            onClick={() => {
+              if (query.trim()) {
+                document
+                  .getElementById("goods-section")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }
+            }}
+            className="flex items-center justify-center gap-2 h-14 px-6 rounded-md bg-gold text-background hover:bg-gold-dark font-semibold text-sm transition-all flex-shrink-0"
+          >
+            <Search className="size-4" />
+            <span className="hidden sm:inline">Найти</span>
+          </button>
 
           <motion.button
             type="button"
