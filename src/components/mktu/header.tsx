@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Star, ShoppingBag, Sun, Moon, HelpCircle } from "lucide-react";
+import {
+  Star,
+  ShoppingBag,
+  Sun,
+  Moon,
+  MoonStar,
+  HelpCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/use-theme";
 
@@ -55,11 +62,25 @@ export function Header({
               variant="ghost"
               size="sm"
               onClick={toggleTheme}
-              className="text-foreground/70 hover:text-gold hover:bg-gold/5"
-              title="Сменить тему"
+              className="relative text-foreground/70 hover:text-gold hover:bg-gold/5"
+              title={
+                mounted
+                  ? `Тема: ${
+                      theme === "dark"
+                        ? "Тёмная"
+                        : theme === "light"
+                          ? "Светлая"
+                          : "Серая"
+                    } (клик — следующая)`
+                  : "Сменить тему"
+              }
             >
               {mounted && theme === "dark" ? (
+                <Moon className="size-4" />
+              ) : mounted && theme === "light" ? (
                 <Sun className="size-4" />
+              ) : mounted ? (
+                <MoonStar className="size-4" />
               ) : (
                 <Moon className="size-4" />
               )}

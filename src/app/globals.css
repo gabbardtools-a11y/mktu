@@ -134,6 +134,50 @@
   --scrollbar-thumb-hover: #2d3748;
 }
 
+/* Grayscale theme — shades of grey, no gold/blue accents */
+.grayscale {
+  --navy-darkest: #1a1a1a;
+  --navy-dark: #242424;
+  --navy-medium: #2e2e2e;
+  --background: #1a1a1a;
+  --foreground: #e8e8e8;
+  --card: #242424;
+  --card-foreground: #e8e8e8;
+  --popover: #1f1f1f;
+  --popover-foreground: #e8e8e8;
+  --primary: #a8a8a8;
+  --primary-foreground: #1a1a1a;
+  --secondary: #2e2e2e;
+  --secondary-foreground: #e8e8e8;
+  --muted: #2e2e2e;
+  --muted-foreground: #8e8e8e;
+  --accent: #2e2e2e;
+  --accent-foreground: #e8e8e8;
+  --destructive: #c94747;
+  --border: #383838;
+  --input: #383838;
+  --ring: #a8a8a8;
+  --gold: #b8b8b8;
+  --gold-light: #d0d0d0;
+  --gold-dark: #8e8e8e;
+  --chart-1: #a8a8a8;
+  --chart-2: #c4c4c4;
+  --chart-3: #8e8e8e;
+  --chart-4: #767676;
+  --chart-5: #5e5e5e;
+  --sidebar: #1a1a1a;
+  --sidebar-foreground: #e8e8e8;
+  --sidebar-primary: #a8a8a8;
+  --sidebar-primary-foreground: #1a1a1a;
+  --sidebar-accent: #2e2e2e;
+  --sidebar-accent-foreground: #e8e8e8;
+  --sidebar-border: #383838;
+  --sidebar-ring: #a8a8a8;
+  --scrollbar-track: #1a1a1a;
+  --scrollbar-thumb: #383838;
+  --scrollbar-thumb-hover: #4a4a4a;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

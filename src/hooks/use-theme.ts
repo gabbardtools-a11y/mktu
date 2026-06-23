@@ -2,9 +2,12 @@
 
 import { useEffect, useState, useCallback } from "react";
 
-type Theme = "dark" | "light";
+type Theme = "dark" | "light" | "grayscale";
 
 const STORAGE_KEY = "mktu-theme";
+
+// Порядок переключения по клику
+const THEME_CYCLE: Theme[] = ["dark", "light", "grayscale"];
 
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>("dark");
@@ -14,7 +17,7 @@ export function useTheme() {
     setMounted(true);
     try {
       const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-      if (stored === "light" || stored === "dark") {
+      if (stored === "light" || stored === "dark" || stored === "grayscale") {
         setThemeState(stored);
       }
     } catch {
@@ -24,12 +27,16 @@ export function useTheme() {
 
   const applyTheme = useCallback((next: Theme) => {
     const root = document.documentElement;
+    // Снимаем все theme-классы
+    root.classList.remove("dark", "grayscale");
+    // Ставим нужный (light — без класса, на :root)
     if (next === "dark") {
       root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
+    } else if (next === "grayscale") {
+      root.classList.add("grayscale");
     }
-    root.style.colorScheme = next;
+    // light — без класса
+    root.style.colorScheme = next === "light" ? "light" : "dark";
   }, []);
 
   const setTheme = useCallback(
@@ -46,8 +53,10 @@ export function useTheme() {
   );
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    const idx = THEME_CYCLE.indexOf(theme);
+    const next = THEME_CYCLE[(idx + 1) % THEME_CYCLE.length];
+    setTheme(next);
   }, [theme, setTheme]);
 
-  return { theme, toggleTheme, mounted };
+  return { theme, toggleTheme, setTheme, mounted };
 }

@@ -58,13 +58,15 @@ const themeInitScript = `
 (function() {
   try {
     var stored = localStorage.getItem('mktu-theme');
-    var theme = stored || 'dark';
+    var theme = (stored === 'light' || stored === 'dark' || stored === 'grayscale') ? stored : 'dark';
+    var root = document.documentElement;
+    root.classList.remove('dark', 'grayscale');
     if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.add('dark');
+    } else if (theme === 'grayscale') {
+      root.classList.add('grayscale');
     }
-    document.documentElement.style.colorScheme = theme;
+    root.style.colorScheme = (theme === 'light') ? 'light' : 'dark';
   } catch (e) {
     document.documentElement.classList.add('dark');
   }
