@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Star,
   ShoppingBag,
@@ -16,6 +16,8 @@ import {
   ArrowRight,
   Download,
   SquareCheck,
+  Info,
+  ChevronDown,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -43,6 +45,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
   } = useFavoritesCart();
 
   const [query, setQuery] = useState("");
+  const [showNotes, setShowNotes] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const cls = useMemo(
@@ -200,9 +203,45 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
         </div>
       </div>
 
-      {/* Пояснения: относятся / не относятся */}
+      {/* Кнопка-тогглер «Подсказка» → раскрывает Пояснения / Относятся / Не относятся */}
       <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-3">
-        <ClassNotes classId={cls.id} />
+        <button
+          type="button"
+          onClick={() => setShowNotes((v) => !v)}
+          aria-expanded={showNotes}
+          className="group w-full flex items-center gap-3 p-3 rounded-lg border bg-card/50 border-border hover:border-gold/30 hover:bg-gold/5 transition-colors"
+        >
+          <div className="flex items-center justify-center w-8 h-8 rounded-md flex-shrink-0 bg-blue-500/10">
+            <Info className="size-4 text-blue-400" />
+          </div>
+          <span className="flex-1 text-left font-medium text-foreground text-sm">
+            Подсказка
+            <span className="block text-xs text-foreground/40 font-normal mt-0.5">
+              Пояснения · что относится к классу · что не относится
+            </span>
+          </span>
+          <ChevronDown
+            className={`size-4 text-foreground/40 transition-transform flex-shrink-0 ${
+              showNotes ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        <AnimatePresence initial={false}>
+          {showNotes && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              <div className="pt-2">
+                <ClassNotes classId={cls.id} expanded={showNotes} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Поиск по позициям */}

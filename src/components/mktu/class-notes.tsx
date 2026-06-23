@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
@@ -13,11 +13,32 @@ import { getNotes } from "@/data/mktu-notes";
 
 interface ClassNotesProps {
   classId: number;
+  /**
+   * Внешнее управление раскрытием.
+   * - true  → раскрыть все доступные разделы
+   * - false → скрыть все (только заголовки-аккордеоны)
+   * - undefined → поведение по умолчанию (первый раздел открыт)
+   */
+  expanded?: boolean;
 }
 
-export function ClassNotes({ classId }: ClassNotesProps) {
+export function ClassNotes({ classId, expanded }: ClassNotesProps) {
   const notes = getNotes(classId);
-  const [openSection, setOpenSection] = useState<"explanation" | "includes" | "excludes" | null>("explanation");
+  const [openSection, setOpenSection] = useState<
+    "explanation" | "includes" | "excludes" | null
+  >("explanation");
+
+  // Синхронизируем с внешним expanded-флагом
+  useEffect(() => {
+    if (expanded === true) {
+      // раскрываем первый доступный раздел
+      if (notes?.explanation) setOpenSection("explanation");
+      else if (notes && notes.includes.length > 0) setOpenSection("includes");
+      else if (notes && notes.excludes.length > 0) setOpenSection("excludes");
+    } else if (expanded === false) {
+      setOpenSection(null);
+    }
+  }, [expanded, notes]);
 
   if (!notes) return null;
 
