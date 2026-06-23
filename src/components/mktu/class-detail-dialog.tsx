@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { mktuClasses } from "@/data/mktu-data";
 
 interface ClassDetailDialogProps {
@@ -207,7 +207,7 @@ export function ClassDetailDialog({
           )}
         </div>
 
-        <ScrollArea className="flex-1 px-6 pb-6">
+        <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-6">
           <div className="space-y-0.5 pt-2">
             {filteredItems.length === 0 ? (
               <div className="text-center py-10 text-foreground/40 text-sm">
@@ -254,7 +254,7 @@ export function ClassDetailDialog({
               })
             )}
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
