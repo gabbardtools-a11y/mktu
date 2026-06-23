@@ -213,7 +213,7 @@ export function ClassDetailDialog({
           )}
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-6">
+        <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-6 overscroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
           <div className="space-y-0.5 pt-2">
             {filteredItems.length === 0 ? (
               <div className="text-center py-10 text-foreground/40 text-sm">

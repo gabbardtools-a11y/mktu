@@ -113,7 +113,7 @@ export function SearchResultsDialog({
           </div>
         </DialogHeader>
 
-        <div className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-4">
+        <div className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-4 overscroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
           <div className="max-w-4xl mx-auto space-y-3">
             {results.length === 0 ? (
               <div className="text-center py-16">

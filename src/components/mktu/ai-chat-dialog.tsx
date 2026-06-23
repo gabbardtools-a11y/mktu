@@ -176,7 +176,7 @@ export function AiChatDialog({ open, onOpenChange, initialPrompt, onOpenClass }:
           </div>
         </DialogHeader>
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto min-h-0 px-4 sm:px-6 py-4">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto min-h-0 px-4 sm:px-6 py-4 overscroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
           <div className="max-w-3xl mx-auto space-y-4">
             {messages.length === 0 && !loading && !error && !externalChats && (
               <div className="text-center py-12">
