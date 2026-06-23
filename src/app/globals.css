@@ -48,47 +48,47 @@
 
 :root {
   --radius: 0.625rem;
-  /* Light theme — high contrast for readability */
-  --navy-darkest: #ffffff;
-  --navy-dark: #f3f4f6;
-  --navy-medium: #e5e7eb;
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  /* Light theme — blue/cyan tones with high contrast */
+  --navy-darkest: #f0f6fc;
+  --navy-dark: #e0ecf7;
+  --navy-medium: #cddff0;
+  --background: #f0f6fc;
+  --foreground: #0a1a2f;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #0a1a2f;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #a8780c;
+  --popover-foreground: #0a1a2f;
+  --primary: #1d4ed8;
   --primary-foreground: #ffffff;
-  --secondary: #f3f4f6;
-  --secondary-foreground: #0a0a0a;
-  --muted: #f3f4f6;
-  --muted-foreground: #4b5563;
-  --accent: #fef3c7;
-  --accent-foreground: #78350f;
+  --secondary: #e0ecf7;
+  --secondary-foreground: #0a1a2f;
+  --muted: #e0ecf7;
+  --muted-foreground: #1e4a7a;
+  --accent: #dbeafe;
+  --accent-foreground: #0c3a78;
   --destructive: #b91c1c;
-  --border: #1f2937;
-  --input: #1f2937;
-  --ring: #a8780c;
-  --gold: #a8780c;
-  --gold-light: #c89b1f;
-  --gold-dark: #785208;
-  --chart-1: #a8780c;
-  --chart-2: #c89b1f;
-  --chart-3: #1d4ed8;
+  --border: #1e3a5f;
+  --input: #1e3a5f;
+  --ring: #1d4ed8;
+  --gold: #1d4ed8;
+  --gold-light: #3b82f6;
+  --gold-dark: #1e3a8a;
+  --chart-1: #1d4ed8;
+  --chart-2: #3b82f6;
+  --chart-3: #0e7490;
   --chart-4: #4338ca;
-  --chart-5: #0e7490;
+  --chart-5: #0891b2;
   --sidebar: #ffffff;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #a8780c;
+  --sidebar-foreground: #0a1a2f;
+  --sidebar-primary: #1d4ed8;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #fef3c7;
-  --sidebar-accent-foreground: #78350f;
-  --sidebar-border: #1f2937;
-  --sidebar-ring: #a8780c;
-  --scrollbar-track: #f3f4f6;
-  --scrollbar-thumb: #1f2937;
-  --scrollbar-thumb-hover: #111827;
+  --sidebar-accent: #dbeafe;
+  --sidebar-accent-foreground: #0c3a78;
+  --sidebar-border: #1e3a5f;
+  --sidebar-ring: #1d4ed8;
+  --scrollbar-track: #e0ecf7;
+  --scrollbar-thumb: #1e3a5f;
+  --scrollbar-thumb-hover: #0a1a2f;
 }
 
 .dark {
