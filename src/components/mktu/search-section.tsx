@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AiChatDialog } from "@/components/mktu/ai-chat-dialog";
+import { SearchResultsDialog } from "@/components/mktu/search-results-dialog";
 
 export type FilterType = "all" | "goods" | "services";
 
@@ -27,6 +28,10 @@ interface SearchSectionProps {
   onClearFavorites: () => void;
   onClearCart: () => void;
   onOpenClass?: (classId: number) => void;
+  isInCart: (classId: number) => boolean;
+  addToCart: (classId: number) => void;
+  isItemSelectedInCart: (classId: number, item: string) => boolean;
+  toggleItemInCart: (classId: number, item: string) => void;
 }
 
 export function SearchSection({
@@ -39,8 +44,13 @@ export function SearchSection({
   onClearFavorites,
   onClearCart,
   onOpenClass,
+  isInCart,
+  addToCart,
+  isItemSelectedInCart,
+  toggleItemInCart,
 }: SearchSectionProps) {
   const [aiOpen, setAiOpen] = useState(false);
+  const [searchResultsOpen, setSearchResultsOpen] = useState(false);
 
   const filterButtons: { key: FilterType; label: string; Icon: typeof Package }[] =
     [
@@ -54,6 +64,12 @@ export function SearchSection({
     return q ? `Определить МКТУ: ${q}` : "Определить МКТУ";
   };
 
+  const handleSearch = () => {
+    if (query.trim()) {
+      setSearchResultsOpen(true);
+    }
+  };
+
   return (
     <div id="search-section" className="mb-6">
       <div className="max-w-4xl mx-auto">
@@ -65,9 +81,7 @@ export function SearchSection({
               onChange={(e) => onQueryChange(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && query.trim()) {
-                  document
-                    .getElementById("goods-section")
-                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  handleSearch();
                 }
               }}
               placeholder="Поиск по классам и позициям — например: косметика, программное обеспечение, кофе..."
@@ -91,16 +105,10 @@ export function SearchSection({
             </div>
           </div>
 
-          {/* Найти button — triggers search and scrolls to results */}
+          {/* Найти button — opens search results dialog */}
           <button
             type="button"
-            onClick={() => {
-              if (query.trim()) {
-                document
-                  .getElementById("goods-section")
-                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
-              }
-            }}
+            onClick={handleSearch}
             className="flex items-center justify-center gap-2 h-14 px-6 rounded-md bg-gold text-background hover:bg-gold-dark font-semibold text-sm transition-all flex-shrink-0"
           >
             <Search className="size-4" />
@@ -124,6 +132,18 @@ export function SearchSection({
         </div>
       </div>
 
+      {/* Search results dialog */}
+      <SearchResultsDialog
+        open={searchResultsOpen}
+        onOpenChange={setSearchResultsOpen}
+        query={query}
+        isInCart={isInCart}
+        addToCart={addToCart}
+        isItemSelectedInCart={isItemSelectedInCart}
+        toggleItemInCart={toggleItemInCart}
+      />
+
+      {/* AI chat modal */}
       <AiChatDialog
         open={aiOpen}
         onOpenChange={setAiOpen}

@@ -138,6 +138,11 @@ export default function Home() {
             cartCount={mounted ? cart.length : 0}
             onClearFavorites={clearFavorites}
             onClearCart={clearCart}
+            onOpenClass={openClass}
+            isInCart={isInCart}
+            addToCart={addToCart}
+            isItemSelectedInCart={isItemSelectedInCart}
+            toggleItemInCart={toggleItemInCart}
           />
 
           {/* Goods section */}
