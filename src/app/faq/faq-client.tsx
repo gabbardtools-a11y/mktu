@@ -20,11 +20,11 @@ export default function FaqClient() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* Header (page-local, sticky) */}
-      <div className="pt-20 pb-4 border-b border-border bg-background/95 backdrop-blur-md sticky top-16 z-30">
+    <div className="min-h-screen flex flex-col bg-background text-foreground pt-16">
+      {/* Header (ниже глобального, скроллится вместе с контентом) */}
+      <div className="pt-2 pb-3 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-3 mb-2">
             <Button
               variant="ghost"
               size="sm"
@@ -37,7 +37,7 @@ export default function FaqClient() {
             </Button>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-1">
             Часто задаваемые вопросы
           </h1>
           <p className="text-foreground/60 text-sm">
@@ -45,13 +45,13 @@ export default function FaqClient() {
             справочника.
           </p>
 
-          <div className="relative mt-4">
+          <div className="relative mt-3">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-foreground/30 pointer-events-none" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Поиск по вопросам..."
-              className="pl-10 pr-10 bg-card border-border"
+              className="pl-10 pr-10 h-11 text-sm bg-card border-border"
             />
             {search && (
               <button
@@ -68,7 +68,7 @@ export default function FaqClient() {
 
       {/* Content */}
       <div className="flex-1 overscroll-contain">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 pb-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 pb-16">
           {filtered.length === 0 ? (
             <div className="text-center py-16">
               <p className="text-foreground/40 text-lg mb-2">

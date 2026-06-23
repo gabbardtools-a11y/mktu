@@ -92,11 +92,11 @@ function SearchPageInner() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* Local header (below global) */}
-      <div className="pt-20 pb-4 border-b border-border bg-background/95 backdrop-blur-md sticky top-16 z-30">
+    <div className="min-h-screen flex flex-col bg-background text-foreground pt-16">
+      {/* Local header (ниже глобального, скроллится вместе с контентом) */}
+      <div className="pt-2 pb-3 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-3 mb-2">
             <Button
               variant="ghost"
               size="sm"
@@ -108,11 +108,11 @@ function SearchPageInner() {
               <span className="hidden sm:inline ml-1.5">Главная</span>
             </Button>
             <div className="flex items-center gap-2 min-w-0">
-              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gold/10 border border-gold/30 flex-shrink-0">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gold/10 border border-gold/30 flex-shrink-0">
                 <Search className="size-4 text-gold" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-base sm:text-lg font-bold text-foreground">
+                <h1 className="text-sm sm:text-base font-bold text-foreground leading-tight">
                   Результаты поиска
                 </h1>
                 <div className="text-xs text-foreground/50">
@@ -125,13 +125,13 @@ function SearchPageInner() {
 
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-foreground/30 pointer-events-none" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-foreground/30 pointer-events-none" />
               <Input
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Поиск по классам и позициям..."
-                className="pl-12 pr-12 h-12 text-base bg-card border-border focus-visible:border-gold/40 focus-visible:ring-gold/20"
+                className="pl-10 pr-10 h-11 text-sm bg-card border-border focus-visible:border-gold/40 focus-visible:ring-gold/20"
               />
               {query && (
                 <button
@@ -139,7 +139,7 @@ function SearchPageInner() {
                   onClick={() => setQuery("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-foreground"
                 >
-                  <X className="size-5" />
+                  <X className="size-4" />
                 </button>
               )}
             </div>
@@ -149,10 +149,10 @@ function SearchPageInner() {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               title="Поиск с помощью ИИ"
-              className="flex items-center justify-center w-12 h-12 sm:w-auto sm:px-4 rounded-md bg-gradient-to-br from-blue-500/15 to-emerald-500/15 border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:border-blue-500/50 transition-all flex-shrink-0"
+              className="flex items-center justify-center w-11 h-11 sm:w-auto sm:px-3 rounded-md bg-gradient-to-br from-blue-500/15 to-emerald-500/15 border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:border-blue-500/50 transition-all flex-shrink-0"
             >
-              <Sparkles className="size-5 sm:size-4" strokeWidth={2.2} />
-              <span className="hidden sm:inline ml-2 text-sm font-semibold">
+              <Sparkles className="size-4" strokeWidth={2.2} />
+              <span className="hidden sm:inline ml-1.5 text-sm font-semibold">
                 ИИ
               </span>
             </motion.button>
@@ -162,7 +162,7 @@ function SearchPageInner() {
 
       {/* Results — нативный скролл страницы */}
       <div className="flex-1 overscroll-contain">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 pb-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 pb-16">
           {results.length === 0 ? (
             <div className="text-center py-16">
               <p className="text-foreground/40 text-lg mb-2">
