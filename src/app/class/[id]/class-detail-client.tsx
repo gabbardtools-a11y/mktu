@@ -322,8 +322,8 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
                 className="bg-gold text-background hover:bg-gold-dark"
               >
                 <Download className="size-4 mr-1.5" />
-                <span className="hidden sm:inline">Скачать Doc</span>
-                <span className="sm:hidden">Doc</span>
+                <span className="hidden sm:inline">Скачать Rtf</span>
+                <span className="sm:hidden">Rtf</span>
               </Button>
             </div>
           </div>

@@ -10,6 +10,7 @@ import {
   Package,
   Briefcase,
   Trash2,
+  Star,
   Sparkles,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -188,7 +189,7 @@ function SearchSectionInner({
                 : "text-foreground/30 hover:text-foreground/50 border-transparent hover:border-border"
             }`}
           >
-            <Trash2 className="size-4 mr-1.5" />
+            <Star className="size-4 mr-1.5" />
             Очистить
             {favoritesCount > 0 && (
               <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400">

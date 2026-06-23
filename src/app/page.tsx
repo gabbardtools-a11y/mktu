@@ -89,7 +89,7 @@ export default function Home() {
           <span className="text-xs text-foreground/70">
             <span className="text-gold">⭐ Избранное</span> →{" "}
             <span className="text-gold">🛒 Корзина</span> →{" "}
-            <span className="text-gold">⬇ Doc</span>
+            <span className="text-gold">⬇ Rtf</span>
           </span>
           <ChevronDown
             className={`size-3.5 text-foreground/40 transition-transform ${
@@ -110,7 +110,7 @@ export default function Home() {
           >
             <p className="text-center text-foreground/50 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto px-4">
               Подсказка: найдите нужные классы → добавьте в избранное ⭐ → из
-              избранного выберите товары чекбоксами → скачайте Doc
+              избранного выберите товары чекбоксами → скачайте Rtf
             </p>
           </motion.div>
         )}
