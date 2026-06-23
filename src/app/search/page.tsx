@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -18,7 +18,7 @@ interface ClassSearchResult {
   matchedItems: string[];
 }
 
-export default function SearchPage() {
+function SearchPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams?.get("q") ?? "";
@@ -372,5 +372,19 @@ export default function SearchPage() {
         initialPrompt={buildPrompt()}
       />
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen pt-32 flex items-center justify-center text-foreground/40">
+          Загрузка…
+        </div>
+      }
+    >
+      <SearchPageInner />
+    </Suspense>
   );
 }

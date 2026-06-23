@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -33,7 +33,7 @@ interface SearchSectionProps {
   toggleItemInCart: (classId: number, item: string) => void;
 }
 
-export function SearchSection({
+function SearchSectionInner({
   query,
   onQueryChange,
   filter,
@@ -47,7 +47,7 @@ export function SearchSection({
   const searchParams = useSearchParams();
   const [aiOpen, setAiOpen] = useState(false);
 
-  // Если на главной и в URL уже есть ?q=..., синхронизируем поле
+  // Если в URL есть ?q=..., синхронизируем поле при первом монтировании
   useEffect(() => {
     const q = searchParams?.get("q");
     if (q && !query) {
@@ -223,5 +223,13 @@ export function SearchSection({
         </motion.div>
       </motion.div>
     </div>
+  );
+}
+
+export function SearchSection(props: SearchSectionProps) {
+  return (
+    <Suspense fallback={<div className="h-14 mb-6" />}>
+      <SearchSectionInner {...props} />
+    </Suspense>
   );
 }
