@@ -29,9 +29,11 @@ export function Header({
             href="/"
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            <span className="text-gold font-bold text-lg tracking-wider">
-              МКТУ
-              <span className="text-foreground/30">_</span>
+            <span className="text-gold font-bold text-base sm:text-lg tracking-wider">
+              МКТУ.рус
+              <span className="text-foreground/40 font-normal text-xs sm:text-sm ml-1.5">
+                ред. 13 2026
+              </span>
             </span>
           </Link>
 
