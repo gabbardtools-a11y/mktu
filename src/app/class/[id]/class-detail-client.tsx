@@ -111,9 +111,9 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* Header (page-local, sticky under global Header) */}
-      <div className="pt-1 pb-3 border-b border-border bg-background/95 backdrop-blur-md sticky top-16 z-30">
+    <div className="min-h-screen flex flex-col bg-background text-foreground pt-16">
+      {/* Header (page-local, скроллится вместе с контентом — не перекрывает кнопку Подсказка) */}
+      <div className="pt-2 pb-3 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between gap-2 mb-2">
             <Button

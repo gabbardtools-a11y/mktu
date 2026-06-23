@@ -24,21 +24,19 @@ interface ClassNotesProps {
 
 export function ClassNotes({ classId, expanded }: ClassNotesProps) {
   const notes = getNotes(classId);
+  // По умолчанию все секции закрыты — пользователь сам открывает нужные
   const [openSection, setOpenSection] = useState<
     "explanation" | "includes" | "excludes" | null
-  >("explanation");
+  >(null);
 
-  // Синхронизируем с внешним expanded-флагом
+  // Внешний флаг expanded управляет только видимостью всего блока
+  // (обрабатывается родителем через AnimatePresence).
+  // При скрытии (expanded=false) сбрасываем все открытые секции.
   useEffect(() => {
-    if (expanded === true) {
-      // раскрываем первый доступный раздел
-      if (notes?.explanation) setOpenSection("explanation");
-      else if (notes && notes.includes.length > 0) setOpenSection("includes");
-      else if (notes && notes.excludes.length > 0) setOpenSection("excludes");
-    } else if (expanded === false) {
+    if (expanded === false) {
       setOpenSection(null);
     }
-  }, [expanded, notes]);
+  }, [expanded]);
 
   if (!notes) return null;
 
