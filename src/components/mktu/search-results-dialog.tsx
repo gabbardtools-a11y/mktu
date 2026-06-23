@@ -47,17 +47,25 @@ export function SearchResultsDialog({
     const matched: ClassSearchResult[] = [];
 
     for (const cls of mktuClasses) {
+<<<<<<< HEAD
       // Check if query matches class name or description
       const nameMatch = cls.name.toLowerCase().includes(q);
       const descMatch = cls.description.toLowerCase().includes(q);
 
       // Find matching items
+=======
+      const nameMatch = cls.name.toLowerCase().includes(q);
+      const descMatch = cls.description.toLowerCase().includes(q);
+>>>>>>> a732e78 (Fix mobile scroll: restore fullscreen dialog + overscroll-contain)
       const matchedItems = cls.items.filter((item) =>
         item.toLowerCase().includes(q),
       );
 
       if (nameMatch || descMatch || matchedItems.length > 0) {
+<<<<<<< HEAD
         // If only name/desc matches (no items), show first 10 items
+=======
+>>>>>>> a732e78 (Fix mobile scroll: restore fullscreen dialog + overscroll-contain)
         const itemsToShow = matchedItems.length > 0 ? matchedItems : cls.items.slice(0, 10);
         matched.push({
           classId: cls.id,
@@ -83,7 +91,11 @@ export function SearchResultsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
+<<<<<<< HEAD
         className="!max-w-none !w-screen !h-screen !max-h-none !rounded-none !translate-x-0 !translate-y-0 !left-0 !top-0 flex flex-col p-0 gap-0 bg-background border-gold/20"
+=======
+        className="!max-w-none !w-screen !h-screen !max-h-none !rounded-none !translate-x-0 !translate-y-0 !left-0 !top-0 flex flex-col p-0 gap-0 bg-background border-gold/20 overflow-hidden"
+>>>>>>> a732e78 (Fix mobile scroll: restore fullscreen dialog + overscroll-contain)
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader className="px-4 sm:px-6 py-4 border-b border-border flex-shrink-0">
@@ -141,7 +153,10 @@ export function SearchResultsDialog({
                         : "bg-card/50 border-border hover:border-border/80"
                     }`}
                   >
+<<<<<<< HEAD
                     {/* Class header — click to expand */}
+=======
+>>>>>>> a732e78 (Fix mobile scroll: restore fullscreen dialog + overscroll-contain)
                     <button
                       onClick={() => toggleExpand(result.classId)}
                       className="w-full flex items-center gap-3 p-4 text-left transition-colors hover:bg-muted/30"
@@ -192,7 +207,10 @@ export function SearchResultsDialog({
                       </div>
                     </button>
 
+<<<<<<< HEAD
                     {/* Expanded items with checkboxes */}
+=======
+>>>>>>> a732e78 (Fix mobile scroll: restore fullscreen dialog + overscroll-contain)
                     {isExpanded && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
@@ -202,7 +220,11 @@ export function SearchResultsDialog({
                         className="overflow-hidden"
                       >
                         <div className="px-4 pb-4 pt-1 border-t border-border/50">
+<<<<<<< HEAD
                           <div className="max-h-96 overflow-y-auto mt-2 space-y-0.5">
+=======
+                          <div className="max-h-96 overflow-y-auto mt-2 space-y-0.5 overscroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
+>>>>>>> a732e78 (Fix mobile scroll: restore fullscreen dialog + overscroll-contain)
                             {result.matchedItems.map((item, i) => {
                               const checked = isItemSelectedInCart(
                                 result.classId,
@@ -248,7 +270,10 @@ export function SearchResultsDialog({
                             })}
                           </div>
 
+<<<<<<< HEAD
                           {/* Select all / deselect all */}
+=======
+>>>>>>> a732e78 (Fix mobile scroll: restore fullscreen dialog + overscroll-contain)
                           <div className="mt-2 flex items-center justify-between pt-2 border-t border-border/30">
                             <span className="text-xs text-foreground/30">
                               {selectedCount} из {result.matchedItems.length}{" "}
@@ -298,7 +323,10 @@ export function SearchResultsDialog({
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* Footer */}
+=======
+>>>>>>> a732e78 (Fix mobile scroll: restore fullscreen dialog + overscroll-contain)
         <div className="flex-shrink-0 border-t border-border px-4 sm:px-6 py-3 bg-background">
           <div className="max-w-4xl mx-auto flex items-center justify-between">
             <span className="text-xs text-foreground/40">
