@@ -125,14 +125,10 @@ export function ClassCard({
           позиций
         </span>
         <span
-          className={`text-xs font-medium transition-colors flex items-center gap-1 ${
-            isFavorite
-              ? "text-gold group-hover:text-gold-light"
-              : "text-[#d4af37]/60 group-hover:text-[#d4af37]/80"
-          }`}
+          className="text-xs font-medium transition-colors flex items-center gap-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 group-hover:translate-x-0.5"
         >
           Подробнее →
-          <ArrowRight className="size-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+          <ArrowRight className="size-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
         </span>
       </div>
     </motion.div>
