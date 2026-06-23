@@ -295,6 +295,7 @@ export function SearchResultsDialog({
                       </motion.div>
                     )}
                   </div>
+                  )
                 );
               })
             )}
