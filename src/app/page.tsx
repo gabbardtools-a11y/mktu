@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Package, Briefcase, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Package, Briefcase, Sparkles, ChevronDown } from "lucide-react";
 import { SearchSection, type FilterType } from "@/components/mktu/search-section";
 import { ClassCard } from "@/components/mktu/class-card";
 import { mktuClasses } from "@/data/mktu-data";
@@ -11,6 +11,7 @@ import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
 export default function Home() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
+  const [hintOpen, setHintOpen] = useState(false);
   const {
     favorites,
     cart,
@@ -71,32 +72,49 @@ export default function Home() {
       id="class-grid"
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 scroll-mt-16"
     >
-      {/* Hint banner */}
+      {/* Hint banner — кликабельный, разворачивает подробную подсказку */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        className="mb-6 flex items-center justify-center"
+        className="mb-4 flex items-center justify-center"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/5 border border-gold/15">
+        <button
+          type="button"
+          onClick={() => setHintOpen((v) => !v)}
+          aria-expanded={hintOpen}
+          className="group inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/5 border border-gold/15 hover:bg-gold/10 hover:border-gold/30 transition-colors"
+        >
           <Sparkles className="size-3.5 text-gold" />
-          <span className="text-xs text-foreground/60">
+          <span className="text-xs text-foreground/70">
             <span className="text-gold">⭐ Избранное</span> →{" "}
             <span className="text-gold">🛒 Корзина</span> →{" "}
-            <span className="text-gold">⬇ RTF</span>
+            <span className="text-gold">⬇ Doc</span>
           </span>
-        </div>
+          <ChevronDown
+            className={`size-3.5 text-foreground/40 transition-transform ${
+              hintOpen ? "rotate-180" : ""
+            }`}
+          />
+        </button>
       </motion.div>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-        className="text-center text-foreground/40 text-xs sm:text-sm mt-2 mb-6 leading-relaxed max-w-2xl mx-auto"
-      >
-        Подсказка: найдите нужные классы → добавьте в избранное ⭐ → из
-        избранного выберите товары чекбоксами → скачайте RTF
-      </motion.p>
+      <AnimatePresence initial={false}>
+        {hintOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="overflow-hidden mb-4"
+          >
+            <p className="text-center text-foreground/50 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto px-4">
+              Подсказка: найдите нужные классы → добавьте в избранное ⭐ → из
+              избранного выберите товары чекбоксами → скачайте Doc
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <SearchSection
         query={query}
