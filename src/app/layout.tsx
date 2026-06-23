@@ -16,7 +16,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "МКТУ — Международная (Ниццкая) классификация 2026",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://mktu.ru",
+  ),
+  title: {
+    default: "МКТУ — Международная (Ниццкая) классификация 2026",
+    template: "%s · МКТУ 2026",
+  },
   description:
     "Полный справочник МКТУ 13-й редакции 2026. Международная классификация товаров и услуг для регистрации товарных знаков. Все 45 классов.",
   keywords: [
@@ -27,6 +33,8 @@ export const metadata: Metadata = {
     "классификация услуг",
     "регистрация товарных знаков",
     "Роспатент",
+    "МКТУ 13 редакция",
+    "МКТУ 2026",
   ],
   authors: [{ name: "МКТУ Справочник" }],
   icons: {
@@ -38,6 +46,10 @@ export const metadata: Metadata = {
       "Полный справочник МКТУ 13-й редакции 2026. Международная классификация товаров и услуг для регистрации товарных знаков.",
     siteName: "МКТУ",
     type: "website",
+    locale: "ru_RU",
+  },
+  alternates: {
+    canonical: "/",
   },
 };
 
