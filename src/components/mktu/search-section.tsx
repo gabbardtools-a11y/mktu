@@ -80,7 +80,7 @@ function SearchSectionInner({
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-foreground/30 pointer-events-none" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-foreground/30 pointer-events-none" />
             <Input
               value={query}
               onChange={(e) => onQueryChange(e.target.value)}
@@ -90,7 +90,7 @@ function SearchSectionInner({
                 }
               }}
               placeholder="Поиск по классам и позициям — например: косметика, программное обеспечение, кофе..."
-              className="pl-12 pr-12 h-14 text-base bg-card border-border focus-visible:border-gold/40 focus-visible:ring-gold/20"
+              className="pl-10 pr-10 h-11 text-sm bg-card border-border focus-visible:border-gold/40 focus-visible:ring-gold/20"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
               {query ? (
@@ -99,7 +99,7 @@ function SearchSectionInner({
                   onClick={() => onQueryChange("")}
                   className="pointer-events-auto text-foreground/40 hover:text-foreground"
                 >
-                  <X className="size-5" />
+                  <X className="size-4" />
                 </button>
               ) : (
                 <div className="flex items-center gap-1.5 text-foreground/20">
@@ -115,7 +115,7 @@ function SearchSectionInner({
           <button
             type="button"
             onClick={handleSearch}
-            className="flex items-center justify-center gap-2 h-14 px-6 rounded-md bg-gold text-background hover:bg-gold-dark font-semibold text-sm transition-all flex-shrink-0"
+            className="flex items-center justify-center gap-1.5 h-11 px-4 rounded-md bg-gold text-background hover:bg-gold-dark font-semibold text-sm transition-all flex-shrink-0"
           >
             <Search className="size-4" />
             <span className="hidden sm:inline">Найти</span>
@@ -128,13 +128,13 @@ function SearchSectionInner({
             whileTap={{ scale: 0.96 }}
             title="Поиск с помощью ИИ"
             aria-label="Поиск с помощью ИИ"
-            className="flex items-center justify-center w-14 h-14 sm:w-auto sm:h-14 sm:px-4 rounded-md bg-gradient-to-br from-blue-500/15 to-emerald-500/15 border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:border-blue-500/50 transition-all group flex-shrink-0"
+            className="flex items-center justify-center w-11 h-11 sm:w-auto sm:h-11 sm:px-3 rounded-md bg-gradient-to-br from-blue-500/15 to-emerald-500/15 border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:border-blue-500/50 transition-all group flex-shrink-0"
           >
             <Sparkles
-              className="size-5 sm:size-4 group-hover:scale-110 transition-transform"
+              className="size-4 group-hover:scale-110 transition-transform"
               strokeWidth={2.2}
             />
-            <span className="hidden sm:inline ml-2 text-sm font-semibold tracking-wide">
+            <span className="hidden sm:inline ml-1.5 text-sm font-semibold tracking-wide">
               ИИ
             </span>
           </motion.button>
