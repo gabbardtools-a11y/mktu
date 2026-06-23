@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -14,7 +15,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AiChatDialog } from "@/components/mktu/ai-chat-dialog";
-import { SearchResultsDialog } from "@/components/mktu/search-results-dialog";
 
 export type FilterType = "all" | "goods" | "services";
 
@@ -27,7 +27,6 @@ interface SearchSectionProps {
   cartCount: number;
   onClearFavorites: () => void;
   onClearCart: () => void;
-  onOpenClass?: (classId: number) => void;
   isInCart: (classId: number) => boolean;
   addToCart: (classId: number) => void;
   isItemSelectedInCart: (classId: number, item: string) => boolean;
@@ -43,14 +42,19 @@ export function SearchSection({
   cartCount,
   onClearFavorites,
   onClearCart,
-  onOpenClass,
-  isInCart,
-  addToCart,
-  isItemSelectedInCart,
-  toggleItemInCart,
 }: SearchSectionProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [aiOpen, setAiOpen] = useState(false);
-  const [searchResultsOpen, setSearchResultsOpen] = useState(false);
+
+  // Если на главной и в URL уже есть ?q=..., синхронизируем поле
+  useEffect(() => {
+    const q = searchParams?.get("q");
+    if (q && !query) {
+      onQueryChange(q);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const filterButtons: { key: FilterType; label: string; Icon: typeof Package }[] =
     [
@@ -65,8 +69,9 @@ export function SearchSection({
   };
 
   const handleSearch = () => {
-    if (query.trim()) {
-      setSearchResultsOpen(true);
+    const q = query.trim();
+    if (q) {
+      router.push(`/search?q=${encodeURIComponent(q)}`);
     }
   };
 
@@ -90,6 +95,7 @@ export function SearchSection({
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
               {query ? (
                 <button
+                  type="button"
                   onClick={() => onQueryChange("")}
                   className="pointer-events-auto text-foreground/40 hover:text-foreground"
                 >
@@ -105,7 +111,7 @@ export function SearchSection({
             </div>
           </div>
 
-          {/* Найти button — opens search results dialog */}
+          {/* Найти button — opens search results page */}
           <button
             type="button"
             onClick={handleSearch}
@@ -124,7 +130,10 @@ export function SearchSection({
             aria-label="Поиск с помощью ИИ"
             className="flex items-center justify-center w-14 h-14 sm:w-auto sm:h-14 sm:px-4 rounded-md bg-gradient-to-br from-blue-500/15 to-emerald-500/15 border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:border-blue-500/50 transition-all group flex-shrink-0"
           >
-            <Sparkles className="size-5 sm:size-4 group-hover:scale-110 transition-transform" strokeWidth={2.2} />
+            <Sparkles
+              className="size-5 sm:size-4 group-hover:scale-110 transition-transform"
+              strokeWidth={2.2}
+            />
             <span className="hidden sm:inline ml-2 text-sm font-semibold tracking-wide">
               ИИ
             </span>
@@ -132,23 +141,11 @@ export function SearchSection({
         </div>
       </div>
 
-      {/* Search results dialog */}
-      <SearchResultsDialog
-        open={searchResultsOpen}
-        onOpenChange={setSearchResultsOpen}
-        query={query}
-        isInCart={isInCart}
-        addToCart={addToCart}
-        isItemSelectedInCart={isItemSelectedInCart}
-        toggleItemInCart={toggleItemInCart}
-      />
-
       {/* AI chat modal */}
       <AiChatDialog
         open={aiOpen}
         onOpenChange={setAiOpen}
         initialPrompt={buildPrompt()}
-        onOpenClass={onOpenClass}
       />
 
       <motion.div

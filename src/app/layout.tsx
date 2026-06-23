@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { FavoritesCartProvider } from "@/components/mktu/favorites-cart-context";
+import { AppShell } from "@/components/mktu/app-shell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,7 +72,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        {children}
+        <FavoritesCartProvider>
+          <AppShell>{children}</AppShell>
+        </FavoritesCartProvider>
         <Toaster />
       </body>
     </html>

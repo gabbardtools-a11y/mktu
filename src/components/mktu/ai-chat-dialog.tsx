@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Sparkles, X, Send, Loader2, AlertCircle, ExternalLink, Copy, Check } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -59,6 +60,7 @@ function renderMessageContent(content: string, onOpenClass?: (classId: number) =
 }
 
 export function AiChatDialog({ open, onOpenChange, initialPrompt, onOpenClass }: AiChatDialogProps) {
+  const router = useRouter();
   const [messages, setMessages] = useState<AiMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -152,8 +154,14 @@ export function AiChatDialog({ open, onOpenChange, initialPrompt, onOpenClass }:
 
   const handleClassClick = useCallback((classId: number) => {
     onOpenChange(false);
-    setTimeout(() => onOpenClass?.(classId), 50);
-  }, [onOpenChange, onOpenClass]);
+    // Если родитель передал кастомный обработчик — используем его,
+    // иначе роутим на страницу класса напрямую.
+    if (onOpenClass) {
+      setTimeout(() => onOpenClass(classId), 50);
+    } else {
+      setTimeout(() => router.push(`/class/${classId}`), 50);
+    }
+  }, [onOpenChange, onOpenClass, router]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

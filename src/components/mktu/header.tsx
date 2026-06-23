@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Star, ShoppingBag, Sun, Moon, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,6 @@ interface HeaderProps {
   cartCount: number;
   onOpenFavorites: () => void;
   onOpenCart: () => void;
-  onOpenFaq: () => void;
 }
 
 export function Header({
@@ -18,7 +18,6 @@ export function Header({
   cartCount,
   onOpenFavorites,
   onOpenCart,
-  onOpenFaq,
 }: HeaderProps) {
   const { theme, toggleTheme, mounted } = useTheme();
 
@@ -26,26 +25,28 @@ export function Header({
     <nav className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-b border-gold/10 shadow-lg shadow-foreground/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <a
-            href="#hero"
+          <Link
+            href="/"
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <span className="text-gold font-bold text-lg tracking-wider">
               МКТУ
               <span className="text-foreground/30">_</span>
             </span>
-          </a>
+          </Link>
 
           <div className="flex items-center gap-1 sm:gap-2">
             <Button
               variant="ghost"
               size="sm"
-              onClick={onOpenFaq}
+              asChild
               className="text-foreground/70 hover:text-gold hover:bg-gold/5"
               title="FAQ"
             >
-              <HelpCircle className="size-4" />
-              <span className="hidden sm:inline ml-1.5">FAQ</span>
+              <Link href="/faq">
+                <HelpCircle className="size-4" />
+                <span className="hidden sm:inline ml-1.5">FAQ</span>
+              </Link>
             </Button>
 
             <Button

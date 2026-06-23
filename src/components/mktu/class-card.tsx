@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Star, ShoppingBag, ArrowRight, Package, Briefcase } from "lucide-react";
 import type { MktuClass } from "@/data/mktu-data";
@@ -11,7 +12,6 @@ interface ClassCardProps {
   isInCart: boolean;
   onToggleFavorite: (classId: number) => void;
   onAddToCart: (classId: number) => void;
-  onOpenDetail: (classId: number) => void;
 }
 
 export function ClassCard({
@@ -21,10 +21,12 @@ export function ClassCard({
   isInCart,
   onToggleFavorite,
   onAddToCart,
-  onOpenDetail,
 }: ClassCardProps) {
+  const router = useRouter();
   const isGoods = cls.type === "goods";
   const Icon = isGoods ? Package : Briefcase;
+
+  const openDetail = () => router.push(`/class/${cls.id}`);
 
   return (
     <motion.div
@@ -37,7 +39,7 @@ export function ClassCard({
           ? "bg-gold/5 border-gold/30 hover:border-gold/50"
           : "bg-card border-border hover:border-gold/20"
       } p-5 transition-all hover:shadow-lg hover:shadow-foreground/5 cursor-pointer overflow-hidden`}
-      onClick={() => onOpenDetail(cls.id)}
+      onClick={openDetail}
     >
       {/* Hover corner decoration */}
       <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden rounded-tr-xl pointer-events-none">
@@ -77,6 +79,7 @@ export function ClassCard({
 
         <div className="flex items-center gap-1">
           <motion.button
+            type="button"
             whileTap={{ scale: 0.85 }}
             onClick={(e) => {
               e.stopPropagation();
@@ -92,6 +95,7 @@ export function ClassCard({
             <Star className={`size-4 ${isFavorite ? "fill-current" : ""}`} />
           </motion.button>
           <motion.button
+            type="button"
             whileTap={{ scale: 0.85 }}
             onClick={(e) => {
               e.stopPropagation();
