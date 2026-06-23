@@ -110,9 +110,9 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       {/* Header (page-local, sticky under global Header) */}
-      <div className="pt-20 pb-4 border-b border-border bg-background/95 backdrop-blur-md sticky top-16 z-30">
+      <div className="pt-1 pb-3 border-b border-border bg-background/95 backdrop-blur-md sticky top-16 z-30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between gap-3 mb-3">
+          <div className="flex items-center justify-between gap-2 mb-2">
             <Button
               variant="ghost"
               size="sm"
@@ -165,30 +165,30 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
 
           <div className="flex items-start gap-3">
             <div
-              className={`flex items-center justify-center w-12 h-12 rounded-lg flex-shrink-0 ${
+              className={`flex items-center justify-center w-11 h-11 rounded-lg flex-shrink-0 ${
                 isGoods ? "bg-gold/10" : "bg-blue-500/10"
               }`}
             >
               <Icon
-                className={`size-6 ${isGoods ? "text-gold" : "text-blue-400"}`}
+                className={`size-5 ${isGoods ? "text-gold" : "text-blue-400"}`}
               />
             </div>
             <div className="min-w-0 flex-1">
-              <h1 className="text-xl sm:text-2xl font-bold text-foreground leading-tight">
-                {cls.name}
-              </h1>
-              <div
-                className={`text-xs uppercase tracking-wider font-medium mt-1 ${
+              <h4
+                className={`text-xs uppercase tracking-wider font-medium ${
                   isGoods ? "text-gold/70" : "text-blue-400/70"
                 }`}
               >
                 Класс {cls.id} · {isGoods ? "Товары" : "Услуги"} ·{" "}
                 {cls.items.length} позиций
-              </div>
+              </h4>
+              <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight mt-0.5">
+                {cls.name}
+              </h1>
             </div>
           </div>
 
-          <p className="text-foreground/60 text-sm leading-relaxed mt-3">
+          <p className="text-foreground/60 text-sm leading-relaxed mt-2">
             {cls.description}
           </p>
 
@@ -201,12 +201,12 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
       </div>
 
       {/* Пояснения: относятся / не относятся */}
-      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-4">
+      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-3">
         <ClassNotes classId={cls.id} />
       </div>
 
       {/* Поиск по позициям */}
-      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-4 pb-3">
+      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-3 pb-2">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-foreground/30 pointer-events-none" />
           <Input
