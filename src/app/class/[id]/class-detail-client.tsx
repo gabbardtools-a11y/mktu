@@ -18,6 +18,7 @@ import {
   SquareCheck,
   Info,
   ChevronDown,
+  Maximize2,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
 
   const [query, setQuery] = useState("");
   const [showNotes, setShowNotes] = useState(false);
+  const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const cls = useMemo(
@@ -140,9 +142,6 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
                 title={fav ? "Убрать из избранного" : "В избранное"}
               >
                 <Star className={`size-4 ${fav ? "fill-current" : ""}`} />
-                <span className="ml-1.5 hidden sm:inline">
-                  {fav ? "В избранном" : "В избранное"}
-                </span>
               </Button>
               <Button
                 variant="ghost"
@@ -159,47 +158,89 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
                 <ShoppingBag
                   className={`size-4 ${inCart ? "fill-current" : ""}`}
                 />
-                <span className="ml-1.5 hidden sm:inline">
-                  {inCart ? "В корзине" : "В корзину"}
-                </span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setHeaderCollapsed(true)}
+                className="text-foreground/40 hover:text-foreground hover:bg-muted"
+                title="Свернуть заголовок класса"
+              >
+                <X className="size-4" />
+                <span className="ml-1.5 hidden sm:inline">Закрыть</span>
               </Button>
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
-            <div
-              className={`flex items-center justify-center w-11 h-11 rounded-lg flex-shrink-0 ${
-                isGoods ? "bg-gold/10" : "bg-blue-500/10"
-              }`}
-            >
-              <Icon
-                className={`size-5 ${isGoods ? "text-gold" : "text-blue-400"}`}
-              />
-            </div>
-            <div className="min-w-0 flex-1">
-              <h4
-                className={`text-xs uppercase tracking-wider font-medium ${
-                  isGoods ? "text-gold/70" : "text-blue-400/70"
-                }`}
+          {/* Скрытый заголовок — кнопка для разворота обратно */}
+          <AnimatePresence initial={false}>
+            {headerCollapsed && (
+              <motion.button
+                type="button"
+                onClick={() => setHeaderCollapsed(false)}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                className="w-full overflow-hidden flex items-center gap-2 px-3 py-2 rounded-md border border-dashed border-border hover:border-gold/40 hover:bg-gold/5 transition-colors text-left"
+                title="Показать заголовок класса"
               >
-                Класс {cls.id} · {isGoods ? "Товары" : "Услуги"} ·{" "}
-                {cls.items.length} позиций
-              </h4>
-              <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight mt-0.5">
-                {cls.name}
-              </h1>
-            </div>
-          </div>
+                <Maximize2 className="size-4 text-gold flex-shrink-0" />
+                <span className="text-sm text-foreground/70 truncate">
+                  Класс {cls.id} — {cls.name}
+                </span>
+                <ChevronDown className="size-3.5 text-foreground/40 ml-auto rotate-180 flex-shrink-0" />
+              </motion.button>
+            )}
+          </AnimatePresence>
 
-          <p className="text-foreground/60 text-sm leading-relaxed mt-2">
-            {cls.description}
-          </p>
+          {/* Полный заголовок класса — скрыт по кнопке «Закрыть» */}
+          <AnimatePresence initial={false}>
+            {!headerCollapsed && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`flex items-center justify-center w-11 h-11 rounded-lg flex-shrink-0 ${
+                      isGoods ? "bg-gold/10" : "bg-blue-500/10"
+                    }`}
+                  >
+                    <Icon
+                      className={`size-5 ${isGoods ? "text-gold" : "text-blue-400"}`}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4
+                      className={`text-xs uppercase tracking-wider font-medium ${
+                        isGoods ? "text-gold/70" : "text-blue-400/70"
+                      }`}
+                    >
+                      Класс {cls.id} · {isGoods ? "Товары" : "Услуги"} ·{" "}
+                      {cls.items.length} позиций
+                    </h4>
+                    <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight mt-0.5">
+                      {cls.name}
+                    </h1>
+                  </div>
+                </div>
 
-          {selectedCount > 0 && (
-            <div className="mt-3 px-3 py-1.5 rounded-md bg-gold/5 border border-gold/20 text-xs text-gold">
-              Выбрано позиций: {selectedCount} из {cls.items.length}
-            </div>
-          )}
+                <p className="text-foreground/60 text-sm leading-relaxed mt-2">
+                  {cls.description}
+                </p>
+
+                {selectedCount > 0 && (
+                  <div className="mt-3 px-3 py-1.5 rounded-md bg-gold/5 border border-gold/20 text-xs text-gold">
+                    Выбрано позиций: {selectedCount} из {cls.items.length}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
