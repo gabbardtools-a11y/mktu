@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { mktuClasses } from "@/data/mktu-data";
+import { ClassNotes } from "@/components/mktu/class-notes";
 
 interface ClassDetailDialogProps {
   classId: number | null;
@@ -150,6 +151,11 @@ export function ClassDetailDialog({
             </div>
           )}
         </DialogHeader>
+
+        {/* Пояснения: относятся / не относятся */}
+        <div className="px-6 py-3 border-b border-border flex-shrink-0">
+          <ClassNotes classId={cls.id} />
+        </div>
 
         <div className="px-6 pt-4 pb-3 flex-shrink-0">
           <div className="relative">
