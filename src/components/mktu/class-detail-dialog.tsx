@@ -73,11 +73,7 @@ export function ClassDetailDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-<<<<<<< HEAD
-        className="!max-w-none !w-screen !h-screen !max-h-none !rounded-none !translate-x-0 !translate-y-0 !left-0 !top-0 flex flex-col p-0 gap-0 bg-background border-gold/20"
-=======
         className="!max-w-none !w-screen !h-screen !max-h-none !rounded-none !translate-x-0 !translate-y-0 !left-0 !top-0 flex flex-col p-0 gap-0 bg-background border-gold/20 overflow-hidden"
->>>>>>> a732e78 (Fix mobile scroll: restore fullscreen dialog + overscroll-contain)
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader className="p-6 pb-4 border-b border-border flex-shrink-0">
