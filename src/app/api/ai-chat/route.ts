@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 120; // 2 minutes timeout for AI responses
 
 // System prompt that focuses the assistant on MKTU classification.
 const SYSTEM_PROMPT = `Ты — эксперт по Международной классификации товаров и услуг (МКТУ, Ниццкая классификация) 13-й редакции 2026 года.
@@ -52,6 +53,7 @@ function callRouterAiStream(messages: ChatMessage[]): ReadableStream<Uint8Array>
       try {
         const res = await fetch(`${endpoint}/chat/completions`, {
           method: "POST",
+          signal: AbortSignal.timeout(90000), // 90 seconds timeout
           headers: {
             Authorization: `Bearer ${apiKey}`,
             "Content-Type": "application/json",
