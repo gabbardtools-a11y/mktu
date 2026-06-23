@@ -301,6 +301,7 @@ export function SearchResultsDialog({
             )}
           </div>
         </div>
+        </div>
 
         {/* Footer */}
         <div className="flex-shrink-0 border-t border-border px-4 sm:px-6 py-3 bg-background">
