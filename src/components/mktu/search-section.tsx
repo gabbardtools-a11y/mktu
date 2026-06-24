@@ -185,14 +185,14 @@ function SearchSectionInner({
             disabled={favoritesCount === 0}
             className={`border transition-colors ${
               favoritesCount > 0
-                ? "text-yellow-400 hover:text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/15 border-yellow-500/20 hover:border-yellow-500/30"
+                ? "text-gold hover:text-gold-light bg-gold/10 hover:bg-gold/15 border-gold/20 hover:border-gold/30"
                 : "text-foreground/30 hover:text-foreground/50 border-transparent hover:border-border"
             }`}
           >
             <Star className="size-4 mr-1.5" />
             Очистить
             {favoritesCount > 0 && (
-              <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400">
+              <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded-full bg-gold/10 text-gold">
                 {favoritesCount}
               </span>
             )}
