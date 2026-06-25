@@ -203,8 +203,9 @@
   }
 }
 
-/* Apply dark theme by default on the root html element.
-   The Header component will manage toggling based on localStorage. */
+/* Apply light theme by default on the root html element.
+   Light theme is the default (see use-theme.ts DEFAULT_THEME = 'light').
+   The inline script in layout.tsx will override based on localStorage before hydration. */
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }

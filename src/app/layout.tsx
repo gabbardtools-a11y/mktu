@@ -54,11 +54,13 @@ export const metadata: Metadata = {
 };
 
 // Inline script to set initial theme before hydration — prevents flash of wrong theme.
+// Default theme is 'light' (set in use-theme.ts as DEFAULT_THEME).
 const themeInitScript = `
 (function() {
   try {
     var stored = localStorage.getItem('mktu-theme');
-    var theme = (stored === 'light' || stored === 'dark' || stored === 'grayscale') ? stored : 'dark';
+    // Если в localStorage нет валидной темы — по умолчанию 'light'
+    var theme = (stored === 'light' || stored === 'dark' || stored === 'grayscale') ? stored : 'light';
     var root = document.documentElement;
     root.classList.remove('dark', 'grayscale');
     if (theme === 'dark') {
@@ -66,9 +68,10 @@ const themeInitScript = `
     } else if (theme === 'grayscale') {
       root.classList.add('grayscale');
     }
+    // light — без класса, использует :root
     root.style.colorScheme = (theme === 'light') ? 'light' : 'dark';
   } catch (e) {
-    document.documentElement.classList.add('dark');
+    // В случае ошибки — оставляем light (тема по умолчанию)
   }
 })();
 `;

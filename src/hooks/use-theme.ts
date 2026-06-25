@@ -6,11 +6,14 @@ type Theme = "dark" | "light" | "grayscale";
 
 const STORAGE_KEY = "mktu-theme";
 
+// Тема по умолчанию при первом заходе (нет записи в localStorage)
+const DEFAULT_THEME: Theme = "light";
+
 // Порядок переключения по клику
 const THEME_CYCLE: Theme[] = ["dark", "light", "grayscale"];
 
 export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<Theme>(DEFAULT_THEME);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -20,8 +23,9 @@ export function useTheme() {
       if (stored === "light" || stored === "dark" || stored === "grayscale") {
         setThemeState(stored);
       }
+      // Если stored нет — остаётся DEFAULT_THEME (light)
     } catch {
-      // ignore — default dark
+      // ignore — default light
     }
   }, []);
 
