@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Star, ShoppingBag, ArrowRight, Package, Briefcase } from "lucide-react";
+import { Star, ShoppingBag, ArrowRight } from "lucide-react";
 import type { MktuClass } from "@/data/mktu-data";
+import { getClassIcon } from "@/data/class-icons";
 
 interface ClassCardProps {
   cls: MktuClass;
@@ -24,7 +25,7 @@ export function ClassCard({
 }: ClassCardProps) {
   const router = useRouter();
   const isGoods = cls.type === "goods";
-  const Icon = isGoods ? Package : Briefcase;
+  const { icon: Icon, label: iconLabel } = getClassIcon(cls.id);
 
   const openDetail = () => router.push(`/class/${cls.id}`);
 
@@ -58,6 +59,7 @@ export function ClassCard({
             className={`flex items-center justify-center w-10 h-10 rounded-lg ${
               isGoods ? "bg-gold/10" : "bg-blue-500/10"
             }`}
+            title={iconLabel}
           >
             <Icon
               className={`size-5 ${isGoods ? "text-gold" : "text-blue-400"}`}
@@ -72,7 +74,7 @@ export function ClassCard({
                 isGoods ? "text-gold/70" : "text-blue-400/70"
               }`}
             >
-              {isGoods ? "Товары" : "Услуги"}
+              {iconLabel}
             </div>
           </div>
         </div>

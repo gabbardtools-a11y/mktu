@@ -9,8 +9,6 @@ import {
   ShoppingBag,
   Search,
   X,
-  Package,
-  Briefcase,
   Check,
   ArrowLeft,
   ArrowRight,
@@ -23,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { mktuClasses } from "@/data/mktu-data";
+import { getClassIcon } from "@/data/class-icons";
 import { ClassNotes } from "@/components/mktu/class-notes";
 import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
 import { downloadRtf } from "@/lib/rtf-export";
@@ -82,7 +81,8 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
   }
 
   const isGoods = cls.type === "goods";
-  const Icon = isGoods ? Package : Briefcase;
+  const Icon = getClassIcon(cls.id).icon;
+  const iconLabel = getClassIcon(cls.id).label;
   const fav = isFavorite(cls.id);
   const inCart = isInCart(cls.id);
   const selectedCount = cls.items.filter((it) =>
@@ -220,7 +220,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
                         isGoods ? "text-gold/70" : "text-blue-400/70"
                       }`}
                     >
-                      Класс {cls.id} · {isGoods ? "Товары" : "Услуги"} ·{" "}
+                      Класс {cls.id} · {iconLabel} ·{" "}
                       {cls.items.length} позиций
                     </h4>
                     <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight mt-0.5">
