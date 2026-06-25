@@ -60,16 +60,18 @@ const themeInitScript = `
   try {
     var stored = localStorage.getItem('mktu-theme');
     // Если в localStorage нет валидной темы — по умолчанию 'light'
-    var theme = (stored === 'light' || stored === 'dark' || stored === 'grayscale') ? stored : 'light';
+    var theme = (stored === 'light' || stored === 'dark' || stored === 'grayscale' || stored === 'grayscale-light') ? stored : 'light';
     var root = document.documentElement;
-    root.classList.remove('dark', 'grayscale');
+    root.classList.remove('dark', 'grayscale', 'grayscale-light');
     if (theme === 'dark') {
       root.classList.add('dark');
     } else if (theme === 'grayscale') {
       root.classList.add('grayscale');
+    } else if (theme === 'grayscale-light') {
+      root.classList.add('grayscale-light');
     }
     // light — без класса, использует :root
-    root.style.colorScheme = (theme === 'light') ? 'light' : 'dark';
+    root.style.colorScheme = (theme === 'light' || theme === 'grayscale-light') ? 'light' : 'dark';
   } catch (e) {
     // В случае ошибки — оставляем light (тема по умолчанию)
   }

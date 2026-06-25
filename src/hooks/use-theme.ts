@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 
-type Theme = "dark" | "light" | "grayscale";
+type Theme = "dark" | "light" | "grayscale" | "grayscale-light";
 
 const STORAGE_KEY = "mktu-theme";
 
@@ -10,7 +10,7 @@ const STORAGE_KEY = "mktu-theme";
 const DEFAULT_THEME: Theme = "light";
 
 // Порядок переключения по клику
-const THEME_CYCLE: Theme[] = ["dark", "light", "grayscale"];
+const THEME_CYCLE: Theme[] = ["dark", "light", "grayscale", "grayscale-light"];
 
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(DEFAULT_THEME);
@@ -20,7 +20,12 @@ export function useTheme() {
     setMounted(true);
     try {
       const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-      if (stored === "light" || stored === "dark" || stored === "grayscale") {
+      if (
+        stored === "light" ||
+        stored === "dark" ||
+        stored === "grayscale" ||
+        stored === "grayscale-light"
+      ) {
         setThemeState(stored);
       }
       // Если stored нет — остаётся DEFAULT_THEME (light)
@@ -32,15 +37,18 @@ export function useTheme() {
   const applyTheme = useCallback((next: Theme) => {
     const root = document.documentElement;
     // Снимаем все theme-классы
-    root.classList.remove("dark", "grayscale");
+    root.classList.remove("dark", "grayscale", "grayscale-light");
     // Ставим нужный (light — без класса, на :root)
     if (next === "dark") {
       root.classList.add("dark");
     } else if (next === "grayscale") {
       root.classList.add("grayscale");
+    } else if (next === "grayscale-light") {
+      root.classList.add("grayscale-light");
     }
     // light — без класса
-    root.style.colorScheme = next === "light" ? "light" : "dark";
+    root.style.colorScheme =
+      next === "light" || next === "grayscale-light" ? "light" : "dark";
   }, []);
 
   const setTheme = useCallback(

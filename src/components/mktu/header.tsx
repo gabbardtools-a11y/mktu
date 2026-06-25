@@ -8,6 +8,7 @@ import {
   Sun,
   Moon,
   MoonStar,
+  SunMoon,
   HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -70,7 +71,9 @@ export function Header({
                         ? "Тёмная"
                         : theme === "light"
                           ? "Светлая"
-                          : "Серая"
+                          : theme === "grayscale"
+                            ? "Серая"
+                            : "Светло-серая"
                     } (клик — следующая)`
                   : "Сменить тему"
               }
@@ -79,8 +82,10 @@ export function Header({
                 <Moon className="size-4" />
               ) : mounted && theme === "light" ? (
                 <Sun className="size-4" />
-              ) : mounted ? (
+              ) : mounted && theme === "grayscale" ? (
                 <MoonStar className="size-4" />
+              ) : mounted ? (
+                <SunMoon className="size-4" />
               ) : (
                 <Moon className="size-4" />
               )}
