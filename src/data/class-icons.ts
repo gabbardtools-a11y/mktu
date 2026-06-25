@@ -33,6 +33,7 @@ import {
   UtensilsCrossed,
   Link2,
   Spool,
+  Orbit,
   Shirt,
   Backpack,
   Grid3x3,
@@ -88,7 +89,7 @@ export const classIcons: Record<number, ClassIcon> = {
   21: { icon: Wine, label: "Посуда, стекло" },
   22: { icon: Link2, label: "Канаты, верёвки" },
   23: { icon: Spool, label: "Нити, пряжа" },
-  24: { icon: Shirt, label: "Ткани" },
+  24: { icon: Orbit, label: "Ткани" },
   25: { icon: Shirt, label: "Одежда, обувь" }, // тот же Shirt — отличается по теме
   26: { icon: Backpack, label: "Галантерея" },
   27: { icon: Grid3x3, label: "Напольные покрытия" },
