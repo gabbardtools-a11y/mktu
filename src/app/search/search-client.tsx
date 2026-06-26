@@ -181,6 +181,29 @@ function SearchPageInner() {
             </div>
           ) : (
             <div className="space-y-3">
+              {/* Кнопка раскрыть/свернуть все */}
+              <div className="flex items-center justify-between gap-2 pb-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const allExpanded = results.every((r) => expandedClasses.has(r.classId));
+                    if (allExpanded) {
+                      setExpandedClasses(new Set());
+                    } else {
+                      setExpandedClasses(new Set(results.map((r) => r.classId)));
+                    }
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gold/30 bg-gold/5 text-gold hover:bg-gold/10 hover:border-gold/50 transition-colors text-xs sm:text-sm font-medium"
+                >
+                  {results.every((r) => expandedClasses.has(r.classId))
+                    ? "Свернуть все"
+                    : "Раскрыть найденные позиции в классах"}
+                </button>
+                <span className="text-xs text-foreground/40 flex-shrink-0">
+                  {results.length} классов
+                </span>
+              </div>
+
               {results.map((result) => {
                 const isExpanded = expandedClasses.has(result.classId);
                 const inCart = isInCart(result.classId);
