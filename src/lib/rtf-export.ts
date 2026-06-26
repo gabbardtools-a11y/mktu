@@ -11,6 +11,31 @@ interface RtfOptions {
   indent?: number;
 }
 
+function rtfEscapeText(text: string): string {
+  // RTF expects \uXXXX? for non-ASCII characters (Unicode escape)
+  // The '?' is a fallback for readers that don't support Unicode
+  let result = "";
+  for (const char of text) {
+    const code = char.charCodeAt(0);
+    if (code > 127) {
+      // Non-ASCII: encode as \uNNNN? (signed 16-bit, so wrap negative)
+      const signed = code > 32767 ? code - 65536 : code;
+      result += `\\u${signed}?`;
+    } else if (char === "\\") {
+      result += "\\\\";
+    } else if (char === "{") {
+      result += "\\{";
+    } else if (char === "}") {
+      result += "\\}";
+    } else if (code < 32) {
+      // Skip control characters
+    } else {
+      result += char;
+    }
+  }
+  return result;
+}
+
 function rtfParagraph(text: string, opts: RtfOptions = {}): string {
   const open: string[] = ["\\pard"];
   if (opts.align) {
@@ -30,11 +55,7 @@ function rtfParagraph(text: string, opts: RtfOptions = {}): string {
   if (opts.color) close.push("\\cf1");
   close.push("\\par");
 
-  const escaped = text
-    .replace(/\\/g, "\\\\")
-    .replace(/\{/g, "\\{")
-    .replace(/\}/g, "\\}")
-    .replace(/[\x00-\x1f]/g, "");
+  const escaped = rtfEscapeText(text);
 
   return `${open.join("")}${escaped}${close.join("")}`;
 }
@@ -114,7 +135,7 @@ export function downloadRtf(cart: CartClass[], allClasses: MktuClass[]): void {
 
   const body = parts.join("");
 
-  const rtf = `{\\rtf1\\ansi\\ansicpg1251\\deff0
+  const rtf = `{\\rtf1\\ansi\\ansicpg1251\\uc1\\deff0
 {\\fonttbl{\\f0\\fswiss\\fcharset204 Calibri;}{\\f1\\froman\\fcharset204 Times New Roman;}}
 {\\colortbl;\\red0\\green0\\blue0;\\red100\\green100\\blue100;}
 \\paperw11906\\paperh16838\\margl1440\\margr1440\\margt1440\\margb1440
