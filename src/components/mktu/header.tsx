@@ -117,7 +117,7 @@ export function Header({
                               router.push(`/class/${cls.id}`);
                             }}
                             title={`Класс ${cls.id} — ${cls.name}`}
-                            className={`flex items-center justify-center aspect-square rounded text-xs font-bold transition-all hover:scale-110 ${
+                            className={`flex items-center justify-center aspect-square rounded text-sm font-bold transition-all hover:scale-110 ${
                               isGoods
                                 ? "bg-gold/10 text-gold hover:bg-gold hover:text-background"
                                 : "bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-background"
