@@ -105,7 +105,7 @@ export function Header({
                     <div className="text-xs text-foreground/40 mb-2 px-1">
                       Все классы МКТУ — нажмите для перехода
                     </div>
-                    <div className="grid grid-cols-9 gap-1">
+                    <div className="grid grid-cols-[repeat(15,minmax(0,1fr))] gap-0.5">
                       {mktuClasses.map((cls) => {
                         const isGoods = cls.type === "goods";
                         return (
@@ -117,7 +117,7 @@ export function Header({
                               router.push(`/class/${cls.id}`);
                             }}
                             title={`Класс ${cls.id} — ${cls.name}`}
-                            className={`flex items-center justify-center aspect-square rounded-md text-sm font-bold transition-all hover:scale-110 ${
+                            className={`flex items-center justify-center aspect-square rounded text-xs font-bold transition-all hover:scale-110 ${
                               isGoods
                                 ? "bg-gold/10 text-gold hover:bg-gold hover:text-background"
                                 : "bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-background"
