@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 
-type Theme = "dark" | "light" | "grayscale" | "grayscale-light";
+export type Theme = "dark" | "light" | "grayscale" | "grayscale-light";
 
 const STORAGE_KEY = "mktu-theme";
 

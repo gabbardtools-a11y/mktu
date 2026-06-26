@@ -12,7 +12,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/hooks/use-theme";
+import { useTheme, type Theme } from "@/hooks/use-theme";
 
 interface HeaderProps {
   favoritesCount: number;
@@ -21,13 +21,25 @@ interface HeaderProps {
   onOpenCart: () => void;
 }
 
+// Конфигурация 4 кнопок тем
+const THEME_BUTTONS: {
+  theme: Theme;
+  icon: typeof Moon;
+  label: string;
+}[] = [
+  { theme: "dark", icon: Moon, label: "Тёмная" },
+  { theme: "light", icon: Sun, label: "Светлая" },
+  { theme: "grayscale", icon: MoonStar, label: "Серая" },
+  { theme: "grayscale-light", icon: SunMoon, label: "Светло-серая" },
+];
+
 export function Header({
   favoritesCount,
   cartCount,
   onOpenFavorites,
   onOpenCart,
 }: HeaderProps) {
-  const { theme, toggleTheme, mounted } = useTheme();
+  const { theme, setTheme, mounted } = useTheme();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-b border-gold/10 shadow-lg shadow-foreground/5">
@@ -59,37 +71,28 @@ export function Header({
               </Link>
             </Button>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleTheme}
-              className="relative text-foreground/70 hover:text-gold hover:bg-gold/5"
-              title={
-                mounted
-                  ? `Тема: ${
-                      theme === "dark"
-                        ? "Тёмная"
-                        : theme === "light"
-                          ? "Светлая"
-                          : theme === "grayscale"
-                            ? "Серая"
-                            : "Светло-серая"
-                    } (клик — следующая)`
-                  : "Сменить тему"
-              }
-            >
-              {mounted && theme === "dark" ? (
-                <Moon className="size-4" />
-              ) : mounted && theme === "light" ? (
-                <Sun className="size-4" />
-              ) : mounted && theme === "grayscale" ? (
-                <MoonStar className="size-4" />
-              ) : mounted ? (
-                <SunMoon className="size-4" />
-              ) : (
-                <Moon className="size-4" />
-              )}
-            </Button>
+            {/* 4 отдельных кнопки тем */}
+            <div className="flex items-center gap-0.5 sm:gap-1 px-1 sm:px-2 py-1 rounded-md bg-muted/40 border border-border/50">
+              {THEME_BUTTONS.map(({ theme: t, icon: Icon, label }) => {
+                const isActive = mounted && theme === t;
+                return (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setTheme(t)}
+                    aria-label={`Тема: ${label}`}
+                    title={label}
+                    className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-md transition-all ${
+                      isActive
+                        ? "bg-gold text-background shadow-sm"
+                        : "text-foreground/50 hover:text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <Icon className="size-3.5 sm:size-4" />
+                  </button>
+                );
+              })}
+            </div>
 
             <div className="w-px h-6 bg-border mx-1" />
 
