@@ -91,47 +91,48 @@
   --scrollbar-thumb-hover: #0a1a2f;
 }
 
+/* Dark theme — pure black & white (high contrast, no navy/gold) */
 .dark {
-  --navy-darkest: #0f1629;
-  --navy-dark: #141c33;
-  --navy-medium: #1e2945;
-  --background: #0f1629;
-  --foreground: #e8e8ec;
-  --card: #151d30;
-  --card-foreground: #e8e8ec;
-  --popover: #111827;
-  --popover-foreground: #e8e8ec;
-  --primary: #d4a843;
-  --primary-foreground: #0a0e1a;
-  --secondary: #1a2342;
-  --secondary-foreground: #e8e8ec;
-  --muted: #1a2342;
-  --muted-foreground: #8b92a8;
-  --accent: #1a2342;
-  --accent-foreground: #e8e8ec;
-  --destructive: #e74c3c;
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #d4a843;
-  --gold: #d4a843;
-  --gold-light: #e8c96a;
-  --gold-dark: #b8902f;
-  --chart-1: #d4a843;
-  --chart-2: #e8c96a;
-  --chart-3: #4a9eff;
-  --chart-4: #6366f1;
-  --chart-5: #22d3ee;
-  --sidebar: #0f1629;
-  --sidebar-foreground: #e8e8ec;
-  --sidebar-primary: #d4a843;
-  --sidebar-primary-foreground: #0a0e1a;
-  --sidebar-accent: #1a2342;
-  --sidebar-accent-foreground: #e8e8ec;
-  --sidebar-border: #1e293b;
-  --sidebar-ring: #d4a843;
-  --scrollbar-track: #0f1629;
-  --scrollbar-thumb: #1e293b;
-  --scrollbar-thumb-hover: #2d3748;
+  --navy-darkest: #000000;
+  --navy-dark: #0a0a0a;
+  --navy-medium: #141414;
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #0d0d0d;
+  --card-foreground: #ffffff;
+  --popover: #0a0a0a;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #a0a0a0;
+  --accent: #1a1a1a;
+  --accent-foreground: #ffffff;
+  --destructive: #ff4444;
+  --border: #2a2a2a;
+  --input: #2a2a2a;
+  --ring: #ffffff;
+  --gold: #ffffff;
+  --gold-light: #e0e0e0;
+  --gold-dark: #b0b0b0;
+  --chart-1: #ffffff;
+  --chart-2: #c0c0c0;
+  --chart-3: #808080;
+  --chart-4: #505050;
+  --chart-5: #303030;
+  --sidebar: #000000;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #2a2a2a;
+  --sidebar-ring: #ffffff;
+  --scrollbar-track: #000000;
+  --scrollbar-thumb: #2a2a2a;
+  --scrollbar-thumb-hover: #444444;
 }
 
 /* Grayscale theme — shades of grey, no gold/blue accents */
