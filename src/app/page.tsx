@@ -245,9 +245,9 @@ export default function Home() {
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gold/10">
               <Package className="size-5 text-gold" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
+            <h4 className="text-xl sm:text-2xl font-bold text-foreground">
               Товары — классы 1–34
-            </h2>
+            </h4>
             <span className="text-sm text-foreground/40 ml-auto">
               {filteredGoods.length} из 34
             </span>
@@ -275,9 +275,9 @@ export default function Home() {
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10">
               <Briefcase className="size-5 text-blue-400" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
+            <h4 className="text-xl sm:text-2xl font-bold text-foreground">
               Услуги — классы 35–45
-            </h2>
+            </h4>
             <span className="text-sm text-foreground/40 ml-auto">
               {filteredServices.length} из 11
             </span>
