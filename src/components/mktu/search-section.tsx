@@ -12,6 +12,7 @@ import {
   Trash2,
   Star,
   Sparkles,
+  List,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -59,7 +60,7 @@ function SearchSectionInner({
 
   const filterButtons: { key: FilterType; label: string; Icon: typeof Package }[] =
     [
-      { key: "all", label: "Кнопки", Icon: LayoutGrid },
+      { key: "all", label: "Список", Icon: List },
       { key: "goods", label: "Товары", Icon: Package },
       { key: "services", label: "Услуги", Icon: Briefcase },
     ];

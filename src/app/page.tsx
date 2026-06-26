@@ -1,17 +1,20 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Package, Briefcase, Sparkles, ChevronDown } from "lucide-react";
+import { Package, Briefcase, Sparkles, ChevronDown, Star, ShoppingBag } from "lucide-react";
 import { SearchSection, type FilterType } from "@/components/mktu/search-section";
 import { ClassCard } from "@/components/mktu/class-card";
 import { mktuClasses } from "@/data/mktu-data";
+import { getClassIcon } from "@/data/class-icons";
 import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
   const [hintOpen, setHintOpen] = useState(false);
+  const router = useRouter();
   const {
     favorites,
     cart,
@@ -131,8 +134,102 @@ export default function Home() {
         toggleItemInCart={() => {}}
       />
 
-      {/* Goods section */}
-      {showGoods && filteredGoods.length > 0 && (
+      {/* List mode — all classes in compact list */}
+      {filter === "all" && (
+        <div id="all-classes-list" className="mb-16">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+              Все классы МКТУ — 1–45
+            </h2>
+            <span className="text-sm text-foreground/40 ml-auto">
+              {mktuClasses.length} классов
+            </span>
+          </div>
+          <div className="space-y-1">
+            {mktuClasses
+              .filter((cls) => {
+                const q = query.trim().toLowerCase();
+                if (!q) return true;
+                if (cls.name.toLowerCase().includes(q)) return true;
+                if (cls.description.toLowerCase().includes(q)) return true;
+                return cls.items.some((it) => it.toLowerCase().includes(q));
+              })
+              .map((cls, idx) => {
+                const { icon: Icon, label: iconLabel } = getClassIcon(cls.id);
+                const isGoods = cls.type === "goods";
+                const fav = mounted && isFavorite(cls.id);
+                const inCart = mounted && isInCart(cls.id);
+                return (
+                  <motion.div
+                    key={cls.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.2, delay: Math.min(idx * 0.01, 0.3) }}
+                    onClick={() => router.push(`/class/${cls.id}`)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border cursor-pointer transition-colors ${
+                      fav
+                        ? "bg-gold/5 border-gold/30 hover:border-gold/50"
+                        : "bg-card/50 border-border hover:border-gold/20 hover:bg-muted/30"
+                    }`}
+                  >
+                    <div
+                      className={`flex items-center justify-center w-9 h-9 rounded-lg flex-shrink-0 ${
+                        isGoods ? "bg-gold/10" : "bg-blue-500/10"
+                      }`}
+                    >
+                      <Icon className={`size-4 ${isGoods ? "text-gold" : "text-blue-400"}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs font-bold ${isGoods ? "text-gold" : "text-blue-400"}`}>
+                          {cls.id}
+                        </span>
+                        <span className="text-sm font-medium text-foreground truncate">
+                          {cls.name}
+                        </span>
+                      </div>
+                      <div className="text-xs text-foreground/40 truncate">
+                        {iconLabel} · {cls.items.length} позиций
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFavorite(cls.id);
+                        }}
+                        className={`p-1.5 rounded-md transition-colors ${
+                          fav ? "text-gold hover:bg-gold/10" : "text-foreground/30 hover:text-gold hover:bg-gold/5"
+                        }`}
+                        title={fav ? "В избранном" : "В избранное"}
+                      >
+                        <Star className={`size-3.5 ${fav ? "fill-current" : ""}`} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!inCart) addToCart(cls.id);
+                        }}
+                        className={`p-1.5 rounded-md transition-colors ${
+                          inCart ? "text-gold hover:bg-gold/10" : "text-foreground/30 hover:text-gold hover:bg-gold/5"
+                        }`}
+                        title={inCart ? "В корзине" : "В корзину"}
+                      >
+                        <ShoppingBag className={`size-3.5 ${inCart ? "fill-current" : ""}`} />
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })}
+          </div>
+        </div>
+      )}
+
+      {/* Goods section — grid mode */}
+      {showGoods && filter !== "all" && filteredGoods.length > 0 && (
         <div id="goods-section" className="mb-16">
           <div className="flex items-center gap-3 mb-8">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gold/10">
@@ -161,8 +258,8 @@ export default function Home() {
         </div>
       )}
 
-      {/* Services section */}
-      {showServices && filteredServices.length > 0 && (
+      {/* Services section — grid mode */}
+      {showServices && filter !== "all" && filteredServices.length > 0 && (
         <div id="services-section">
           <div className="flex items-center gap-3 mb-8">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10">
