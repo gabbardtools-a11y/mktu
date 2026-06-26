@@ -192,14 +192,14 @@ export default function Home() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className={`text-xs font-bold ${isGoods ? "text-gold" : "text-blue-400"}`}>
+                        <span className={`text-sm font-bold ${isGoods ? "text-gold" : "text-blue-400"}`}>
                           {cls.id}
                         </span>
-                        <span className="text-sm font-medium text-foreground truncate">
+                        <span className="text-sm sm:text-base font-medium text-foreground truncate">
                           {cls.name}
                         </span>
                       </div>
-                      <div className="text-xs text-foreground/40 truncate">
+                      <div className="text-xs sm:text-sm text-foreground/40 truncate">
                         {iconLabel} · {cls.items.length} позиций
                       </div>
                     </div>

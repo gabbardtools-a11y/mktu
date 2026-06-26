@@ -66,11 +66,11 @@ export function ClassCard({
             />
           </div>
           <div>
-            <div className="font-bold text-foreground text-base leading-tight">
+            <div className="font-bold text-foreground text-base sm:text-lg leading-tight">
               {cls.name}
             </div>
             <div
-              className={`text-[10px] uppercase tracking-wider font-medium ${
+              className={`text-[10px] sm:text-xs uppercase tracking-wider font-medium ${
                 isGoods ? "text-gold/70" : "text-blue-400/70"
               }`}
             >
@@ -117,17 +117,17 @@ export function ClassCard({
         </div>
       </div>
 
-      <p className="text-foreground/60 text-xs sm:text-sm leading-relaxed line-clamp-3 mb-4 min-h-[3.5rem]">
+      <p className="text-foreground/60 text-sm sm:text-base leading-relaxed line-clamp-3 mb-4 min-h-[3.5rem]">
         {cls.description}
       </p>
 
       <div className="flex items-center justify-between pt-3 border-t border-border/50">
-        <span className="text-xs text-foreground/40">
+        <span className="text-xs sm:text-sm text-foreground/40">
           <span className="text-gold font-medium">{cls.items.length}</span>{" "}
           позиций
         </span>
         <span
-          className="text-xs font-medium transition-colors flex items-center gap-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 group-hover:translate-x-0.5"
+          className="text-xs sm:text-sm font-medium transition-colors flex items-center gap-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 group-hover:translate-x-0.5"
         >
           Подробнее →
           <ArrowRight className="size-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
