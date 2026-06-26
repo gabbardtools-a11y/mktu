@@ -27,7 +27,7 @@ const THEME_BUTTONS: {
   icon: typeof Moon;
   label: string;
 }[] = [
-  { theme: "dark", icon: Moon, label: "Чёрно-белая" },
+  { theme: "dark", icon: Moon, label: "Тёмная" },
   { theme: "light", icon: Sun, label: "Светлая" },
   { theme: "grayscale", icon: MoonStar, label: "Серая" },
   { theme: "grayscale-light", icon: SunMoon, label: "Светло-серая" },
