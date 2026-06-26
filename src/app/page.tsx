@@ -75,6 +75,16 @@ export default function Home() {
       id="class-grid"
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 scroll-mt-16"
     >
+      {/* Hero — одна строка */}
+      <motion.h1
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-center text-base sm:text-lg font-semibold text-foreground/80 mb-3"
+      >
+        Онлайн-сервис без рекламы и услуг
+      </motion.h1>
+
       {/* Hint banner — кликабельный, разворачивает подробную подсказку */}
       <motion.div
         initial={{ opacity: 0 }}
