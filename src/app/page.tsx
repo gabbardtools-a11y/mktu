@@ -73,7 +73,7 @@ export default function Home() {
   return (
     <section
       id="class-grid"
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 scroll-mt-16"
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 scroll-mt-16"
     >
       {/* Hint banner — кликабельный, разворачивает подробную подсказку */}
       <motion.div
