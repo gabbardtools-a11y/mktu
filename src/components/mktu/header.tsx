@@ -96,12 +96,11 @@ export function Header({
               <AnimatePresence>
                 {gridOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: -8, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-2 p-3 rounded-xl border border-border bg-card shadow-xl shadow-foreground/10 z-50"
-                    style={{ width: "min(90vw, 420px)" }}
+                    className="fixed left-2 right-2 top-16 p-3 rounded-xl border border-border bg-card shadow-xl shadow-foreground/10 z-50"
                   >
                     <div className="text-xs text-foreground/40 mb-2 px-1">
                       Все классы МКТУ — нажмите для перехода
