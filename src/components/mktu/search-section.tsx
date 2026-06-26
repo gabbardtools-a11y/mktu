@@ -82,7 +82,7 @@ function SearchSectionInner({
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-foreground/30 pointer-events-none" />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-foreground/30 pointer-events-none" />
             <Input
               value={query}
               onChange={(e) => onQueryChange(e.target.value)}
@@ -92,7 +92,7 @@ function SearchSectionInner({
                 }
               }}
               placeholder="Поиск по классам и позициям — например: косметика, программное обеспечение, кофе..."
-              className="pl-10 pr-10 h-11 text-sm bg-card border-border focus-visible:border-gold/40 focus-visible:ring-gold/20"
+              className="pl-9 pr-9 h-9 text-sm bg-card border-border focus-visible:border-gold/40 focus-visible:ring-gold/20"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
               {query ? (
@@ -117,7 +117,7 @@ function SearchSectionInner({
           <button
             type="button"
             onClick={handleSearch}
-            className="flex items-center justify-center gap-1.5 h-11 px-4 rounded-md bg-gold text-background hover:bg-gold-dark font-semibold text-sm transition-all flex-shrink-0"
+            className="flex items-center justify-center gap-1.5 h-9 px-3 rounded-md bg-gold text-background hover:bg-gold-dark font-semibold text-sm transition-all flex-shrink-0"
           >
             <Search className="size-4" />
             <span className="hidden sm:inline">Найти</span>
@@ -130,7 +130,7 @@ function SearchSectionInner({
             whileTap={{ scale: 0.96 }}
             title="Поиск с помощью ИИ"
             aria-label="Поиск с помощью ИИ"
-            className="flex items-center justify-center w-11 h-11 sm:w-auto sm:h-11 sm:px-3 rounded-md bg-gradient-to-br from-blue-500/15 to-emerald-500/15 border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:border-blue-500/50 transition-all group flex-shrink-0"
+            className="flex items-center justify-center w-9 h-9 sm:w-auto sm:h-9 sm:px-3 rounded-md bg-gradient-to-br from-blue-500/15 to-emerald-500/15 border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:border-blue-500/50 transition-all group flex-shrink-0"
           >
             <Sparkles
               className="size-4 group-hover:scale-110 transition-transform"
@@ -155,42 +155,42 @@ function SearchSectionInner({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="flex items-center justify-center gap-2 mb-8 mt-6 flex-wrap"
+        className="flex items-center justify-center gap-2 mb-6 mt-4 flex-wrap"
       >
         <div className="flex items-center gap-2">
           {filterButtons.map(({ key, label, Icon }) => (
             <Button
               key={key}
               variant={filter === key ? "default" : "ghost"}
-              size="lg"
+              size="sm"
               onClick={() => onFilterChange(key)}
               className={
                 filter === key
-                  ? "bg-gold text-background hover:bg-gold-dark"
-                  : "text-foreground/60 hover:text-foreground hover:bg-muted"
+                  ? "bg-gold text-background hover:bg-gold-dark h-8 px-3 text-xs"
+                  : "text-foreground/60 hover:text-foreground hover:bg-muted h-8 px-3 text-xs"
               }
             >
-              <Icon className="size-4" />
+              <Icon className="size-3.5" />
               {label}
             </Button>
           ))}
         </div>
 
-        <div className="w-px h-6 bg-border mx-1" />
+        <div className="w-px h-5 bg-border mx-1" />
 
         <motion.div whileTap={{ scale: 0.95 }}>
           <Button
             variant="ghost"
-            size="lg"
+            size="sm"
             onClick={onClearFavorites}
             disabled={favoritesCount === 0}
-            className={`border transition-colors ${
+            className={`border transition-colors h-8 px-3 text-xs ${
               favoritesCount > 0
                 ? "text-gold hover:text-gold-light bg-gold/10 hover:bg-gold/15 border-gold/20 hover:border-gold/30"
                 : "text-foreground/30 hover:text-foreground/50 border-transparent hover:border-border"
             }`}
           >
-            <Star className="size-4 mr-1.5" />
+            <Star className="size-3.5 mr-1" />
             Очистить
             {favoritesCount > 0 && (
               <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded-full bg-gold/10 text-gold">
@@ -200,21 +200,21 @@ function SearchSectionInner({
           </Button>
         </motion.div>
 
-        <div className="w-px h-6 bg-border mx-1" />
+        <div className="w-px h-5 bg-border mx-1" />
 
         <motion.div whileTap={{ scale: 0.95 }}>
           <Button
             variant="ghost"
-            size="lg"
+            size="sm"
             onClick={onClearCart}
             disabled={cartCount === 0}
-            className={`border transition-colors ${
+            className={`border transition-colors h-8 px-3 text-xs ${
               cartCount > 0
                 ? "text-red-400 hover:text-red-500 bg-red-500/10 hover:bg-red-500/15 border-red-500/20 hover:border-red-500/30"
                 : "text-foreground/30 hover:text-foreground/50 border-transparent hover:border-border"
             }`}
           >
-            <Trash2 className="size-4 mr-1.5" />
+            <Trash2 className="size-3.5 mr-1" />
             Очистить
             {cartCount > 0 && (
               <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded-full bg-red-500/10 text-red-400">
@@ -230,7 +230,7 @@ function SearchSectionInner({
 
 export function SearchSection(props: SearchSectionProps) {
   return (
-    <Suspense fallback={<div className="h-14 mb-6" />}>
+    <Suspense fallback={<div className="h-9 mb-6" />}>
       <SearchSectionInner {...props} />
     </Suspense>
   );
