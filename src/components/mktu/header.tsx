@@ -117,8 +117,8 @@ export function Header({
                             title={`Класс ${cls.id} — ${cls.name}`}
                             className={`flex items-center justify-center aspect-square rounded text-sm font-bold transition-all hover:scale-110 ${
                               isGoods
-                                ? "bg-gold/10 text-gold hover:bg-gold hover:text-background"
-                                : "bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-background"
+                                ? "bg-gold/10 text-gold/90 hover:bg-gold hover:text-background"
+                                : "bg-blue-500/30 text-blue-200 hover:bg-blue-500 hover:text-background"
                             }`}
                           >
                             {cls.id}
