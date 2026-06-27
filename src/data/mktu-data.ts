@@ -7,6 +7,7 @@ export interface MktuClass {
   description: string;
   type: MktuClassType;
   items: string[];
+  itemsOfficial?: string[];
 }
 
 import data from "./mktu-data.json";

@@ -19,6 +19,7 @@ import {
   Maximize2,
   List,
   AlignJustify,
+  FileText,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
   const [query, setQuery] = useState("");
   const [showNotes, setShowNotes] = useState(false);
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
-  const [itemView, setItemView] = useState<"list" | "inline">("list");
+  const [itemView, setItemView] = useState<"list" | "inline" | "official">("list");
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const cls = useMemo(
@@ -316,12 +317,12 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
               Показано {filteredItems.length} из {cls.items.length}
             </span>
             <div className="flex items-center gap-2">
-              {/* Переключатель вида: список / сплошной текст */}
+              {/* Переключатель вида: список / сплошной текст / классификатор */}
               <div className="flex items-center gap-0.5 p-0.5 rounded-md bg-muted/40 border border-border/50">
                 <button
                   type="button"
                   onClick={() => setItemView("list")}
-                  title="Вид списком"
+                  title="Вид списком (алфавитный)"
                   className={`flex items-center justify-center w-7 h-7 rounded transition-colors ${
                     itemView === "list"
                       ? "bg-gold text-background"
@@ -341,6 +342,18 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
                   }`}
                 >
                   <AlignJustify className="size-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setItemView("official")}
+                  title="Вид классификатора (официальный порядок)"
+                  className={`flex items-center justify-center w-7 h-7 rounded transition-colors ${
+                    itemView === "official"
+                      ? "bg-gold text-background"
+                      : "text-foreground/50 hover:text-foreground"
+                  }`}
+                >
+                  <FileText className="size-3.5" />
                 </button>
               </div>
               <Button
@@ -408,7 +421,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
               );
             })}
           </div>
-        ) : (
+        ) : itemView === "inline" ? (
           /* Вид сплошным текстом — товары идут друг за другом, чекбоксы inline */
           <div className="leading-relaxed">
             {filteredItems.map((item, i) => {
@@ -447,6 +460,53 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
                     <span className="text-foreground/30 ml-0.5">;</span>
                   )}
                 </span>
+              );
+            })}
+          </div>
+        ) : (
+          /* Вид классификатора — официальный порядок МКТУ (itemsOfficial) */
+          <div className="space-y-0.5">
+            {(cls.itemsOfficial || cls.items)
+              .filter((item) => {
+                const q = query.trim().toLowerCase();
+                if (!q) return true;
+                return item.toLowerCase().includes(q);
+              })
+              .map((item) => {
+              const checked = isItemSelectedInCart(cls.id, item);
+              return (
+                <div
+                  key={item}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!inCart) addToCart(cls.id);
+                    toggleItemInCart(cls.id, item);
+                  }}
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors cursor-pointer ${
+                    checked ? "bg-gold/5" : "hover:bg-muted"
+                  }`}
+                >
+                  <div
+                    className={`size-4 shrink-0 rounded-[4px] border flex items-center justify-center transition-colors ${
+                      checked
+                        ? "bg-gold border-gold text-background"
+                        : "border-input"
+                    }`}
+                  >
+                    {checked && (
+                      <Check className="size-3.5" strokeWidth={3} />
+                    )}
+                  </div>
+                  <span
+                    className={`text-sm transition-colors select-none ${
+                      checked
+                        ? "text-foreground"
+                        : "text-foreground/90"
+                    }`}
+                  >
+                    {item}
+                  </span>
+                </div>
               );
             })}
           </div>
