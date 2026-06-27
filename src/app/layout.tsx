@@ -68,6 +68,11 @@ const themeInitScript = `
       root.classList.add('navy');
     }
     root.style.colorScheme = (theme === 'light') ? 'light' : 'dark';
+    // Restore font size
+    var fs = localStorage.getItem('mktu-fontsize');
+    if (fs) {
+      root.style.fontSize = fs + 'px';
+    }
   } catch (e) {
   }
 })();

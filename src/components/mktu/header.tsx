@@ -153,6 +153,38 @@ export function Header({
               </Link>
             </Button>
 
+            {/* A+ / A- font size controls */}
+            <div className="flex items-center gap-0.5 px-1 py-1 rounded-md bg-muted/40 border border-border/50">
+              <button
+                type="button"
+                onClick={() => {
+                  const root = document.documentElement;
+                  const current = parseFloat(root.style.fontSize || "16");
+                  const next = Math.max(12, current - 1);
+                  root.style.fontSize = `${next}px`;
+                  localStorage.setItem("mktu-fontsize", String(next));
+                }}
+                title="Уменьшить шрифт"
+                className="flex items-center justify-center w-7 h-7 rounded text-foreground/60 hover:text-foreground hover:bg-muted transition-colors text-sm font-bold"
+              >
+                A−
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const root = document.documentElement;
+                  const current = parseFloat(root.style.fontSize || "16");
+                  const next = Math.min(24, current + 1);
+                  root.style.fontSize = `${next}px`;
+                  localStorage.setItem("mktu-fontsize", String(next));
+                }}
+                title="Увеличить шрифт"
+                className="flex items-center justify-center w-7 h-7 rounded text-foreground/60 hover:text-foreground hover:bg-muted transition-colors text-base font-bold"
+              >
+                A+
+              </button>
+            </div>
+
             {/* 4 отдельных кнопки тем */}
             <div className="flex items-center gap-0.5 sm:gap-1 px-1 sm:px-2 py-1 rounded-md bg-muted/40 border border-border/50">
               {THEME_BUTTONS.map(({ theme: t, icon: Icon, label }) => {
