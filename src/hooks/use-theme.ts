@@ -2,13 +2,13 @@
 
 import { useEffect, useState, useCallback } from "react";
 
-export type Theme = "dark" | "light";
+export type Theme = "dark" | "light" | "navy";
 
 const STORAGE_KEY = "mktu-theme";
 
 const DEFAULT_THEME: Theme = "light";
 
-const THEME_CYCLE: Theme[] = ["dark", "light"];
+const THEME_CYCLE: Theme[] = ["dark", "light", "navy"];
 
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(DEFAULT_THEME);
@@ -18,7 +18,7 @@ export function useTheme() {
     setMounted(true);
     try {
       const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-      if (stored === "light" || stored === "dark") {
+      if (stored === "light" || stored === "dark" || stored === "navy") {
         setThemeState(stored);
       }
     } catch {
@@ -28,9 +28,11 @@ export function useTheme() {
 
   const applyTheme = useCallback((next: Theme) => {
     const root = document.documentElement;
-    root.classList.remove("dark");
+    root.classList.remove("dark", "navy");
     if (next === "dark") {
       root.classList.add("dark");
+    } else if (next === "navy") {
+      root.classList.add("navy");
     }
     root.style.colorScheme = next === "light" ? "light" : "dark";
   }, []);

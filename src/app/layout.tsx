@@ -59,11 +59,13 @@ const themeInitScript = `
 (function() {
   try {
     var stored = localStorage.getItem('mktu-theme');
-    var theme = (stored === 'light' || stored === 'dark') ? stored : 'light';
+    var theme = (stored === 'light' || stored === 'dark' || stored === 'navy') ? stored : 'light';
     var root = document.documentElement;
-    root.classList.remove('dark');
+    root.classList.remove('dark', 'navy');
     if (theme === 'dark') {
       root.classList.add('dark');
+    } else if (theme === 'navy') {
+      root.classList.add('navy');
     }
     root.style.colorScheme = (theme === 'light') ? 'light' : 'dark';
   } catch (e) {
