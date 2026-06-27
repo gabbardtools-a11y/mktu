@@ -9,7 +9,6 @@ import {
   ShoppingBag,
   Sun,
   Moon,
-  MoonStar,
   HelpCircle,
   Grid3x3,
 } from "lucide-react";
@@ -32,7 +31,6 @@ const THEME_BUTTONS: {
 }[] = [
   { theme: "dark", icon: Moon, label: "Тёмная" },
   { theme: "light", icon: Sun, label: "Светлая" },
-  { theme: "grayscale", icon: MoonStar, label: "Тёмно-синяя" },
 ];
 
 export function Header({
