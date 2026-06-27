@@ -67,7 +67,7 @@ export function Header({
             href="/"
             className="flex flex-col hover:opacity-80 transition-opacity"
           >
-            <span className="text-gold font-extrabold text-base sm:text-lg tracking-wider leading-tight">
+            <span className="text-gold font-normal text-base sm:text-lg tracking-wider leading-tight">
               МКТУ.рус
             </span>
             <span className="text-foreground/40 font-normal text-[10px] sm:text-xs sm:ml-0 leading-tight">
