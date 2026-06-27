@@ -180,7 +180,6 @@ export default function Home() {
                       <span className={`font-bold ${isGoods ? "text-gold" : "text-blue-400"}`}>
                         Класс {cls.id}.
                       </span>{" "}
-                      <span className="font-medium text-foreground">{cls.name}.</span>{" "}
                       <span className="text-foreground/70">{cls.description}</span>
                     </p>
                     <div className="flex items-center gap-2 mt-1.5">
