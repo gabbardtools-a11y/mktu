@@ -13,7 +13,7 @@ import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
 export default function Home() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
-  const [viewMode, setViewMode] = useState<"cards" | "list">("cards");
+  const [viewMode, setViewMode] = useState<"cards" | "list" | "text">("cards");
   const [hintOpen, setHintOpen] = useState(false);
   const router = useRouter();
   const {
