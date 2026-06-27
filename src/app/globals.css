@@ -48,27 +48,27 @@
 
 :root {
   --radius: 0.625rem;
-  /* Light theme — blue/cyan tones with high contrast */
-  --navy-darkest: #f0f6fc;
-  --navy-dark: #e0ecf7;
-  --navy-medium: #cddff0;
-  --background: #f0f6fc;
+  /* Light theme — darker blue tones */
+  --navy-darkest: #d8e4f0;
+  --navy-dark: #c8d8ea;
+  --navy-medium: #b0c8e0;
+  --background: #d8e4f0;
   --foreground: #0a1a2f;
-  --card: #ffffff;
+  --card: #e8f0f8;
   --card-foreground: #0a1a2f;
-  --popover: #ffffff;
+  --popover: #e0eaf5;
   --popover-foreground: #0a1a2f;
   --primary: #1d4ed8;
   --primary-foreground: #ffffff;
-  --secondary: #e0ecf7;
+  --secondary: #c8d8ea;
   --secondary-foreground: #0a1a2f;
-  --muted: #e0ecf7;
+  --muted: #c8d8ea;
   --muted-foreground: #1e4a7a;
-  --accent: #dbeafe;
+  --accent: #c0d4ec;
   --accent-foreground: #0c3a78;
   --destructive: #b91c1c;
-  --border: #1e3a5f;
-  --input: #1e3a5f;
+  --border: #3a5a80;
+  --input: #3a5a80;
   --ring: #1d4ed8;
   --gold: #1d4ed8;
   --gold-light: #3b82f6;
