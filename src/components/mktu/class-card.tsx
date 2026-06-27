@@ -37,7 +37,7 @@ export function ClassCard({
       transition={{ duration: 0.4, delay: Math.min(index * 0.02, 0.4) }}
       className={`group relative rounded-xl border ${
         isFavorite
-          ? "bg-gold/5 border-gold/30 hover:border-gold/50"
+          ? "bg-card border-gold/40 hover:border-gold/60 ring-1 ring-gold/20"
           : "bg-card border-border hover:border-gold/20"
       } p-5 transition-all hover:shadow-lg hover:shadow-foreground/5 cursor-pointer overflow-hidden`}
       onClick={openDetail}
