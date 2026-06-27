@@ -149,6 +149,64 @@ export default function Home() {
         toggleItemInCart={() => {}}
       />
 
+      {/* Text mode — continuous text like official MKTU classifier */}
+      {viewMode === "text" && (
+        <div id="text-view" className="mb-16">
+          <div className="flex items-center gap-3 mb-4">
+            <h5 className="text-base sm:text-lg font-bold text-foreground">
+              МКТУ — классификатор (текстовый вид)
+            </h5>
+          </div>
+          <div className="space-y-4">
+            {mktuClasses
+              .filter((cls) => {
+                const q = query.trim().toLowerCase();
+                if (!q) return true;
+                if (cls.name.toLowerCase().includes(q)) return true;
+                if (cls.description.toLowerCase().includes(q)) return true;
+                return cls.items.some((it) => it.toLowerCase().includes(q));
+              })
+              .map((cls) => {
+                const isGoods = cls.type === "goods";
+                const fav = mounted && isFavorite(cls.id);
+                const inCart = mounted && isInCart(cls.id);
+                return (
+                  <div
+                    key={cls.id}
+                    onClick={() => router.push(`/class/${cls.id}`)}
+                    className="rounded-lg border border-border bg-card/30 p-3 hover:border-gold/20 hover:bg-muted/20 transition-colors cursor-pointer"
+                  >
+                    <p className="text-sm leading-relaxed text-foreground/90">
+                      <span className={`font-bold ${isGoods ? "text-gold" : "text-blue-400"}`}>
+                        Класс {cls.id}.
+                      </span>{" "}
+                      <span className="font-medium text-foreground">{cls.name}.</span>{" "}
+                      <span className="text-foreground/70">{cls.description}</span>
+                    </p>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className="text-xs text-foreground/40">{cls.items.length} позиций</span>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); toggleFavorite(cls.id); }}
+                        className={`p-1 rounded ${fav ? "text-gold" : "text-foreground/30 hover:text-gold"}`}
+                      >
+                        <Star className={`size-3 ${fav ? "fill-current" : ""}`} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); if (!inCart) addToCart(cls.id); }}
+                        className={`p-1 rounded ${inCart ? "text-gold" : "text-foreground/30 hover:text-gold"}`}
+                      >
+                        <ShoppingBag className={`size-3 ${inCart ? "fill-current" : ""}`} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
+
       {/* List mode — all classes in compact list */}
       {viewMode === "list" && (
         <div id="all-classes-list" className="mb-16">

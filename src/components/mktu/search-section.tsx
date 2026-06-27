@@ -13,13 +13,15 @@ import {
   Star,
   Sparkles,
   List,
+  AlignJustify,
+  FileText,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AiChatDialog } from "@/components/mktu/ai-chat-dialog";
 
 export type FilterType = "all" | "goods" | "services";
-export type ViewMode = "cards" | "list";
+export type ViewMode = "cards" | "list" | "text";
 
 interface SearchSectionProps {
   query: string;
@@ -65,9 +67,10 @@ export function SearchSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filterButtons: { key: FilterType | "list"; label: string; Icon: typeof Package }[] =
+  const filterButtons: { key: FilterType | "list" | "text"; label: string; Icon: typeof Package }[] =
     [
       { key: "list", label: "Список", Icon: List },
+      { key: "text", label: "Текст", Icon: AlignJustify },
       { key: "goods", label: "Товары", Icon: Package },
       { key: "services", label: "Услуги", Icon: Briefcase },
     ];
@@ -169,7 +172,9 @@ export function SearchSection({
             const isActive =
               key === "list"
                 ? viewMode === "list"
-                : viewMode === "cards" && filter === key;
+                : key === "text"
+                  ? viewMode === "text"
+                  : viewMode === "cards" && filter === key;
             return (
               <Button
                 key={key}
@@ -178,6 +183,8 @@ export function SearchSection({
                 onClick={() => {
                   if (key === "list") {
                     onViewModeChange("list");
+                  } else if (key === "text") {
+                    onViewModeChange("text");
                   } else {
                     onViewModeChange("cards");
                     onFilterChange(key as FilterType);
