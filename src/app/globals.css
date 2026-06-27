@@ -136,27 +136,27 @@
 
 /* Navy theme — dark blue background, bright blue accents */
 .navy {
-  --navy-darkest: #0a1a3a;
-  --navy-dark: #102a5c;
-  --navy-medium: #1a3a7a;
-  --background: #0a1a3a;
+  --navy-darkest: #0d2150;
+  --navy-dark: #16387a;
+  --navy-medium: #1f4a9a;
+  --background: #0d2150;
   --foreground: #e8f0ff;
-  --card: #102a5c;
-  --card-foreground: #d0e0ff;
-  --popover: #0d2150;
-  --popover-foreground: #d0e0ff;
-  --primary: #4a9fff;
-  --primary-foreground: #0a1a3a;
-  --secondary: #1a3a7a;
-  --secondary-foreground: #d0e0ff;
-  --muted: #1a3a7a;
-  --muted-foreground: #80a0d0;
-  --accent: #1f4585;
-  --accent-foreground: #d0e0ff;
+  --card: #16387a;
+  --card-foreground: #e0eaff;
+  --popover: #122a60;
+  --popover-foreground: #e0eaff;
+  --primary: #5ba8ff;
+  --primary-foreground: #0d2150;
+  --secondary: #1f4a9a;
+  --secondary-foreground: #e0eaff;
+  --muted: #1f4a9a;
+  --muted-foreground: #90b0e0;
+  --accent: #2a5fa8;
+  --accent-foreground: #e0eaff;
   --destructive: #ff5555;
-  --border: #2a5599;
-  --input: #2a5599;
-  --ring: #4a9fff;
+  --border: #3568b0;
+  --input: #3568b0;
+  --ring: #5ba8ff;
   --gold: #7ab8ff;
   --gold-light: #a0ccff;
   --gold-dark: #4a9fff;
