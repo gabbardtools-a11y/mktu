@@ -157,9 +157,9 @@
   --border: #2a5599;
   --input: #2a5599;
   --ring: #4a9fff;
-  --gold: #4a9fff;
-  --gold-light: #6ab5ff;
-  --gold-dark: #2a7fdf;
+  --gold: #7ab8ff;
+  --gold-light: #a0ccff;
+  --gold-dark: #4a9fff;
   --chart-1: #4a9fff;
   --chart-2: #6ab5ff;
   --chart-3: #2a7fdf;
@@ -295,5 +295,5 @@
    Light theme is the default (see use-theme.ts DEFAULT_THEME = 'light').
    The inline script in layout.tsx will override based on localStorage before hydration. */
 html {
-  color-scheme: light;
+  color-scheme: dark;
 }
