@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -35,7 +35,7 @@ interface SearchSectionProps {
   toggleItemInCart: (classId: number, item: string) => void;
 }
 
-function SearchSectionInner({
+export function SearchSection({
   query,
   onQueryChange,
   filter,
@@ -46,17 +46,19 @@ function SearchSectionInner({
   onClearCart,
 }: SearchSectionProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [aiOpen, setAiOpen] = useState(false);
 
   // Если в URL есть ?q=..., синхронизируем поле при первом монтировании
   useEffect(() => {
-    const q = searchParams?.get("q");
-    if (q && !query) {
-      onQueryChange(q);
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get("q");
+      if (q && !query) {
+        onQueryChange(q);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, []);
 
   const filterButtons: { key: FilterType; label: string; Icon: typeof Package }[] =
     [
@@ -225,13 +227,5 @@ function SearchSectionInner({
         </motion.div>
       </motion.div>
     </div>
-  );
-}
-
-export function SearchSection(props: SearchSectionProps) {
-  return (
-    <Suspense fallback={<div className="h-9 mb-6" />}>
-      <SearchSectionInner {...props} />
-    </Suspense>
   );
 }
