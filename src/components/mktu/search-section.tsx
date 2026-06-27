@@ -19,12 +19,15 @@ import { Button } from "@/components/ui/button";
 import { AiChatDialog } from "@/components/mktu/ai-chat-dialog";
 
 export type FilterType = "all" | "goods" | "services";
+export type ViewMode = "cards" | "list";
 
 interface SearchSectionProps {
   query: string;
   onQueryChange: (q: string) => void;
   filter: FilterType;
   onFilterChange: (f: FilterType) => void;
+  viewMode: ViewMode;
+  onViewModeChange: (m: ViewMode) => void;
   favoritesCount: number;
   cartCount: number;
   onClearFavorites: () => void;
@@ -40,6 +43,8 @@ export function SearchSection({
   onQueryChange,
   filter,
   onFilterChange,
+  viewMode,
+  onViewModeChange,
   favoritesCount,
   cartCount,
   onClearFavorites,
@@ -60,9 +65,9 @@ export function SearchSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filterButtons: { key: FilterType; label: string; Icon: typeof Package }[] =
+  const filterButtons: { key: FilterType | "list"; label: string; Icon: typeof Package }[] =
     [
-      { key: "all", label: "Список", Icon: List },
+      { key: "list", label: "Список", Icon: List },
       { key: "goods", label: "Товары", Icon: Package },
       { key: "services", label: "Услуги", Icon: Briefcase },
     ];
@@ -160,22 +165,35 @@ export function SearchSection({
         className="flex items-center justify-center gap-2 mb-6 mt-4 flex-wrap"
       >
         <div className="flex items-center gap-2">
-          {filterButtons.map(({ key, label, Icon }) => (
-            <Button
-              key={key}
-              variant={filter === key ? "default" : "ghost"}
-              size="sm"
-              onClick={() => onFilterChange(key)}
-              className={
-                filter === key
-                  ? "bg-gold text-background hover:bg-gold-dark h-8 px-3 text-xs"
-                  : "text-foreground/60 hover:text-foreground hover:bg-muted h-8 px-3 text-xs"
-              }
-            >
-              <Icon className="size-3.5" />
-              {label}
-            </Button>
-          ))}
+          {filterButtons.map(({ key, label, Icon }) => {
+            const isActive =
+              key === "list"
+                ? viewMode === "list"
+                : viewMode === "cards" && filter === key;
+            return (
+              <Button
+                key={key}
+                variant={isActive ? "default" : "ghost"}
+                size="sm"
+                onClick={() => {
+                  if (key === "list") {
+                    onViewModeChange("list");
+                  } else {
+                    onViewModeChange("cards");
+                    onFilterChange(key as FilterType);
+                  }
+                }}
+                className={
+                  isActive
+                    ? "bg-gold text-background hover:bg-gold-dark h-8 px-3 text-xs"
+                    : "text-foreground/60 hover:text-foreground hover:bg-muted h-8 px-3 text-xs"
+                }
+              >
+                <Icon className="size-3.5" />
+                {label}
+              </Button>
+            );
+          })}
         </div>
 
         <div className="w-px h-5 bg-border mx-1" />

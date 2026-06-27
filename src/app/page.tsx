@@ -13,6 +13,7 @@ import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
 export default function Home() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
+  const [viewMode, setViewMode] = useState<"cards" | "list">("cards");
   const [hintOpen, setHintOpen] = useState(false);
   const router = useRouter();
   const {
@@ -67,6 +68,8 @@ export default function Home() {
     });
   }, [query, filter]);
 
+  // viewMode="list" → compact list of all 45 classes
+  // viewMode="cards" → grid of ClassCards (filtered by goods/services/all)
   const showGoods = filter !== "services";
   const showServices = filter !== "goods";
 
@@ -134,6 +137,8 @@ export default function Home() {
         onQueryChange={setQuery}
         filter={filter}
         onFilterChange={setFilter}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
         favoritesCount={mounted ? favorites.length : 0}
         cartCount={mounted ? cart.length : 0}
         onClearFavorites={clearFavorites}
@@ -145,7 +150,7 @@ export default function Home() {
       />
 
       {/* List mode — all classes in compact list */}
-      {filter === "all" && (
+      {viewMode === "list" && (
         <div id="all-classes-list" className="mb-16">
           <div className="flex items-center gap-3 mb-6">
             <h2 className="text-xl sm:text-2xl font-bold text-foreground">
@@ -239,7 +244,7 @@ export default function Home() {
       )}
 
       {/* Goods section — grid mode */}
-      {showGoods && filter !== "all" && filteredGoods.length > 0 && (
+      {viewMode === "cards" && showGoods && filteredGoods.length > 0 && (
         <div id="goods-section" className="mb-16">
           <div className="flex items-center gap-3 mb-8">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gold/10">
@@ -269,7 +274,7 @@ export default function Home() {
       )}
 
       {/* Services section — grid mode */}
-      {showServices && filter !== "all" && filteredServices.length > 0 && (
+      {viewMode === "cards" && showServices && filteredServices.length > 0 && (
         <div id="services-section">
           <div className="flex items-center gap-3 mb-8">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10">
@@ -299,8 +304,9 @@ export default function Home() {
       )}
 
       {/* Empty state */}
-      {((showGoods && filteredGoods.length === 0) ||
-        (showServices && filteredServices.length === 0)) &&
+      {viewMode === "cards" &&
+        ((showGoods && filteredGoods.length === 0) ||
+          (showServices && filteredServices.length === 0)) &&
         query && (
           <div className="text-center py-16">
             <p className="text-foreground/40 text-lg mb-2">
