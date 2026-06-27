@@ -17,6 +17,8 @@ import {
   Info,
   ChevronDown,
   Maximize2,
+  List,
+  AlignJustify,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -47,6 +49,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
   const [query, setQuery] = useState("");
   const [showNotes, setShowNotes] = useState(false);
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
+  const [itemView, setItemView] = useState<"list" | "inline">("list");
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const cls = useMemo(
@@ -312,32 +315,62 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
             <span className="text-xs text-foreground/40">
               Показано {filteredItems.length} из {cls.items.length}
             </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSelectAllVisible}
-              className="text-xs text-gold hover:text-gold hover:bg-gold/5 h-7 px-2"
-            >
-              <SquareCheck className="size-3.5 mr-1" />
-              {filteredItems.every((it) =>
-                isItemSelectedInCart(cls.id, it),
-              ) && inCart
-                ? "Снять все"
-                : "Выбрать все"}
-            </Button>
+            <div className="flex items-center gap-2">
+              {/* Переключатель вида: список / сплошной текст */}
+              <div className="flex items-center gap-0.5 p-0.5 rounded-md bg-muted/40 border border-border/50">
+                <button
+                  type="button"
+                  onClick={() => setItemView("list")}
+                  title="Вид списком"
+                  className={`flex items-center justify-center w-7 h-7 rounded transition-colors ${
+                    itemView === "list"
+                      ? "bg-gold text-background"
+                      : "text-foreground/50 hover:text-foreground"
+                  }`}
+                >
+                  <List className="size-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setItemView("inline")}
+                  title="Вид сплошным текстом"
+                  className={`flex items-center justify-center w-7 h-7 rounded transition-colors ${
+                    itemView === "inline"
+                      ? "bg-gold text-background"
+                      : "text-foreground/50 hover:text-foreground"
+                  }`}
+                >
+                  <AlignJustify className="size-3.5" />
+                </button>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleSelectAllVisible}
+                className="text-xs text-gold hover:text-gold hover:bg-gold/5 h-7 px-2"
+              >
+                <SquareCheck className="size-3.5 mr-1" />
+                {filteredItems.every((it) =>
+                  isItemSelectedInCart(cls.id, it),
+                ) && inCart
+                  ? "Снять все"
+                  : "Выбрать все"}
+              </Button>
+            </div>
           </div>
         )}
       </div>
 
       {/* Список позиций — нативный скролл страницы */}
       <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pb-6 flex-1">
-        <div className="space-y-0.5">
-          {filteredItems.length === 0 ? (
-            <div className="text-center py-10 text-foreground/40 text-sm">
-              Ничего не найдено по запросу «{query}»
-            </div>
-          ) : (
-            filteredItems.map((item) => {
+        {filteredItems.length === 0 ? (
+          <div className="text-center py-10 text-foreground/40 text-sm">
+            Ничего не найдено по запросу «{query}»
+          </div>
+        ) : itemView === "list" ? (
+          /* Вид списком — каждый товар на отдельной строке */
+          <div className="space-y-0.5">
+            {filteredItems.map((item) => {
               const checked = isItemSelectedInCart(cls.id, item);
               return (
                 <div
@@ -373,9 +406,51 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
                   </span>
                 </div>
               );
-            })
-          )}
-        </div>
+            })}
+          </div>
+        ) : (
+          /* Вид сплошным текстом — товары идут друг за другом, чекбоксы inline */
+          <div className="leading-relaxed">
+            {filteredItems.map((item, i) => {
+              const checked = isItemSelectedInCart(cls.id, item);
+              return (
+                <span
+                  key={item}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!inCart) addToCart(cls.id);
+                    toggleItemInCart(cls.id, item);
+                  }}
+                  className={`inline-flex items-center gap-1 cursor-pointer rounded px-1 py-0.5 transition-colors ${
+                    checked ? "bg-gold/10" : "hover:bg-muted"
+                  }`}
+                >
+                  <span
+                    className={`inline-flex items-center justify-center size-3.5 shrink-0 rounded-[3px] border transition-colors ${
+                      checked
+                        ? "bg-gold border-gold text-background"
+                        : "border-input"
+                    }`}
+                  >
+                    {checked && (
+                      <Check className="size-2.5" strokeWidth={3} />
+                    )}
+                  </span>
+                  <span
+                    className={`text-sm select-none ${
+                      checked ? "text-foreground" : "text-foreground/90"
+                    }`}
+                  >
+                    {item}
+                  </span>
+                  {i < filteredItems.length - 1 && (
+                    <span className="text-foreground/30 ml-0.5">;</span>
+                  )}
+                </span>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Bottom action bar */}
