@@ -148,7 +148,6 @@ export function Header({
             >
               <Link href="/faq">
                 <HelpCircle className="size-4" />
-                <span className="hidden sm:inline ml-1.5">FAQ</span>
               </Link>
             </Button>
 
