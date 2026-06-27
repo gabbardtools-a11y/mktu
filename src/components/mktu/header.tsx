@@ -65,13 +65,13 @@ export function Header({
         <div className="flex items-center justify-between h-16">
           <Link
             href="/"
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            className="flex flex-col hover:opacity-80 transition-opacity"
           >
-            <span className="text-gold font-bold text-base sm:text-lg tracking-wider">
+            <span className="text-gold font-extrabold text-base sm:text-lg tracking-wider leading-tight">
               МКТУ.рус
-              <span className="text-foreground/40 font-normal text-xs sm:text-sm ml-1.5">
-                ред. 13 2026
-              </span>
+            </span>
+            <span className="text-foreground/40 font-normal text-[10px] sm:text-xs sm:ml-0 leading-tight">
+              ред. 13 2026
             </span>
           </Link>
 
