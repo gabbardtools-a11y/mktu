@@ -366,7 +366,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
                     className={`text-sm transition-colors select-none ${
                       checked
                         ? "text-foreground"
-                        : "text-foreground/60"
+                        : "text-foreground/90"
                     }`}
                   >
                     {item}
