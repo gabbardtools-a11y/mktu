@@ -25,6 +25,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { mktuClasses } from "@/data/mktu-data";
 import type { CartClass } from "@/hooks/use-favorites-cart";
 import { downloadRtf } from "@/lib/rtf-export";
+import { CartFeesCalculator } from "@/components/mktu/cart-fees-calculator";
 
 interface CartSheetProps {
   open: boolean;
@@ -58,6 +59,7 @@ export function CartSheet({
   onOpenClass,
 }: CartSheetProps) {
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
+  const [paperCert, setPaperCert] = useState(false);
 
   const totalItems = cart.reduce(
     (acc, c) => acc + c.selectedItems.length,
@@ -301,6 +303,14 @@ export function CartSheet({
                 className="hidden"
                 aria-hidden
               />
+
+              <div className="pt-2">
+                <CartFeesCalculator
+                  cart={cart}
+                  paperCert={paperCert}
+                  onPaperCertChange={setPaperCert}
+                />
+              </div>
             </div>
           )}
         </ScrollArea>
@@ -315,7 +325,7 @@ export function CartSheet({
                 {pluralRu(totalItems, ["позиция", "позиции", "позиций"])}
               </div>
               <Button
-                onClick={() => downloadRtf(cart, mktuClasses)}
+                onClick={() => downloadRtf(cart, mktuClasses, { paperCert })}
                 className="bg-gold text-background hover:bg-gold-dark gap-1.5 text-sm"
               >
                 <Download className="size-4" />

@@ -26,6 +26,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.6,
     },
+    {
+      url: `${BASE_URL}/calculator`,
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.7,
+    },
   ];
 
   // 45 страниц классов МКТУ

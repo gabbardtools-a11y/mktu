@@ -1,5 +1,6 @@
 import type { MktuClass } from "@/data/mktu-data";
 import type { CartClass } from "@/hooks/use-favorites-cart";
+import { calculateFees, FEES, fmtRub } from "@/lib/fees";
 
 interface RtfOptions {
   bold?: boolean;
@@ -68,8 +69,13 @@ function pluralRu(n: number, forms: [string, string, string]): string {
   return forms[2];
 }
 
-export function downloadRtf(cart: CartClass[], allClasses: MktuClass[]): void {
+export function downloadRtf(
+  cart: CartClass[],
+  allClasses: MktuClass[],
+  options?: { paperCert?: boolean },
+): void {
   if (cart.length === 0) return;
+  const paperCert = options?.paperCert ?? false;
 
   const dateStr = new Date().toLocaleDateString("ru-RU", {
     day: "numeric",
@@ -130,6 +136,134 @@ export function downloadRtf(cart: CartClass[], allClasses: MktuClass[]): void {
     rtfParagraph(
       `Итого: ${cart.length} ${pluralRu(cart.length, ["класс", "класса", "классов"])}, ${totalItems} ${pluralRu(totalItems, ["позиция", "позиции", "позиций"])}`,
       { bold: true, size: 24, spaceBefore: 200 },
+    ),
+  );
+
+  // ─────────────────── Расчёт пошлин Роспатента ───────────────────
+  const sortedCart = [...cart].sort((a, b) => a.classId - b.classId);
+  const itemsPerClass = sortedCart.map((c) => c.selectedItems.length);
+  const fees = calculateFees(itemsPerClass, paperCert);
+
+  parts.push(
+    rtfParagraph("Расчёт государственных пошлин Роспатента", {
+      bold: true,
+      size: 26,
+      align: "center",
+      spaceBefore: 400,
+      spaceAfter: 120,
+    }),
+    rtfParagraph(
+      "Положение о патентных и иных пошлинах, актуально на 2026 год",
+      { size: 20, align: "center", color: 2, spaceAfter: 200 },
+    ),
+  );
+
+  // При подаче заявки (2.1 + 2.4)
+  parts.push(
+    rtfParagraph("При подаче заявки (в течение 2 месяцев)", {
+      bold: true,
+      size: 24,
+      spaceBefore: 120,
+      spaceAfter: 60,
+    }),
+    rtfParagraph(
+      `п. 2.1  Регистрация заявки + формальная экспертиза  —  ${fmtRub(fees.p21Total)}`,
+      { size: 22, indent: 200, spaceAfter: 30 },
+    ),
+  );
+  if (fees.p21ExtraClasses > 0) {
+    parts.push(
+      rtfParagraph(
+        `        (база ${fmtRub(FEES.p21.base)} + ${Math.max(0, fees.classes - 1)} × ${fmtRub(FEES.p21.perClassOverRate)} за доп. класс)`,
+        { size: 20, indent: 200, color: 2, spaceAfter: 30 },
+      ),
+    );
+  }
+  parts.push(
+    rtfParagraph(
+      `п. 2.4  Экспертиза обозначения по существу  —  ${fmtRub(fees.p24Total)}`,
+      { size: 22, indent: 200, spaceAfter: 30 },
+    ),
+  );
+  if (fees.p24ExtraClasses > 0 || fees.p24ExtraItems > 0) {
+    const details: string[] = [];
+    if (fees.p24ExtraClasses > 0) {
+      details.push(
+        `${Math.max(0, fees.classes - 1)} × ${fmtRub(FEES.p24.perClassOverRate)} за доп. класс`,
+      );
+    }
+    if (fees.p24ExtraItems > 0) {
+      details.push(
+        `${fees.p24ItemsOver} × ${fmtRub(FEES.p24.perItemOverRate)} за позиции свыше 10 в классе`,
+      );
+    }
+    parts.push(
+      rtfParagraph(
+        `        (база ${fmtRub(FEES.p24.base)} + ${details.join(" + ")})`,
+        { size: 20, indent: 200, color: 2, spaceAfter: 30 },
+      ),
+    );
+  }
+  parts.push(
+    rtfParagraph(
+      `Итого при подаче:  ${fmtRub(fees.totalAtFiling)}`,
+      { bold: true, size: 22, indent: 200, spaceBefore: 60, spaceAfter: 120 },
+    ),
+  );
+
+  // После решения о регистрации (2.11 + опц. 2.14)
+  parts.push(
+    rtfParagraph("После решения о регистрации (продление на 10 лет)", {
+      bold: true,
+      size: 24,
+      spaceBefore: 120,
+      spaceAfter: 60,
+    }),
+    rtfParagraph(
+      `п. 2.11  Регистрация ТЗ + выдача свидетельства (электронное)  —  ${fmtRub(fees.p211Total)}`,
+      { size: 22, indent: 200, spaceAfter: 30 },
+    ),
+  );
+  if (fees.p211ExtraClasses > 0) {
+    parts.push(
+      rtfParagraph(
+        `        (база ${fmtRub(FEES.p211.base)} + ${Math.max(0, fees.classes - 5)} × ${fmtRub(FEES.p211.perClassOverRate)} за класс свыше 5)`,
+        { size: 20, indent: 200, color: 2, spaceAfter: 30 },
+      ),
+    );
+  }
+  if (paperCert) {
+    parts.push(
+      rtfParagraph(
+        `п. 2.14  Выдача свидетельства на бумажном носителе  —  ${fmtRub(FEES.p214.base)}`,
+        { size: 22, indent: 200, spaceAfter: 30 },
+      ),
+      rtfParagraph(
+        "        (опционально, по ходатайству правообладателя)",
+        { size: 20, indent: 200, color: 2, spaceAfter: 30 },
+      ),
+    );
+  }
+  parts.push(
+    rtfParagraph(
+      `Итого за регистрацию:  ${fmtRub(fees.totalRegistration)}`,
+      { bold: true, size: 22, indent: 200, spaceBefore: 60, spaceAfter: 200 },
+    ),
+  );
+
+  // Итоговая сумма
+  parts.push(
+    rtfParagraph(
+      `ВСЕГО за весь процесс регистрации:  ${fmtRub(fees.totalProject)}`,
+      { bold: true, size: 26, align: "center", spaceBefore: 200, spaceAfter: 80 },
+    ),
+    rtfParagraph(
+      `Из них: при подаче ${fmtRub(fees.totalAtFiling)} + после решения ${fmtRub(fees.totalRegistration)}`,
+      { size: 20, align: "center", color: 2, spaceAfter: 200 },
+    ),
+    rtfParagraph(
+      "Расчёт является справочным. Точный размер пошлин рекомендуется согласовать с патентным поверенным.",
+      { size: 20, color: 2, align: "center", spaceBefore: 100 },
     ),
   );
 

@@ -12,6 +12,7 @@ import {
   MoonStar,
   HelpCircle,
   Grid3x3,
+  Calculator,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme, type Theme } from "@/hooks/use-theme";
@@ -140,6 +141,19 @@ export function Header({
                 )}
               </AnimatePresence>
             </div>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-foreground/70 hover:text-gold hover:bg-gold/5"
+              title="Калькулятор пошлин Роспатента"
+            >
+              <Link href="/calculator">
+                <Calculator className="size-4" />
+                <span className="hidden sm:inline ml-1.5">Пошлины</span>
+              </Link>
+            </Button>
 
             <Button
               variant="ghost"
