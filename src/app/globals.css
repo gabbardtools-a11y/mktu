@@ -134,48 +134,48 @@
   --scrollbar-thumb-hover: #2d3748;
 }
 
-/* Navy theme — dark blue background, bright blue accents */
+/* Navy theme — copied from iznaki.ru (тёмно-синий как у соседей) */
 .navy {
-  --navy-darkest: #0d2150;
-  --navy-dark: #16387a;
-  --navy-medium: #1f4a9a;
-  --background: #0d2150;
-  --foreground: #e8f0ff;
-  --card: #112a60;
-  --card-foreground: #e0eaff;
-  --popover: #122a60;
-  --popover-foreground: #e0eaff;
-  --primary: #5ba8ff;
-  --primary-foreground: #0d2150;
-  --secondary: #1f4a9a;
-  --secondary-foreground: #e0eaff;
-  --muted: #1f4a9a;
-  --muted-foreground: #90b0e0;
-  --accent: #2a5fa8;
-  --accent-foreground: #e0eaff;
-  --destructive: #ff5555;
-  --border: #3568b0;
-  --input: #3568b0;
-  --ring: #5ba8ff;
-  --gold: #7ab8ff;
-  --gold-light: #a0ccff;
-  --gold-dark: #4a9fff;
-  --chart-1: #4a9fff;
-  --chart-2: #6ab5ff;
-  --chart-3: #2a7fdf;
-  --chart-4: #1a5fa8;
-  --chart-5: #0d4080;
-  --sidebar: #0a1a3a;
-  --sidebar-foreground: #d0e0ff;
-  --sidebar-primary: #4a9fff;
-  --sidebar-primary-foreground: #0a1a3a;
-  --sidebar-accent: #1a3a7a;
-  --sidebar-accent-foreground: #d0e0ff;
-  --sidebar-border: #2a5599;
-  --sidebar-ring: #4a9fff;
-  --scrollbar-track: #0a1a3a;
-  --scrollbar-thumb: #2a5599;
-  --scrollbar-thumb-hover: #3a6db8;
+  --navy-darkest: #0a0e27;
+  --navy-dark: #111640;
+  --navy-medium: #1a2050;
+  --background: #0a0e27;
+  --foreground: #e2e8f0;
+  --card: #111640;
+  --card-foreground: #e2e8f0;
+  --popover: #111640;
+  --popover-foreground: #e2e8f0;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #1a2050;
+  --secondary-foreground: #94a3b8;
+  --muted: #1a2050;
+  --muted-foreground: #94a3b8;
+  --accent: #1e2a5a;
+  --accent-foreground: #e2e8f0;
+  --destructive: #ef4444;
+  --border: #1e2a5a;
+  --input: #1e2a5a;
+  --ring: #3b82f6;
+  --gold: #3b82f6;
+  --gold-light: #60a5fa;
+  --gold-dark: #2563eb;
+  --chart-1: #3b82f6;
+  --chart-2: #60a5fa;
+  --chart-3: #2563eb;
+  --chart-4: #1d4ed8;
+  --chart-5: #1e40af;
+  --sidebar: #0a0e27;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1a2050;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: #1e2a5a;
+  --sidebar-ring: #3b82f6;
+  --scrollbar-track: #0a0e27;
+  --scrollbar-thumb: #1e2a5a;
+  --scrollbar-thumb-hover: #2e3a6a;
 }
 
 /* Grayscale theme → Dark Blue theme (navy blue, no gold) */

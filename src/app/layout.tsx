@@ -54,7 +54,7 @@ export const metadata: Metadata = {
 };
 
 // Inline script to set initial theme before hydration — prevents flash of wrong theme.
-// Default theme is 'light' (set in use-theme.ts as DEFAULT_THEME).
+// Default theme is 'navy' (set in use-theme.ts as DEFAULT_THEME).
 const themeInitScript = `
 (function() {
   try {
@@ -84,7 +84,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang="ru" className="navy" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
