@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0e27"/>
+      <stop offset="100%" stop-color="#1a2050"/>
+    </linearGradient>
+    <linearGradient id="letter" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe680"/>
+      <stop offset="100%" stop-color="#ffd24d"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#111640" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#1a2050" stop-opacity="0.4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Фон -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Декоративные точки (сетка) -->
+  <g fill="#3b82f6" opacity="0.08">
+    <circle cx="100" cy="100" r="2"/>
+    <circle cx="200" cy="100" r="2"/>
+    <circle cx="300" cy="100" r="2"/>
+    <circle cx="100" cy="200" r="2"/>
+    <circle cx="200" cy="200" r="2"/>
+    <circle cx="1100" cy="530" r="2"/>
+    <circle cx="1000" cy="530" r="2"/>
+    <circle cx="900" cy="530" r="2"/>
+    <circle cx="1100" cy="430" r="2"/>
+    <circle cx="1000" cy="430" r="2"/>
+  </g>
+
+  <!-- Левая часть — иконка-логотип крупно -->
+  <g transform="translate(120, 165)">
+    <rect width="300" height="300" rx="60" fill="url(#cardGrad)" stroke="#ffd24d" stroke-width="2" opacity="0.9"/>
+    <!-- Буква М — крупная, золотая -->
+    <path d="M 50 230 L 50 70 L 95 70 L 150 165 L 205 70 L 250 70 L 250 230 L 210 230 L 210 130 L 160 215 L 140 215 L 90 130 L 90 230 Z" fill="url(#letter)"/>
+  </g>
+
+  <!-- Правая часть — текст -->
+  <g transform="translate(490, 0)">
+    <!-- МКТУ.рус -->
+    <text x="0" y="270" font-family="'Segoe UI', system-ui, sans-serif" font-size="84" font-weight="700" fill="#ffd24d" letter-spacing="2">МКТУ.рус</text>
+
+    <!-- Подзаголовок -->
+    <text x="0" y="330" font-family="'Segoe UI', system-ui, sans-serif" font-size="32" font-weight="400" fill="#94a3b8">Международная (Ниццкая) классификация</text>
+    <text x="0" y="375" font-family="'Segoe UI', system-ui, sans-serif" font-size="32" font-weight="400" fill="#94a3b8">товаров и услуг · 13-я редакция 2026</text>
+
+    <!-- Теги снизу -->
+    <g transform="translate(0, 440)">
+      <!-- Тег 1 -->
+      <rect x="0" y="0" width="180" height="42" rx="21" fill="#1a2050" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="90" y="28" font-family="'Segoe UI', system-ui, sans-serif" font-size="18" font-weight="600" fill="#60a5fa" text-anchor="middle">45 классов</text>
+
+      <!-- Тег 2 -->
+      <rect x="200" y="0" width="220" height="42" rx="21" fill="#1a2050" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="310" y="28" font-family="'Segoe UI', system-ui, sans-serif" font-size="18" font-weight="600" fill="#60a5fa" text-anchor="middle">Калькулятор пошлин</text>
+
+      <!-- Тег 3 -->
+      <rect x="440" y="0" width="160" height="42" rx="21" fill="#1a2050" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="520" y="28" font-family="'Segoe UI', system-ui, sans-serif" font-size="18" font-weight="600" fill="#60a5fa" text-anchor="middle">ИИ-поиск</text>
+    </g>
+  </g>
+
+  <!-- Подпись внизу -->
+  <text x="600" y="600" font-family="'Segoe UI', system-ui, sans-serif" font-size="20" fill="#64748b" text-anchor="middle">Онлайн-сервис без рекламы · Роспатент · 2026</text>
+</svg>

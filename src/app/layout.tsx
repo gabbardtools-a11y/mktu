@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     siteName: "МКТУ",
     type: "website",
     locale: "ru_RU",
-    images: [{ url: "/android-chrome-512x512.png", width: 512, height: 512 }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "МКТУ.рус — Международная (Ниццкая) классификация 2026" }],
   },
   alternates: {
     canonical: "/",
