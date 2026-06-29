@@ -67,8 +67,9 @@ export function SearchSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filterButtons: { key: FilterType | "list" | "text"; label: string; Icon: typeof Package }[] =
+  const filterButtons: { key: FilterType | "list" | "text" | "cards"; label: string; Icon: typeof Package }[] =
     [
+      { key: "cards", label: "Карточки", Icon: LayoutGrid },
       { key: "list", label: "Список", Icon: List },
       { key: "text", label: "Текст", Icon: AlignJustify },
       { key: "goods", label: "Товары", Icon: Package },
@@ -174,7 +175,9 @@ export function SearchSection({
                 ? viewMode === "list"
                 : key === "text"
                   ? viewMode === "text"
-                  : viewMode === "cards" && filter === key;
+                  : key === "cards"
+                    ? viewMode === "cards" && filter === "all"
+                    : viewMode === "cards" && filter === key;
             return (
               <Button
                 key={key}
@@ -185,6 +188,9 @@ export function SearchSection({
                     onViewModeChange("list");
                   } else if (key === "text") {
                     onViewModeChange("text");
+                  } else if (key === "cards") {
+                    onViewModeChange("cards");
+                    onFilterChange("all");
                   } else {
                     onViewModeChange("cards");
                     onFilterChange(key as FilterType);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,7 +16,6 @@ import {
   SquareCheck,
   Info,
   ChevronDown,
-  Maximize2,
   List,
   AlignJustify,
   FileText,
@@ -49,9 +48,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
 
   const [query, setQuery] = useState("");
   const [showNotes, setShowNotes] = useState(false);
-  const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const [itemView, setItemView] = useState<"list" | "inline" | "official">("list");
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const cls = useMemo(
     () => mktuClasses.find((c) => c.id === classId) ?? null,
@@ -130,7 +127,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
               title="На главную"
             >
               <ArrowLeft className="size-4" />
-              <span className="hidden sm:inline ml-1.5">Главная</span>
+              <span className="hidden sm:inline ml-1.5">На главную</span>
             </Button>
 
             <div className="flex items-center gap-1 flex-shrink-0">
@@ -163,88 +160,43 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
                   className={`size-4 ${inCart ? "fill-current" : ""}`}
                 />
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setHeaderCollapsed(true)}
-                className="text-foreground/40 hover:text-foreground hover:bg-muted"
-                title="Свернуть заголовок класса"
-              >
-                <X className="size-4" />
-                <span className="ml-1.5 hidden sm:inline">Закрыть</span>
-              </Button>
             </div>
           </div>
 
-          {/* Скрытый заголовок — кнопка для разворота обратно */}
-          <AnimatePresence initial={false}>
-            {headerCollapsed && (
-              <motion.button
-                type="button"
-                onClick={() => setHeaderCollapsed(false)}
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="w-full overflow-hidden flex items-center gap-2 px-3 py-2 rounded-md border border-dashed border-border hover:border-gold/40 hover:bg-gold/5 transition-colors text-left"
-                title="Показать заголовок класса"
+          {/* Полный заголовок класса */}
+          <div className="flex items-start gap-3">
+            <div
+              className={`flex items-center justify-center w-11 h-11 rounded-lg flex-shrink-0 ${
+                isGoods ? "bg-gold/10" : "bg-blue-500/10"
+              }`}
+            >
+              <Icon
+                className={`size-5 ${isGoods ? "text-gold" : "text-blue-400"}`}
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h4
+                className={`text-xs uppercase tracking-wider font-medium ${
+                  isGoods ? "text-gold/70" : "text-blue-400/70"
+                }`}
               >
-                <Maximize2 className="size-4 text-gold flex-shrink-0" />
-                <span className="text-sm text-foreground/70 truncate">
-                  Класс {cls.id} — {cls.name}
-                </span>
-                <ChevronDown className="size-3.5 text-foreground/40 ml-auto rotate-180 flex-shrink-0" />
-              </motion.button>
-            )}
-          </AnimatePresence>
+                Класс {cls.id} · {iconLabel} ·{" "}
+                {cls.items.length} позиций
+              </h4>
+              <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight mt-0.5">
+                {cls.name}
+              </h1>
+              <p className="text-foreground/60 text-sm leading-relaxed mt-2">
+                {cls.description}
+              </p>
 
-          {/* Полный заголовок класса — скрыт по кнопке «Закрыть» */}
-          <AnimatePresence initial={false}>
-            {!headerCollapsed && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.25, ease: "easeInOut" }}
-                className="overflow-hidden"
-              >
-                <div className="flex items-start gap-3">
-                  <div
-                    className={`flex items-center justify-center w-11 h-11 rounded-lg flex-shrink-0 ${
-                      isGoods ? "bg-gold/10" : "bg-blue-500/10"
-                    }`}
-                  >
-                    <Icon
-                      className={`size-5 ${isGoods ? "text-gold" : "text-blue-400"}`}
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h4
-                      className={`text-xs uppercase tracking-wider font-medium ${
-                        isGoods ? "text-gold/70" : "text-blue-400/70"
-                      }`}
-                    >
-                      Класс {cls.id} · {iconLabel} ·{" "}
-                      {cls.items.length} позиций
-                    </h4>
-                    <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight mt-0.5">
-                      {cls.name}
-                    </h1>
-                  </div>
+              {selectedCount > 0 && (
+                <div className="mt-3 px-3 py-1.5 rounded-md bg-gold/5 border border-gold/20 text-xs text-gold">
+                  Выбрано позиций: {selectedCount} из {cls.items.length}
                 </div>
-
-                <p className="text-foreground/60 text-sm leading-relaxed mt-2">
-                  {cls.description}
-                </p>
-
-                {selectedCount > 0 && (
-                  <div className="mt-3 px-3 py-1.5 rounded-md bg-gold/5 border border-gold/20 text-xs text-gold">
-                    Выбрано позиций: {selectedCount} из {cls.items.length}
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -294,7 +246,6 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-foreground/30 pointer-events-none" />
           <Input
-            ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Поиск по позициям класса..."

@@ -38,8 +38,16 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "МКТУ Справочник" }],
   icons: {
-    icon: "/logo.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/logo.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "МКТУ — Международная (Ниццкая) классификация 2026",
     description:
@@ -47,6 +55,7 @@ export const metadata: Metadata = {
     siteName: "МКТУ",
     type: "website",
     locale: "ru_RU",
+    images: [{ url: "/android-chrome-512x512.png", width: 512, height: 512 }],
   },
   alternates: {
     canonical: "/",
