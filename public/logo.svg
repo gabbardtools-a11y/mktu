@@ -3,14 +3,17 @@
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#0a0e27"/>
-      <stop offset="100%" stop-color="#111640"/>
+      <stop offset="100%" stop-color="#1a2050"/>
     </linearGradient>
     <linearGradient id="letter" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#ffd24d"/>
-      <stop offset="100%" stop-color="#f0c050"/>
+      <stop offset="0%" stop-color="#ffe680"/>
+      <stop offset="100%" stop-color="#ffd24d"/>
     </linearGradient>
   </defs>
+  <!-- Квадрат со скруглёнными углами -->
   <rect x="0" y="0" width="32" height="32" rx="7" fill="url(#bg)"/>
-  <rect x="0.5" y="0.5" width="31" height="31" rx="6.5" fill="none" stroke="#ffd24d" stroke-width="0.5" opacity="0.3"/>
-  <path d="M 7 23 L 7 9 L 10.5 9 L 16 17 L 21.5 9 L 25 9 L 25 23 L 22 23 L 22 14 L 17 21.5 L 15 21.5 L 10 14 L 10 23 Z" fill="url(#letter)"/>
+  <!-- Тонкая золотая рамка -->
+  <rect x="1" y="1" width="30" height="30" rx="6" fill="none" stroke="#ffd24d" stroke-width="1" opacity="0.4"/>
+  <!-- Буква М — крупная, с жирными ножками -->
+  <path d="M 6 24 L 6 8 L 10 8 L 16 17 L 22 8 L 26 8 L 26 24 L 22 24 L 22 14 L 17 22 L 15 22 L 10 14 L 10 24 Z" fill="url(#letter)"/>
 </svg>
