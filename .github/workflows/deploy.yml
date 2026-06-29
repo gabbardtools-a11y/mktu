@@ -44,11 +44,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       # ─── 3. Установить зависимости ───
-      - name: 📚 npm ci
-        run: npm ci
+      # Используем npm install (не ci) — нет package-lock.json, только bun.lock
+      - name: 📚 npm install
+        run: npm install --no-audit --no-fund
 
       # ─── 4. Создать .env (для билда, публичные переменные) ───
       - name: 🔧 Create .env for build
