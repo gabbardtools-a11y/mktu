@@ -1,0 +1,68 @@
+name: Nightly DB Backup
+
+# Каждый день в 03:00 UTC (06:00 МСК)
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+env:
+  VPS_HOST: '91.219.151.57'
+  VPS_USER: 'root'
+  VPS_DB_PATH: '/var/www/mktu/db/custom.db'
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 🔑 Install sshpass
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq sshpass sqlite3
+
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: db-backups
+          fetch-depth: 0
+
+      - name: 💾 Dump SQLite from VPS
+        run: |
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ env.VPS_USER }}@${{ env.VPS_HOST }} "
+            if [ -f ${{ env.VPS_DB_PATH }} ]; then
+              sqlite3 ${{ env.VPS_DB_PATH }} .dump > /tmp/mktu-db-dump.sql
+              ls -lh /tmp/mktu-db-dump.sql
+            else
+              echo '⚠️ DB not found — empty backup'
+              echo '-- DB not found' > /tmp/mktu-db-dump.sql
+            fi
+          "
+          
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' scp -o StrictHostKeyChecking=no \
+            ${{ env.VPS_USER }}@${{ env.VPS_HOST }}:/tmp/mktu-db-dump.sql \
+            ./db-backup-$(date +%Y-%m-%d).sql
+          ls -lh db-backup-*.sql
+
+      - name: 🗑️ Keep only last 30 days
+        run: |
+          find . -name "db-backup-*.sql" -mtime +30 -delete || true
+          ls -lh db-backup-*.sql | tail -5
+
+      - name: 📤 Commit to db-backups branch
+        run: |
+          git config user.name "GitHub Actions Backup"
+          git config user.email "actions@github.com"
+          git add db-backup-*.sql
+          git commit -m "Nightly DB backup $(date +%Y-%m-%d)" || echo "Nothing to commit"
+          git push origin db-backups
+
+      - name: 📝 Summary
+        if: always()
+        run: |
+          echo "## 💾 Бэкап БД мкту.рус" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Дата: $(date +'%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "Файл: \`db-backup-$(date +%Y-%m-%d).sql\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Все бэкапы: https://github.com/${{ github.repository }}/tree/db-backups" >> $GITHUB_STEP_SUMMARY

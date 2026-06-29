@@ -1,0 +1,176 @@
+name: Deploy to VPS
+
+# Триггеры: при пуше в main, по кнопке в GitHub UI, или по тегу v*
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - '.gitignore'
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'Включить debug-логи'
+        type: boolean
+        default: false
+  release:
+    types: [published]
+
+# Не запускать параллельные деплои — только последний
+concurrency:
+  group: deploy-mktu
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+  VPS_HOST: '91.219.151.57'
+  VPS_USER: 'root'
+  VPS_PATH: '/var/www/mktu'
+  PM2_NAME: 'mktu'
+  APP_PORT: '3000'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # ─── 1. Скачать код ───
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      # ─── 2. Установить Node.js ───
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # ─── 3. Установить зависимости ───
+      - name: 📚 npm ci
+        run: npm ci
+
+      # ─── 4. Создать .env (для билда, публичные переменные) ───
+      - name: 🔧 Create .env for build
+        run: |
+          cat > .env <<'EOF'
+          NEXT_PUBLIC_SITE_URL=https://мкту.рус
+          NEXT_TELEMETRY_DISABLED=1
+          EOF
+
+      # ─── 5. Билд ───
+      - name: 🏗️ Build Next.js
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+
+      # ─── 6. Подготовить standalone-папку ───
+      - name: 📦 Prepare standalone bundle
+        run: |
+          # .next/standalone уже содержит server.js, package.json, node_modules
+          # Добавляем static и public, плюс ecosystem.config.cjs
+          cp -r .next/static .next/standalone/.next/
+          cp -r public .next/standalone/
+          cp ecosystem.config.cjs .next/standalone/
+          
+          # Проверяем что server.js есть
+          test -f .next/standalone/server.js || { echo "❌ server.js not found"; exit 1; }
+          
+          # Упакуем в tarball
+          cd .next/standalone
+          tar -czf ../../mktu-deploy.tar.gz .
+          cd ../..
+          ls -lh mktu-deploy.tar.gz
+
+      # ─── 7. Установить sshpass (для парольной аутентификации) ───
+      - name: 🔑 Install sshpass
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq sshpass
+          echo "✓ sshpass installed"
+
+      # ─── 8. Бэкап на VPS ───
+      - name: 💾 Backup current version on VPS
+        run: |
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ env.VPS_USER }}@${{ env.VPS_HOST }} "
+            set -e
+            if [ -d ${{ env.VPS_PATH }} ]; then
+              TS=\$(date +%Y%m%d-%H%M%S)
+              cp -r ${{ env.VPS_PATH }} ${{ env.VPS_PATH }}.bak.\$TS
+              echo \"✓ Backup: ${{ env.VPS_PATH }}.bak.\$TS\"
+            fi
+          "
+
+      # ─── 9. Загрузить tarball на VPS ───
+      - name: 📤 Upload tarball to VPS
+        run: |
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' scp -o StrictHostKeyChecking=no \
+            mktu-deploy.tar.gz ${{ env.VPS_USER }}@${{ env.VPS_HOST }}:/tmp/mktu-deploy.tar.gz
+          echo "✓ Tarball uploaded"
+
+      # ─── 10. Распаковать и записать .env ───
+      - name: 📥 Extract and write .env
+        run: |
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ env.VPS_USER }}@${{ env.VPS_HOST }} "
+            set -e
+            cd ${{ env.VPS_PATH }}
+            rm -rf .next public server.js package.json node_modules ecosystem.config.cjs
+            tar -xzf /tmp/mktu-deploy.tar.gz
+            rm /tmp/mktu-deploy.tar.gz
+            mkdir -p db
+            echo '✓ Extracted'
+          "
+          
+          # Записать .env с секретами
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ env.VPS_USER }}@${{ env.VPS_HOST }} "cat > ${{ env.VPS_PATH }}/.env" <<ENVEOF
+          ROUTERAI_API_KEY=${{ secrets.ROUTERAI_API_KEY }}
+          ROUTERAI_MODEL=openai/gpt-4o-mini
+          DATABASE_URL=file:${{ env.VPS_PATH }}/db/custom.db
+          NEXT_PUBLIC_SITE_URL=https://мкту.рус
+          NEXT_TELEMETRY_DISABLED=1
+          PORT=${{ env.APP_PORT }}
+          HOSTNAME=127.0.0.1
+          ENVEOF
+          
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ env.VPS_USER }}@${{ env.VPS_HOST }} "
+            chmod 600 ${{ env.VPS_PATH }}/.env
+            echo '✓ .env written'
+          "
+
+      # ─── 11. PM2 reload ───
+      - name: 🔄 PM2 reload
+        run: |
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ env.VPS_USER }}@${{ env.VPS_HOST }} "
+            pm2 describe ${{ env.PM2_NAME }} >/dev/null 2>&1 && pm2 reload ${{ env.PM2_NAME }} || {
+              cd ${{ env.VPS_PATH }} && pm2 start ecosystem.config.cjs && pm2 save
+            }
+            sleep 3
+            pm2 list | grep -E '${{ env.PM2_NAME }}|name'
+          "
+
+      # ─── 12. Health check ───
+      - name: 🏥 Health check
+        run: |
+          sleep 5
+          STATUS=\$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://мкту.рус/)
+          echo "HTTP status: \$STATUS"
+          if [ "\$STATUS" = "200" ]; then
+            echo "✅ Deploy successful — https://мкту.рус/ returns 200"
+          else
+            echo "❌ Deploy failed — got \$STATUS"
+            sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ env.VPS_USER }}@${{ env.VPS_HOST }} "pm2 logs ${{ env.PM2_NAME }} --lines 30 --nostream"
+            exit 1
+          fi
+
+      # ─── 13. Уведомление в Summary ───
+      - name: 📝 Summary
+        if: always()
+        run: |
+          echo "## 🚀 Деплой мкту.рус" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Author:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Message:** ${{ github.event.head_commit.message }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Проверка: https://мкту.рус/" >> $GITHUB_STEP_SUMMARY
