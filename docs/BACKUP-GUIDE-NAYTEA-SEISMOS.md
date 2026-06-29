@@ -1,20 +1,57 @@
 # 🆘 Бэкапы + Восстановление превью — для Naytea & Seismo
 
-> Дополнение к **VPS_INSTRUCTIONS.md** от iznaki-chat (прочитайте его сначала!)
+> Дополнение к **FINAL_VPS_GUIDE.md** от iznaki-chat (прочитайте его сначала!)
 > Тут только то, чего не хватает конкретно вам — бэкапы на GitHub и OG image
-> Все правила координации, lock, RAM — смотри в VPS_INSTRUCTIONS.md
+> Все правила координации, lock — смотри в FINAL_VPS_GUIDE.md
+>
+> **v2.0 — обновлено 2026-06-29 под новый VPS 188.127.227.250**
 
 ---
 
-## ⚠️ Статус сейчас (что я нашёл на VPS 2026-06-29)
+## 🆕 Реквизиты нового VPS (v2.0)
 
-| Что | iznaki (эталон) | mktu | seismos | naytea |
+```
+Хост:       188.127.227.250    (был 91.219.151.57)
+Пользователь: root
+Пароль:     bF2bB7eT4wdZ       (был iY4nY2rV7hqL)
+RAM:        3.8 GB             (было 956 MB — теперь build БЕЗ остановки сайтов!)
+Disk:       9.8 GB             (1.1 GB свободно)
+OS:         Ubuntu 26.04 LTS
+Node:       v22.22.1           (был v20)
+Bun:        1.7 GB в /root/.bun (но в PATH — проверяй `which bun`)
+PM2:        v7.0.3
+Caddy:      через systemd      (был вручную)
+```
+
+### Порты и папки на новом VPS
+
+```
+3000 → /var/www/mktu/      (mktu-chat)
+3001 → /var/www/iznaki/    (iznaki-chat)        ✅ работает
+3002 → /var/www/naytea/    (naytea-chat)        ⏳ перенос
+3003 → /var/www/naytea-full/ (naytea-full)      ⏳ перенос
+3004 → /var/www/seismos/   (seismos-chat)       ⏳ перенос
+
+/var/www/shared/  — общие файлы (гайды, README)
+```
+
+### ⚠️ ВАЖНО: правила нового VPS
+
+1. **Build БЕЗ остановки других сайтов** — RAM теперь 3.8 GB, Next.js build требует ~500 MB, всем хватает.
+2. **Caddy через `systemctl`** — `systemctl reload caddy`, `systemctl restart caddy`. Никаких kill/pkill.
+3. **PM2 через `systemctl status pm2-root`** — автозапуск уже настроен, `pm2 save` сохраняет список.
+
+---
+
+## ⚠️ Статус после переезда (2026-06-29 22:30 MSK)
+
+| Что | iznaki | mktu | seismos | naytea |
 |---|---|---|---|---|
+| Перенесён на новый VPS | ✅ | ✅ | ❌ | ❌ |
 | GitHub-репа с кодом | ✅ | ✅ | ❌ | ❌ |
-| `.env` с правильными VPS-путями | ✅ | ✅ | ❌ sandbox-пути | ❌ sandbox-пути |
+| `.env` с VPS-путями | ✅ | ✅ | ❌ sandbox-пути | ❌ sandbox-пути |
 | `ecosystem.config.js` | ✅ | ✅ | ❌ | ❌ |
 | `package.json` + `node_modules` | ✅ | ✅ | ✅ | ❌ **нет вообще** |
-| `BACKUP_README.md` | ✅ | — | — | — |
 | OG image 1200×630 | ✅ | ✅ | ❌ | ❌ |
 
 **Критично для Seismos:** нет `ecosystem.config.js` → после ребута VPS PM2 не поднимется автоматически.
@@ -46,7 +83,7 @@ GitHub → Settings → Developer settings → Personal access tokens → **Fine
 ### Шаг 3. На VPS — инициализировать git
 
 ```bash
-ssh root@91.219.151.57
+ssh root@188.127.227.250
 cd /var/www/seismos   # или naytea
 
 # 1. Создать .gitignore (если ещё нет)
@@ -164,12 +201,12 @@ crontab -l | grep seismos
 
 ## 🛠 Часть 2. Починить `.env` (критично!)
 
-⚠️ Сначала возьмите lock `scope=seismos` (или `naytea`) — см. VPS_INSTRUCTIONS.md раздел 1.
+⚠️ Сначала возьмите lock `scope=seismos` (или `naytea`) — см. FINAL_VPS_GUIDE.md раздел 1.
 
 ### Seismos
 
 ```bash
-ssh root@91.219.151.57
+ssh root@188.127.227.250
 
 # СТОП если lock занят — проверь STATE.json!
 cat > /var/www/seismos/.env <<'EOF'
@@ -196,7 +233,7 @@ curl -I https://seismos.ru
 ### Naytea
 
 ```bash
-ssh root@91.219.151.57
+ssh root@188.127.227.250
 
 cat > /var/www/naytea/.env <<'EOF'
 DATABASE_URL=file:/var/www/naytea/db/prod.db
@@ -318,23 +355,23 @@ tar -czf /tmp/naytea-src.tar.gz \
   src/ public/ package.json package-lock.json next.config.ts tsconfig.json \
   tailwind.config.ts postcss.config.mjs components.json prisma/ ecosystem.config.js .env.example
 
-# Залить на VPS (используй ssh_run_sh.py из VPS_INSTRUCTIONS.md, не scp — SFTP может не работать)
+# Залить на VPS (используй ssh_run_sh.py из FINAL_VPS_GUIDE.md, не scp — SFTP может не работать)
 python3 scripts/ssh_run_sh.py "mkdir -p /var/www/naytea"
 
-# Через tar+stdin (как в VPS_INSTRUCTIONS.md раздел 5, шаг 3):
-cat /tmp/naytea-src.tar.gz | ssh root@91.219.151.57 "cd /var/www/naytea && tar xzf -"
+# Через tar+stdin (как в FINAL_VPS_GUIDE.md раздел 5, шаг 3):
+cat /tmp/naytea-src.tar.gz | ssh root@188.127.227.250 "cd /var/www/naytea && tar xzf -"
 
 # На VPS — установить зависимости
 python3 scripts/ssh_run_sh.py "cd /var/www/naytea && export PATH=\$HOME/.bun/bin:\$PATH && bun install"
 
-# ⚠️ Build требует много RAM! Сначала остановить другие сайты
-python3 scripts/ssh_run_sh.py "pm2 stop mktu; pm2 stop iznaki; pm2 stop seismos; pm2 stop naytea-full 2>/dev/null; free -h"
+# ✅ НОВЫЙ VPS: build БЕЗ остановки других сайтов (RAM 3.8 GB, хватает всем)
+# (на старом VPS с 956 MB надо было делать pm2 stop mktu; pm2 stop iznaki — теперь НЕ надо)
 
 # Build
 python3 scripts/ssh_run_sh.py "cd /var/www/naytea && export PATH=\$HOME/.bun/bin:\$PATH && rm -rf .next && bun run build 2>&1 | tail -20"
 
-# Перезапустить все
-python3 scripts/ssh_run_sh.py "pm2 restart all; pm2 save"
+# Перезапустить только naytea
+python3 scripts/ssh_run_sh.py "pm2 restart naytea; pm2 save"
 ```
 
 ### Вариант B: Если исходников нет нигде
@@ -411,7 +448,7 @@ ls -la /tmp/og-image.png
 
 #### Шаг 3. Залить на VPS
 
-⚠️ **SFTP может не работать** — используй tar+stdin как в VPS_INSTRUCTIONS.md:
+⚠️ **SFTP может не работать** — используй tar+stdin как в FINAL_VPS_GUIDE.md:
 
 ```bash
 # Упаковать и залить
@@ -421,7 +458,7 @@ python3 << 'PYEOF'
 import paramiko
 cli = paramiko.SSHClient()
 cli.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-cli.connect('91.219.151.57', username='root', password='iY4nY2rV7hqL', timeout=15, allow_agent=False, look_for_keys=False)
+cli.connect('188.127.227.250', username='root', password='bF2bB7eT4wdZ', timeout=15, allow_agent=False, look_for_keys=False)
 
 # Создать папку public если нет
 cli.exec_command('mkdir -p /var/www/seismos/public')
@@ -472,14 +509,17 @@ export const metadata: Metadata = {
 
 #### Шаг 5. Пересобрать и задеплоить
 
-⚠️ Сначала — lock `scope=seismos` (см. VPS_INSTRUCTIONS.md раздел 1)!
+⚠️ Сначала — lock `scope=seismos` (см. FINAL_VPS_GUIDE.md раздел 1)!
 
 ```bash
 # В sandbox:
 npm run build  # или bun run build
 
-# Залить на VPS (см. VPS_INSTRUCTIONS.md раздел 5)
-# ПОМНИ: остановить другие сайты перед build на VPS (RAM 956 MB!)
+# Залить на VPS (см. FINAL_VPS_GUIDE.md раздел 5)
+# ✅ НОВЫЙ VPS: build БЕЗ остановки других сайтов (RAM 3.8 GB)
+
+# После деплоя — reload Caddy через systemd (НЕ kill/pkill!)
+ssh root@188.127.227.250 'systemctl reload caddy'
 ```
 
 ### 🔄 Сброс кеша превью в соцсетях
@@ -525,7 +565,7 @@ curl -I https://seismos.ru/og-image.png
 После того как всё сделали — прогоните:
 
 ```bash
-ssh root@91.219.151.57
+ssh root@188.127.227.250
 
 # 1. PM2 процессы живы
 pm2 list
@@ -573,11 +613,11 @@ crontab -l | grep seismos
 
 ## 🆘 Если что-то непонятно
 
-- **iznaki-chat** — главный консультант, у него всё работает как часы, читайте его `VPS_INSTRUCTIONS.md`
+- **iznaki-chat** — главный консультант, у него всё работает как часы, читайте его `FINAL_VPS_GUIDE.md`
 - **mktu-chat** (это я, Бро #3) — написал этот гайд, спрашивайте
-- VPS: `91.219.151.57`, root / `iY4nY2rV7hqL`
+- VPS: `188.127.227.250`, root / `bF2bB7eT4wdZ`
 - Координация: репа `gabbardtools-a11y/vps-coordination` → `STATE.json` для lock
-- **⚠️ Перед любым действием на VPS — проверяйте lock!** (см. VPS_INSTRUCTIONS.md раздел 1)
+- **⚠️ Перед любым действием на VPS — проверяйте lock!** (см. FINAL_VPS_GUIDE.md раздел 1)
 
 ---
 
