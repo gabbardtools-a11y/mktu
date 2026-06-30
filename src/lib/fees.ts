@@ -158,18 +158,5 @@ export function calculateFees(
 
 export const fmtRub = (n: number) => n.toLocaleString("ru-RU") + " ₽";
 
-export function pluralClasses(n: number): string {
-  const mod10 = n % 10;
-  const mod100 = n % 100;
-  if (mod10 === 1 && mod100 !== 11) return "класс";
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return "класса";
-  return "классов";
-}
-
-export function pluralItems(n: number): string {
-  const mod10 = n % 10;
-  const mod100 = n % 100;
-  if (mod10 === 1 && mod100 !== 11) return "позиция";
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return "позиции";
-  return "позиций";
-}
+// pluralClasses / pluralItems — переиспользуем из общего plural.ts
+export { pluralClasses, pluralItems } from "@/lib/plural";

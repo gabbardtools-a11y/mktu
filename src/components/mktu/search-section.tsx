@@ -64,7 +64,6 @@ export function SearchSection({
         onQueryChange(q);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filterButtons: { key: FilterType | "list" | "text" | "cards"; label: string; Icon: typeof Package }[] =

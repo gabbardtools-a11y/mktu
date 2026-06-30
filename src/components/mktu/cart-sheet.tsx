@@ -26,6 +26,7 @@ import { mktuClasses } from "@/data/mktu-data";
 import type { CartClass } from "@/hooks/use-favorites-cart";
 import { downloadRtf } from "@/lib/rtf-export";
 import { CartFeesCalculator } from "@/components/mktu/cart-fees-calculator";
+import { pluralRu } from "@/lib/plural";
 
 interface CartSheetProps {
   open: boolean;
@@ -39,13 +40,6 @@ interface CartSheetProps {
   onOpenClass: (classId: number) => void;
 }
 
-function pluralRu(n: number, forms: [string, string, string]) {
-  const mod10 = n % 10;
-  const mod100 = n % 100;
-  if (mod10 === 1 && mod100 !== 11) return forms[0];
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return forms[1];
-  return forms[2];
-}
 
 export function CartSheet({
   open,
