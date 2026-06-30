@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Star,
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { mktuClasses } from "@/data/mktu-data";
+import type { MktuClass } from "@/data/mktu-data";
 import type { CartClass } from "@/hooks/use-favorites-cart";
 import { downloadRtf } from "@/lib/rtf-export";
 import { CartFeesCalculator } from "@/components/mktu/cart-fees-calculator";
@@ -54,6 +54,30 @@ export function CartSheet({
 }: CartSheetProps) {
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
   const [paperCert, setPaperCert] = useState(false);
+  const [fullClasses, setFullClasses] = useState<Map<number, MktuClass>>(new Map());
+
+  // Грузим полные данные (с items[]) только для классов в корзине.
+  // Это позволяет не тащить весь mktu-data.json (1.4 MB) в браузерный бандл.
+  useEffect(() => {
+    if (!open || cart.length === 0) return;
+    const needed = cart.map((c) => c.classId);
+    const missing = needed.filter((id) => !fullClasses.has(id));
+    if (missing.length === 0) return;
+    fetch(`/api/classes?id=${missing.join(",")}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.classes) {
+          setFullClasses((prev) => {
+            const next = new Map(prev);
+            for (const cls of data.classes) {
+              next.set(cls.id, cls);
+            }
+            return next;
+          });
+        }
+      })
+      .catch((err) => console.error("Failed to load classes:", err));
+  }, [open, cart, fullClasses]);
 
   const totalItems = cart.reduce(
     (acc, c) => acc + c.selectedItems.length,
@@ -131,7 +155,7 @@ export function CartSheet({
           ) : (
             <div className="space-y-2 pt-2 pb-4">
               {cart.map((entry) => {
-                const cls = mktuClasses.find((c) => c.id === entry.classId);
+                const cls = fullClasses.get(entry.classId);
                 if (!cls) return null;
                 const isOpen = expanded.has(cls.id);
                 const selectedCount = cls.items.filter((it) =>
@@ -319,7 +343,7 @@ export function CartSheet({
                 {pluralRu(totalItems, ["позиция", "позиции", "позиций"])}
               </div>
               <Button
-                onClick={() => downloadRtf(cart, mktuClasses, { paperCert })}
+                onClick={() => downloadRtf(cart, undefined, { paperCert })}
                 className="bg-gold text-background hover:bg-gold-dark gap-1.5 text-sm"
               >
                 <Download className="size-4" />

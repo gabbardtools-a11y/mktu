@@ -22,17 +22,17 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { mktuClasses } from "@/data/mktu-data";
+import { mktuClasses, type MktuClass } from "@/data/mktu-data";
 import { getClassIcon } from "@/data/class-icons";
 import { ClassNotes } from "@/components/mktu/class-notes";
 import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
 import { downloadRtf } from "@/lib/rtf-export";
 
 interface ClassDetailClientProps {
-  classId: number;
+  cls: MktuClass;
 }
 
-export function ClassDetailClient({ classId }: ClassDetailClientProps) {
+export function ClassDetailClient({ cls }: ClassDetailClientProps) {
   const router = useRouter();
 
   const {
@@ -50,11 +50,6 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
   const [showNotes, setShowNotes] = useState(false);
   const [itemView, setItemView] = useState<"list" | "inline" | "official">("list");
 
-  const cls = useMemo(
-    () => mktuClasses.find((c) => c.id === classId) ?? null,
-    [classId],
-  );
-
   const filteredItems = useMemo(() => {
     if (!cls) return [];
     const q = query.trim().toLowerCase();
@@ -65,7 +60,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
   // Скролл наверх при смене класса
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-  }, [classId]);
+  }, [cls.id]);
 
   if (!cls) {
     return (
@@ -484,7 +479,7 @@ export function ClassDetailClient({ classId }: ClassDetailClientProps) {
               </Button>
               <Button
                 size="sm"
-                onClick={() => downloadRtf(cart, mktuClasses)}
+                onClick={() => downloadRtf(cart)}
                 className="bg-gold text-background hover:bg-gold-dark"
               >
                 <Download className="size-4 mr-1.5" />

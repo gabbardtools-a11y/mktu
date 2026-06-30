@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import SearchClient from "./search-client";
+import { mktuClassesFull } from "@/data/mktu-data-full";
 
 export const metadata: Metadata = {
   title: "Поиск по классам МКТУ",
@@ -31,5 +32,7 @@ export const metadata: Metadata = {
 };
 
 export default function SearchPage() {
-  return <SearchClient />;
+  // Передаём full data (с items[]) в client component.
+  // page.tsx — server component, mktu-data-full.ts не попадёт в браузерный бандл.
+  return <SearchClient classes={mktuClassesFull} />;
 }

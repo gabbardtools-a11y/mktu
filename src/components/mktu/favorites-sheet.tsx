@@ -121,7 +121,7 @@ export function FavoritesSheet({
                           {cls.name}
                         </div>
                         <div className="text-xs text-foreground/40">
-                          {cls.items.length} позиций
+                          {cls.itemsCount} позиций
                         </div>
                       </button>
                       <button

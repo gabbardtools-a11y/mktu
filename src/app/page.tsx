@@ -43,7 +43,9 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Filtered classes based on query and filter
+  // Filtered classes based on query and filter.
+  // Live-поиск только по name/description (compact data, ~24 KB).
+  // Для глубокого поиска по позициям — кнопка «Найти» → /search?q=...
   const filteredGoods = useMemo(() => {
     const q = query.trim().toLowerCase();
     return mktuClasses.filter((c) => {
@@ -52,7 +54,7 @@ export default function Home() {
       if (!q) return true;
       if (c.name.toLowerCase().includes(q)) return true;
       if (c.description.toLowerCase().includes(q)) return true;
-      return c.items.some((it) => it.toLowerCase().includes(q));
+      return false;
     });
   }, [query, filter]);
 
@@ -64,7 +66,7 @@ export default function Home() {
       if (!q) return true;
       if (c.name.toLowerCase().includes(q)) return true;
       if (c.description.toLowerCase().includes(q)) return true;
-      return c.items.some((it) => it.toLowerCase().includes(q));
+      return false;
     });
   }, [query, filter]);
 
@@ -164,7 +166,7 @@ export default function Home() {
                 if (!q) return true;
                 if (cls.name.toLowerCase().includes(q)) return true;
                 if (cls.description.toLowerCase().includes(q)) return true;
-                return cls.items.some((it) => it.toLowerCase().includes(q));
+                return false; // live-поиск по items убран — используйте /search
               })
               .map((cls) => {
                 const isGoods = cls.type === "goods";
@@ -183,7 +185,7 @@ export default function Home() {
                       <span className="text-foreground/70">{cls.description}</span>
                     </p>
                     <div className="flex items-center gap-2 mt-1.5">
-                      <span className="text-xs text-foreground/40">{cls.items.length} позиций</span>
+                      <span className="text-xs text-foreground/40">{cls.itemsCount} позиций</span>
                       <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); toggleFavorite(cls.id); }}
@@ -224,7 +226,7 @@ export default function Home() {
                 if (!q) return true;
                 if (cls.name.toLowerCase().includes(q)) return true;
                 if (cls.description.toLowerCase().includes(q)) return true;
-                return cls.items.some((it) => it.toLowerCase().includes(q));
+                return false; // live-поиск по items убран — используйте /search
               })
               .map((cls, idx) => {
                 const { icon: Icon, label: iconLabel } = getClassIcon(cls.id);
@@ -262,7 +264,7 @@ export default function Home() {
                         </span>
                       </div>
                       <div className="text-xs sm:text-sm text-foreground/40 truncate">
-                        {iconLabel} · {cls.items.length} позиций
+                        {iconLabel} · {cls.itemsCount} позиций
                       </div>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">

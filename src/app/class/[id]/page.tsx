@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { mktuClasses } from "@/data/mktu-data";
+import { mktuClasses, type MktuClass } from "@/data/mktu-data";
+import { getFullClassById } from "@/data/mktu-data-full";
 import { ClassDetailClient } from "./class-detail-client";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mktu.ru";
@@ -20,7 +21,7 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
   const classId = Number(id);
-  const cls = mktuClasses.find((c) => c.id === classId);
+  const cls = getFullClassById(classId);
 
   if (!cls) {
     return {
@@ -90,11 +91,13 @@ export async function generateMetadata({
 export default async function ClassDetailPage({ params }: PageProps) {
   const { id } = await params;
   const classId = Number(id);
-  const cls = mktuClasses.find((c) => c.id === classId);
+  const cls = getFullClassById(classId);
 
   if (!cls) {
     notFound();
   }
 
-  return <ClassDetailClient classId={classId} />;
+  // Передаём full class (с items[]) в client component.
+  // page.tsx — server component, mktu-data-full.ts не попадёт в браузерный бандл.
+  return <ClassDetailClient cls={cls} />;
 }

@@ -3,11 +3,11 @@
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Star, ShoppingBag, ArrowRight } from "lucide-react";
-import type { MktuClass } from "@/data/mktu-data";
+import type { MktuClassCompact } from "@/data/mktu-data";
 import { getClassIcon } from "@/data/class-icons";
 
 interface ClassCardProps {
-  cls: MktuClass;
+  cls: MktuClassCompact;
   index: number;
   isFavorite: boolean;
   isInCart: boolean;
@@ -123,7 +123,7 @@ export function ClassCard({
 
       <div className="flex items-center justify-between pt-3 border-t border-border/50">
         <span className="text-xs sm:text-sm text-foreground/40">
-          <span className="text-gold font-medium">{cls.items.length}</span>{" "}
+          <span className="text-gold font-medium">{cls.itemsCount}</span>{" "}
           позиций
         </span>
         <span

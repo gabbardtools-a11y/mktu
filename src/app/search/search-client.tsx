@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Search, X, Check, ChevronDown, ChevronUp, ArrowLeft, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { mktuClasses } from "@/data/mktu-data";
+import type { MktuClass } from "@/data/mktu-data";
 import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
 import { AiChatDialog } from "@/components/mktu/ai-chat-dialog";
 
@@ -18,7 +18,7 @@ interface ClassSearchResult {
   matchedItems: string[];
 }
 
-function SearchPageInner() {
+function SearchPageInner({ classes }: { classes: MktuClass[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams?.get("q") ?? "";
@@ -55,7 +55,7 @@ function SearchPageInner() {
 
     const matched: ClassSearchResult[] = [];
 
-    for (const cls of mktuClasses) {
+    for (const cls of classes) {
       const nameMatch = cls.name.toLowerCase().includes(q);
       const descMatch = cls.description.toLowerCase().includes(q);
       const matchedItems = cls.items.filter((item) =>
@@ -398,7 +398,7 @@ function SearchPageInner() {
   );
 }
 
-export default function SearchClient() {
+export default function SearchClient({ classes }: { classes: MktuClass[] }) {
   return (
     <Suspense
       fallback={
@@ -407,7 +407,7 @@ export default function SearchClient() {
         </div>
       }
     >
-      <SearchPageInner />
+      <SearchPageInner classes={classes} />
     </Suspense>
   );
 }
