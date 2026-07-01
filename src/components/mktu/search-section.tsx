@@ -15,6 +15,7 @@ import {
   List,
   AlignJustify,
   FileText,
+  Plus,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -133,6 +134,17 @@ export function SearchSection({
             <span className="hidden sm:inline">Найти</span>
           </button>
 
+          {/* Кнопка "+" — все сервисы */}
+          <button
+            type="button"
+            onClick={() => router.push("/services")}
+            title="Все сервисы МКТУ"
+            aria-label="Все сервисы МКТУ"
+            className="flex items-center justify-center w-9 h-9 rounded-md border-2 border-gold/50 bg-gold/10 text-gold hover:bg-gold/20 hover:border-gold transition-all flex-shrink-0 font-bold"
+          >
+            <Plus className="size-5" strokeWidth={2.5} />
+          </button>
+
           <motion.button
             type="button"
             onClick={() => setAiOpen(true)}
@@ -140,13 +152,13 @@ export function SearchSection({
             whileTap={{ scale: 0.96 }}
             title="Поиск с помощью ИИ"
             aria-label="Поиск с помощью ИИ"
-            className="flex items-center justify-center w-9 h-9 sm:w-auto sm:h-9 sm:px-3 rounded-md bg-gradient-to-br from-blue-500/15 to-emerald-500/15 border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:border-blue-500/50 transition-all group flex-shrink-0"
+            className="flex items-center justify-center w-9 h-9 sm:w-auto sm:h-9 sm:px-4 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 border-2 border-blue-400 text-white hover:from-blue-400 hover:to-blue-500 hover:border-blue-300 transition-all group flex-shrink-0 shadow-md shadow-blue-500/30"
           >
             <Sparkles
-              className="size-4 group-hover:scale-110 transition-transform"
-              strokeWidth={2.2}
+              className="size-4 group-hover:scale-110 transition-transform text-white"
+              strokeWidth={2.5}
             />
-            <span className="hidden sm:inline ml-1.5 text-sm font-semibold tracking-wide">
+            <span className="hidden sm:inline ml-1.5 text-sm font-bold tracking-wide text-white">
               ИИ
             </span>
           </motion.button>
