@@ -134,17 +134,6 @@ export function SearchSection({
             <span className="hidden sm:inline">Найти</span>
           </button>
 
-          {/* Кнопка "+" — все сервисы */}
-          <button
-            type="button"
-            onClick={() => router.push("/services")}
-            title="Все сервисы МКТУ"
-            aria-label="Все сервисы МКТУ"
-            className="flex items-center justify-center w-9 h-9 rounded-md border-2 border-gold/50 bg-gold/10 text-gold hover:bg-gold/20 hover:border-gold transition-all flex-shrink-0 font-bold"
-          >
-            <Plus className="size-5" strokeWidth={2.5} />
-          </button>
-
           <motion.button
             type="button"
             onClick={() => setAiOpen(true)}
@@ -162,6 +151,17 @@ export function SearchSection({
               ИИ
             </span>
           </motion.button>
+
+          {/* Кнопка "+" после ИИ — все сервисы (синяя, в стиле ИИ) */}
+          <button
+            type="button"
+            onClick={() => router.push("/services")}
+            title="Все сервисы МКТУ"
+            aria-label="Все сервисы МКТУ"
+            className="flex items-center justify-center w-9 h-9 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 border-2 border-blue-400 text-white hover:from-blue-400 hover:to-blue-500 hover:border-blue-300 transition-all flex-shrink-0 shadow-md shadow-blue-500/30"
+          >
+            <Plus className="size-5 text-white" strokeWidth={2.5} />
+          </button>
         </div>
       </div>
 

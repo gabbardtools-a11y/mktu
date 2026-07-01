@@ -153,17 +153,17 @@ export function Header({
               </AnimatePresence>
             </div>
 
-            {/* Dropdown: Сервисы — яркая кнопка */}
+            {/* Dropdown: Сервисы — яркая золотая кнопка */}
             <div className="relative" ref={servicesRef}>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setServicesOpen((v) => !v)}
-                className="text-gold hover:text-gold-light hover:bg-gold/10 border border-gold/30 bg-gold/5 font-semibold"
+                className="bg-gold text-background hover:bg-gold-light border-2 border-gold-dark font-bold shadow-md shadow-gold/30"
                 title="Все сервисы МКТУ"
                 aria-expanded={servicesOpen}
               >
-                <Sparkles className="size-4 text-gold" strokeWidth={2.5} />
+                <Sparkles className="size-4 text-background" strokeWidth={2.5} />
                 <span className="hidden sm:inline ml-1.5 font-bold tracking-wide">Сервисы</span>
                 <ChevronDown
                   className={`size-3 ml-0.5 transition-transform ${servicesOpen ? "rotate-180" : ""}`}
