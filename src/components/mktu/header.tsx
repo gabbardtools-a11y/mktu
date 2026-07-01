@@ -13,6 +13,12 @@ import {
   HelpCircle,
   Grid3x3,
   Calculator,
+  Sparkles,
+  Compass,
+  Link2,
+  FileSearch,
+  Lightbulb,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme, type Theme } from "@/hooks/use-theme";
@@ -45,7 +51,9 @@ export function Header({
   const { theme, setTheme, mounted } = useTheme();
   const router = useRouter();
   const [gridOpen, setGridOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
   const gridRef = useRef<HTMLDivElement | null>(null);
+  const servicesRef = useRef<HTMLDivElement | null>(null);
 
   // Закрытие меню при клике вне его
   useEffect(() => {
@@ -53,12 +61,15 @@ export function Header({
       if (gridRef.current && !gridRef.current.contains(e.target as Node)) {
         setGridOpen(false);
       }
+      if (servicesRef.current && !servicesRef.current.contains(e.target as Node)) {
+        setServicesOpen(false);
+      }
     };
-    if (gridOpen) {
+    if (gridOpen || servicesOpen) {
       document.addEventListener("mousedown", onClick);
       return () => document.removeEventListener("mousedown", onClick);
     }
-  }, [gridOpen]);
+  }, [gridOpen, servicesOpen]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-b border-gold/10 shadow-lg shadow-foreground/5">
@@ -142,18 +153,103 @@ export function Header({
               </AnimatePresence>
             </div>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              className="text-foreground/70 hover:text-gold hover:bg-gold/5"
-              title="Калькулятор пошлин Роспатента"
-            >
-              <Link href="/calculator">
-                <Calculator className="size-4" />
-                <span className="hidden sm:inline ml-1.5">Пошлины</span>
-              </Link>
-            </Button>
+            {/* Dropdown: Сервисы */}
+            <div className="relative" ref={servicesRef}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setServicesOpen((v) => !v)}
+                className="text-foreground/70 hover:text-gold hover:bg-gold/5"
+                title="Сервисы для определения класса"
+                aria-expanded={servicesOpen}
+              >
+                <Sparkles className="size-4" />
+                <span className="hidden sm:inline ml-1.5">Сервисы</span>
+                <ChevronDown
+                  className={`size-3 ml-0.5 transition-transform ${servicesOpen ? "rotate-180" : ""}`}
+                />
+              </Button>
+
+              <AnimatePresence>
+                {servicesOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 top-full mt-1 w-64 p-2 rounded-xl border border-border bg-card shadow-xl shadow-foreground/10 z-50"
+                  >
+                    <Link
+                      href="/assistant"
+                      onClick={() => setServicesOpen(false)}
+                      className="flex items-start gap-2.5 p-2 rounded-md hover:bg-muted/40 transition-colors"
+                    >
+                      <Sparkles className="size-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-sm font-medium text-foreground">ИИ-помощник</div>
+                        <div className="text-[11px] text-foreground/50">Определит классы с объяснениями</div>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/wizard"
+                      onClick={() => setServicesOpen(false)}
+                      className="flex items-start gap-2.5 p-2 rounded-md hover:bg-muted/40 transition-colors"
+                    >
+                      <Compass className="size-4 text-gold mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-sm font-medium text-foreground">Мастер определения</div>
+                        <div className="text-[11px] text-foreground/50">Пошаговый опросник для новичков</div>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/okved"
+                      onClick={() => setServicesOpen(false)}
+                      className="flex items-start gap-2.5 p-2 rounded-md hover:bg-muted/40 transition-colors"
+                    >
+                      <FileSearch className="size-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-sm font-medium text-foreground">ОКВЭД → МКТУ</div>
+                        <div className="text-[11px] text-foreground/50">Конвертер кодов деятельности</div>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/related"
+                      onClick={() => setServicesOpen(false)}
+                      className="flex items-start gap-2.5 p-2 rounded-md hover:bg-muted/40 transition-colors"
+                    >
+                      <Link2 className="size-4 text-gold mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-sm font-medium text-foreground">Связанные классы</div>
+                        <div className="text-[11px] text-foreground/50">Что ещё нужно вместе с классом</div>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/faq-cases"
+                      onClick={() => setServicesOpen(false)}
+                      className="flex items-start gap-2.5 p-2 rounded-md hover:bg-muted/40 transition-colors"
+                    >
+                      <Lightbulb className="size-4 text-amber-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-sm font-medium text-foreground">Частые кейсы</div>
+                        <div className="text-[11px] text-foreground/50">IT, общепит, торговля — готовые ответы</div>
+                      </div>
+                    </Link>
+                    <div className="border-t border-border/50 my-1" />
+                    <Link
+                      href="/calculator"
+                      onClick={() => setServicesOpen(false)}
+                      className="flex items-start gap-2.5 p-2 rounded-md hover:bg-muted/40 transition-colors"
+                    >
+                      <Calculator className="size-4 text-gold mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-sm font-medium text-foreground">Калькулятор пошлин</div>
+                        <div className="text-[11px] text-foreground/50">Роспатент: 2.1 + 2.4 + 2.11</div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             <Button
               variant="ghost"
