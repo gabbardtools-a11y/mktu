@@ -159,7 +159,7 @@ export function Header({
                 variant="ghost"
                 size="sm"
                 onClick={() => setServicesOpen((v) => !v)}
-                className="bg-card text-gold hover:text-gold-light border-2 border-gold shadow-[0_0_12px_rgba(255,210,77,0.6),inset_0_0_8px_rgba(255,210,77,0.3)] hover:shadow-[0_0_18px_rgba(255,210,77,0.9),inset_0_0_12px_rgba(255,210,77,0.5)] font-bold transition-all"
+                className="bg-card text-gold hover:text-gold-light border border-gold shadow-[0_0_6px_rgba(255,210,77,0.4)] hover:shadow-[0_0_10px_rgba(255,210,77,0.7)] font-medium transition-all"
                 title="Все сервисы МКТУ"
                 aria-expanded={servicesOpen}
               >
