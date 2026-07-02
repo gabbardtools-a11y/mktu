@@ -63,12 +63,12 @@ export const metadata: Metadata = {
 };
 
 // Inline script to set initial theme before hydration — prevents flash of wrong theme.
-// Default theme is 'navy' (set in use-theme.ts as DEFAULT_THEME).
+// Default theme is 'light' (set in use-theme.ts as DEFAULT_THEME).
 const themeInitScript = `
 (function() {
   try {
     var stored = localStorage.getItem('mktu-theme');
-    var theme = (stored === 'light' || stored === 'dark' || stored === 'navy') ? stored : 'navy';
+    var theme = (stored === 'light' || stored === 'dark' || stored === 'navy') ? stored : 'light';
     var root = document.documentElement;
     root.classList.remove('dark', 'navy');
     if (theme === 'dark') {
@@ -93,7 +93,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className="navy" suppressHydrationWarning>
+    <html lang="ru" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
