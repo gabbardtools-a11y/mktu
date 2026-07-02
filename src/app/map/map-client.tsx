@@ -24,9 +24,6 @@ import {
   HeartHandshake,
   Sparkles,
 } from "lucide-react";
-  HeartHandshake,
-  Sparkles,
-} from "lucide-react";
 import { mktuClasses } from "@/data/mktu-data";
 
 // ─────────────────── Категории для визуальной карты ───────────────────
