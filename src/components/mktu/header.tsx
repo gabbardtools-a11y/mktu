@@ -153,20 +153,20 @@ export function Header({
               </AnimatePresence>
             </div>
 
-            {/* Dropdown: Сервисы — очень яркая золотая кнопка (gradient + glow) */}
+            {/* Dropdown: Сервисы — неоновая обводка на тёмном фоне */}
             <div className="relative" ref={servicesRef}>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setServicesOpen((v) => !v)}
-                className="bg-gradient-to-br from-yellow-300 via-gold to-amber-500 text-background hover:from-yellow-200 hover:via-gold-light hover:to-amber-400 border-2 border-amber-600 font-extrabold shadow-lg shadow-amber-500/50 hover:shadow-amber-400/60 hover:scale-105 transition-all"
+                className="bg-card text-gold hover:text-gold-light border-2 border-gold shadow-[0_0_12px_rgba(255,210,77,0.6),inset_0_0_8px_rgba(255,210,77,0.3)] hover:shadow-[0_0_18px_rgba(255,210,77,0.9),inset_0_0_12px_rgba(255,210,77,0.5)] font-bold transition-all"
                 title="Все сервисы МКТУ"
                 aria-expanded={servicesOpen}
               >
-                <Sparkles className="size-5 text-background drop-shadow" strokeWidth={2.8} />
-                <span className="hidden sm:inline ml-2 font-extrabold tracking-wide text-base drop-shadow">Сервисы</span>
+                <Sparkles className="size-4 text-gold" strokeWidth={2.5} />
+                <span className="hidden sm:inline ml-1.5 font-bold tracking-wide">Сервисы</span>
                 <ChevronDown
-                  className={`size-4 ml-1 transition-transform ${servicesOpen ? "rotate-180" : ""}`}
+                  className={`size-3 ml-0.5 transition-transform ${servicesOpen ? "rotate-180" : ""}`}
                 />
               </Button>
 
