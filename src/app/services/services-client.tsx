@@ -13,6 +13,7 @@ import {
   Grid3x3,
   HelpCircle,
   ArrowRight,
+  Map as MapIcon,
 } from "lucide-react";
 
 interface ServiceCard {
@@ -21,7 +22,7 @@ interface ServiceCard {
   emoji: string;
   title: string;
   description: string;
-  color: "blue" | "gold" | "amber" | "green";
+  color: "blue" | "gold" | "amber" | "green" | "purple";
   badge?: string;
 }
 
@@ -100,6 +101,16 @@ const SERVICES: ServiceCard[] = [
     color: "gold",
   },
   {
+    href: "/map",
+    icon: MapIcon,
+    emoji: "🌳",
+    title: "Визуальная карта классов",
+    description:
+      "Дерево из 45 классов по 13 категориям. Для визуалов — раскрывайте и ищите.",
+    color: "purple",
+    badge: "Новое",
+  },
+  {
     href: "/faq",
     icon: HelpCircle,
     emoji: "❓",
@@ -130,6 +141,11 @@ const COLOR_STYLES = {
     icon: "bg-green-500/15 text-green-400 border-green-500/30",
     glow: "from-green-500/10",
     badge: "bg-green-500/15 text-green-400 border-green-500/30",
+  },
+  purple: {
+    icon: "bg-purple-500/15 text-purple-400 border-purple-500/30",
+    glow: "from-purple-500/10",
+    badge: "bg-purple-500/15 text-purple-400 border-purple-500/30",
   },
 };
 
