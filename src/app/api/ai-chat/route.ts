@@ -72,11 +72,102 @@ interface RequestBody {
 }
 
 /**
- * Call RouterAI with streaming. Returns a ReadableStream of text chunks.
+ * Вызывает Groq API (бесплатно, Llama 3.3 70B) со стримингом.
+ * Groq совместим с OpenAI API форматом.
+ */
+function callGroqStream(messages: ChatMessage[]): ReadableStream<Uint8Array> {
+  const apiKey = process.env.GROQ_API_KEY;
+  const model = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+
+  const encoder = new TextEncoder();
+
+  return new ReadableStream({
+    async start(controller) {
+      if (!apiKey) {
+        controller.enqueue(encoder.encode("[ERROR: GROQ_API_KEY не задан]"));
+        controller.close();
+        return;
+      }
+
+      try {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          signal: AbortSignal.timeout(90000),
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: "system", content: SYSTEM_PROMPT },
+              ...messages.map((m) => ({ role: m.role, content: m.content })),
+            ],
+            stream: true,
+            temperature: 0.7,
+            max_tokens: 2000,
+          }),
+        });
+
+        if (!res.ok || !res.body) {
+          const errText = await res.text().catch(() => "");
+          controller.enqueue(
+            encoder.encode(`[ERROR: Groq HTTP ${res.status}: ${errText.slice(0, 200)}]`),
+          );
+          controller.close();
+          return;
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || !trimmed.startsWith("data: ")) continue;
+
+            const data = trimmed.slice(6);
+            if (data === "[DONE]") {
+              controller.close();
+              return;
+            }
+
+            try {
+              const json = JSON.parse(data);
+              const content = json?.choices?.[0]?.delta?.content;
+              if (content) {
+                controller.enqueue(encoder.encode(content));
+              }
+            } catch {
+              // skip invalid JSON
+            }
+          }
+        }
+
+        controller.close();
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "unknown error";
+        controller.enqueue(encoder.encode(`[ERROR: ${msg}]`));
+        controller.close();
+      }
+    },
+  });
+}
+
+/**
+ * Fallback: вызывает RouterAI (платный, gpt-4o-mini) со стримингом.
  */
 function callRouterAiStream(messages: ChatMessage[]): ReadableStream<Uint8Array> {
   const apiKey = process.env.ROUTERAI_API_KEY;
-  const model = process.env.ROUTERAI_MODEL || "z-ai/glm-5-turbo";
+  const model = process.env.ROUTERAI_MODEL || "openai/gpt-4o-mini";
   const endpoint = process.env.ROUTERAI_ENDPOINT || "https://routerai.ru/api/v1";
 
   const encoder = new TextEncoder();
@@ -92,7 +183,7 @@ function callRouterAiStream(messages: ChatMessage[]): ReadableStream<Uint8Array>
       try {
         const res = await fetch(`${endpoint}/chat/completions`, {
           method: "POST",
-          signal: AbortSignal.timeout(90000), // 90 seconds timeout
+          signal: AbortSignal.timeout(90000),
           headers: {
             Authorization: `Bearer ${apiKey}`,
             "Content-Type": "application/json",
@@ -189,7 +280,21 @@ export async function POST(req: NextRequest) {
     }
 
     const trimmed = cleanMessages.slice(-20);
+
+    // ─── Приоритет: Groq (бесплатно) → RouterAI (платный fallback) ───
+    const hasGroqKey = !!process.env.GROQ_API_KEY;
     const hasRouterAiKey = !!process.env.ROUTERAI_API_KEY;
+
+    if (hasGroqKey) {
+      const stream = callGroqStream(trimmed);
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Transfer-Encoding": "chunked",
+          "Cache-Control": "no-cache",
+        },
+      });
+    }
 
     if (hasRouterAiKey) {
       const stream = callRouterAiStream(trimmed);
@@ -207,7 +312,6 @@ export async function POST(req: NextRequest) {
         error: "ai_not_configured",
         message: "AI-чат не настроен.",
         external_chats: [
-          { name: "RouterAI", url: "https://routerai.ru", description: "Оплата из РФ" },
           { name: "DuckDuckGo AI", url: "https://duck.ai", description: "Бесплатно" },
           { name: "Z.ai Chat", url: "https://chat.z.ai", description: "Бесплатно" },
         ],
@@ -224,12 +328,17 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
+  const hasGroqKey = !!process.env.GROQ_API_KEY;
   const hasRouterAiKey = !!process.env.ROUTERAI_API_KEY;
+  const provider = hasGroqKey ? "groq" : hasRouterAiKey ? "routerai" : "none";
   return Response.json({
     ok: true,
     service: "mktu-ai-chat",
-    provider: hasRouterAiKey ? "routerai" : "none",
-    model: process.env.ROUTERAI_MODEL || "z-ai/glm-5-turbo",
+    provider,
+    model: hasGroqKey
+      ? process.env.GROQ_MODEL || "llama-3.3-70b-versatile"
+      : process.env.ROUTERAI_MODEL || "openai/gpt-4o-mini",
     streaming: true,
+    fallback: hasGroqKey && hasRouterAiKey ? "routerai" : "none",
   });
 }
