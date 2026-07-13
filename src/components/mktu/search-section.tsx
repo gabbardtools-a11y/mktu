@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { AiChatDialog } from "@/components/mktu/ai-chat-dialog";
+// AiChatDialog больше не нужен — ИИ-кнопка ведёт на /assistant
 
 export type FilterType = "all" | "goods" | "services";
 export type ViewMode = "cards" | "list" | "text";
@@ -54,7 +54,6 @@ export function SearchSection({
   onClearCart,
 }: SearchSectionProps) {
   const router = useRouter();
-  const [aiOpen, setAiOpen] = useState(false);
 
   // Если в URL есть ?q=..., синхронизируем поле при первом монтировании
   useEffect(() => {
@@ -75,11 +74,6 @@ export function SearchSection({
       { key: "goods", label: "Товары", Icon: Package },
       { key: "services", label: "Услуги", Icon: Briefcase },
     ];
-
-  const buildPrompt = () => {
-    const q = query.trim();
-    return q ? `Определить МКТУ: ${q}` : "Определить МКТУ";
-  };
 
   const handleSearch = () => {
     const q = query.trim();
@@ -136,11 +130,11 @@ export function SearchSection({
 
           <motion.button
             type="button"
-            onClick={() => setAiOpen(true)}
+            onClick={() => router.push("/assistant")}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
-            title="Поиск с помощью ИИ"
-            aria-label="Поиск с помощью ИИ"
+            title="ИИ-помощник — определит классы МКТУ с объяснениями"
+            aria-label="ИИ-помощник"
             className="flex items-center justify-center w-9 h-9 sm:w-auto sm:h-9 sm:px-4 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 border-2 border-blue-400 text-white hover:from-blue-400 hover:to-blue-500 hover:border-blue-300 transition-all group flex-shrink-0 shadow-md shadow-blue-500/30"
           >
             <Sparkles
@@ -164,13 +158,6 @@ export function SearchSection({
           </button>
         </div>
       </div>
-
-      {/* AI chat modal */}
-      <AiChatDialog
-        open={aiOpen}
-        onOpenChange={setAiOpen}
-        initialPrompt={buildPrompt()}
-      />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
