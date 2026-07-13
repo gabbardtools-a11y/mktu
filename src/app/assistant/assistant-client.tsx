@@ -29,6 +29,7 @@ export function AssistantClient() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [responseComplete, setResponseComplete] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -54,6 +55,7 @@ export function AssistantClient() {
 
     setInput("");
     setError(null);
+    setResponseComplete(false);
     const userMsg: Message = { role: "user", content: query };
     const assistantMsg: Message = { role: "assistant", content: "" };
     setMessages((prev) => [...prev, userMsg, assistantMsg]);
@@ -114,6 +116,7 @@ export function AssistantClient() {
       setMessages((prev) => prev.slice(0, -1)); // убрать пустое assistant сообщение
     } finally {
       setLoading(false);
+      setResponseComplete(true);
       abortRef.current = null;
     }
   }
@@ -195,8 +198,13 @@ export function AssistantClient() {
                   key={i}
                   msg={msg}
                   onClassClick={(id) => router.push(`/class/${id}`)}
-                  isLast={i === messages.length - 1}
-                  isLoading={loading}
+                  showActions={
+                    responseComplete &&
+                    !loading &&
+                    i === messages.length - 1 &&
+                    msg.role === "assistant" &&
+                    msg.content.length > 0
+                  }
                   onHome={() => router.push("/")}
                   onContinue={() => inputRef.current?.focus()}
                 />
@@ -303,20 +311,17 @@ export function AssistantClient() {
 function MessageBubble({
   msg,
   onClassClick,
-  isLast,
-  isLoading,
+  showActions,
   onHome,
   onContinue,
 }: {
   msg: Message;
   onClassClick: (id: number) => void;
-  isLast: boolean;
-  isLoading: boolean;
+  showActions: boolean;
   onHome: () => void;
   onContinue: () => void;
 }) {
   const isUser = msg.role === "user";
-  const showActions = isLast && !isUser && !isLoading && msg.content.length > 0;
   return (
     <div className={`flex gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
       <div
