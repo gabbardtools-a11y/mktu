@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Sparkles, Send, Trash2, Lightbulb, User, Bot } from "lucide-react";
+import { Sparkles, Send, Trash2, Lightbulb, User, Bot, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Message {
@@ -191,7 +191,15 @@ export function AssistantClient() {
               </div>
             ) : (
               messages.map((msg, i) => (
-                <MessageBubble key={i} msg={msg} onClassClick={(id) => router.push(`/class/${id}`)} />
+                <MessageBubble
+                  key={i}
+                  msg={msg}
+                  onClassClick={(id) => router.push(`/class/${id}`)}
+                  isLast={i === messages.length - 1}
+                  isLoading={loading}
+                  onHome={() => router.push("/")}
+                  onContinue={() => inputRef.current?.focus()}
+                />
               ))
             )}
             {loading && messages[messages.length - 1]?.content === "" && (
@@ -295,11 +303,20 @@ export function AssistantClient() {
 function MessageBubble({
   msg,
   onClassClick,
+  isLast,
+  isLoading,
+  onHome,
+  onContinue,
 }: {
   msg: Message;
   onClassClick: (id: number) => void;
+  isLast: boolean;
+  isLoading: boolean;
+  onHome: () => void;
+  onContinue: () => void;
 }) {
   const isUser = msg.role === "user";
+  const showActions = isLast && !isUser && !isLoading && msg.content.length > 0;
   return (
     <div className={`flex gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
       <div
@@ -321,6 +338,24 @@ function MessageBubble({
         }`}
       >
         <FormattedContent content={msg.content} onClassClick={onClassClick} />
+        {showActions && (
+          <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-border/40">
+            <button
+              onClick={onHome}
+              className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-md bg-gold/10 text-gold border border-gold/30 hover:bg-gold/20 transition-colors"
+            >
+              <ArrowLeft className="size-3.5" />
+              На главную
+            </button>
+            <button
+              onClick={onContinue}
+              className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 transition-colors"
+            >
+              <Sparkles className="size-3.5" />
+              Продолжить спрашивать
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
