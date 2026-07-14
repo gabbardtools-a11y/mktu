@@ -130,7 +130,10 @@ export function SearchSection({
 
           <motion.button
             type="button"
-            onClick={() => router.push("/assistant")}
+            onClick={() => {
+              const q = query.trim();
+              router.push(q ? `/assistant?q=${encodeURIComponent(q)}` : "/assistant");
+            }}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
             title="ИИ-помощник — определит классы МКТУ с объяснениями"

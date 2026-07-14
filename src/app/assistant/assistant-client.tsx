@@ -34,6 +34,17 @@ export function AssistantClient() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Авто-отправка если в URL есть ?q=...
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    if (q && q.trim() && messages.length === 0) {
+      send(q.trim());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Прокрутка вниз при новом сообщении
   useEffect(() => {
     if (scrollRef.current) {
