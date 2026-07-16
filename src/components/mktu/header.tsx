@@ -19,6 +19,7 @@ import {
   FileSearch,
   Lightbulb,
   ChevronDown,
+  Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme, type Theme } from "@/hooks/use-theme";
@@ -246,6 +247,19 @@ export function Header({
                         <div className="text-[11px] text-foreground/50">Роспатент: 2.1 + 2.4 + 2.11</div>
                       </div>
                     </Link>
+                    <a
+                      href="https://naytea.ru"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setServicesOpen(false)}
+                      className="flex items-start gap-2.5 p-2 rounded-md hover:bg-muted/40 transition-colors"
+                    >
+                      <Search className="size-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="text-sm font-medium text-foreground">Проверка знака</div>
+                        <div className="text-[11px] text-foreground/50">Поиск по реестру товарных знаков</div>
+                      </div>
+                    </a>
                   </motion.div>
                 )}
               </AnimatePresence>
