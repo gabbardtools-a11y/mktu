@@ -332,7 +332,7 @@ export function Header({
               })}
             </div>
 
-            <div className="w-px h-6 bg-border mx-1" />
+            <div className="w-px h-6 bg-gold/30 mx-1" />
 
             <Button
               variant="ghost"
