@@ -68,7 +68,7 @@ const themeInitScript = `
 (function() {
   try {
     var stored = localStorage.getItem('mktu-theme');
-    var theme = (stored === 'light' || stored === 'dark' || stored === 'navy') ? stored : 'light';
+    var theme = (stored === 'light' || stored === 'dark' || stored === 'navy') ? stored : 'navy';
     var root = document.documentElement;
     root.classList.remove('dark', 'navy');
     if (theme === 'dark') {
@@ -93,7 +93,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang="ru" className="navy" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>

@@ -6,7 +6,7 @@ export type Theme = "dark" | "light" | "navy";
 
 const STORAGE_KEY = "mktu-theme";
 
-const DEFAULT_THEME: Theme = "light";
+const DEFAULT_THEME: Theme = "navy";
 
 const THEME_CYCLE: Theme[] = ["dark", "light", "navy"];
 

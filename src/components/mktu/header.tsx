@@ -328,7 +328,6 @@ export function Header({
               title="Избранное"
             >
               <Star className="size-4" />
-              <span className="hidden sm:inline ml-1.5">Избранное</span>
               {favoritesCount > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
@@ -348,7 +347,6 @@ export function Header({
               title="Корзина"
             >
               <ShoppingBag className="size-4" />
-              <span className="hidden sm:inline ml-1.5">Корзина</span>
               {cartCount > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
