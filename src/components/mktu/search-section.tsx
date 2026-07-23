@@ -162,6 +162,20 @@ export function SearchSection({
         </div>
       </div>
 
+      <div className="text-center mt-1.5">
+        <span className="text-[10px] text-foreground/30">
+          Сделано в{" "}
+          <a
+            href="https://iqin.ru"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-foreground/40 hover:text-gold transition-colors"
+          >
+            IQin.ru
+          </a>
+        </span>
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
