@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  VPS_HOST: '91.219.151.57'
-  VPS_USER: 'root'
+  VPS_HOST: ${{ secrets.VPS_HOST }}
+  VPS_USER: ${{ secrets.VPS_USER }}
   VPS_DB_PATH: '/var/www/mktu/db/custom.db'
 
 jobs:
@@ -16,12 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: 🔑 Install sshpass
+      - name: 🔑 Install sshpass + sqlite3
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq sshpass sqlite3
 
-      - name: 📥 Checkout
+      - name: 📥 Checkout (db-backups branch)
         uses: actions/checkout@v4
         with:
           ref: db-backups
@@ -38,7 +38,7 @@ jobs:
               echo '-- DB not found' > /tmp/mktu-db-dump.sql
             fi
           "
-          
+
           sshpass -p '${{ secrets.VPS_PASSWORD }}' scp -o StrictHostKeyChecking=no \
             ${{ env.VPS_USER }}@${{ env.VPS_HOST }}:/tmp/mktu-db-dump.sql \
             ./db-backup-$(date +%Y-%m-%d).sql
