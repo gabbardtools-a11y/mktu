@@ -63,12 +63,20 @@ export const metadata: Metadata = {
 };
 
 // Inline script to set initial theme before hydration — prevents flash of wrong theme.
-// Default theme is 'light' (set in use-theme.ts as DEFAULT_THEME).
+// Default theme is 'navy' (set in use-theme.ts as DEFAULT_THEME).
+// Supports ?theme=dark|light|navy URL param — for iframe embedding (forced theme).
 const themeInitScript = `
 (function() {
   try {
-    var stored = localStorage.getItem('mktu-theme');
-    var theme = (stored === 'light' || stored === 'dark' || stored === 'navy') ? stored : 'navy';
+    var theme;
+    var params = new URLSearchParams(window.location.search);
+    var urlTheme = params.get('theme');
+    if (urlTheme === 'dark' || urlTheme === 'light' || urlTheme === 'navy') {
+      theme = urlTheme;
+    } else {
+      var stored = localStorage.getItem('mktu-theme');
+      theme = (stored === 'light' || stored === 'dark' || stored === 'navy') ? stored : 'navy';
+    }
     var root = document.documentElement;
     root.classList.remove('dark', 'navy');
     if (theme === 'dark') {
