@@ -119,7 +119,7 @@ curl -O https://raw.githubusercontent.com/gabbardtools-a11y/mktu/db-backups/db-b
 /home/z/.venv/bin/python3 -c "
 import paramiko
 t = paramiko.Transport(('188.127.227.250', 22))
-t.connect(username='root', password='bF2bB7eT4wdZ')
+t.connect(username='root', password='<VPS-пароль-ротирован-09.09.2026-см-vps-credentials>')
 sftp = paramiko.SFTPClient.from_transport(t)
 sftp.put('db-backup-2026-08-05.sql', '/tmp/db-backup.sql')
 sftp.close(); t.close()
@@ -167,7 +167,7 @@ pm2 start mktu
    import paramiko
    c = paramiko.SSHClient()
    c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-   c.connect('188.127.227.250', 22, 'root', 'bF2bB7eT4wdZ', allow_agent=False, look_for_keys=False)
+   c.connect('188.127.227.250', 22, 'root', '<VPS-пароль-ротирован-09.09.2026-см-vps-credentials>', allow_agent=False, look_for_keys=False)
    _, o, e = c.exec_command('cd /var/www/mktu && pm2 stop mktu && git fetch origin && git reset --hard origin/main~1 && pm2 restart mktu')
    print(o.read().decode()); print(e.read().decode())
    c.close()

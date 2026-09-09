@@ -13,7 +13,7 @@
 ```
 Хост:       188.127.227.250    (был 91.219.151.57)
 Пользователь: root
-Пароль:     bF2bB7eT4wdZ       (был iY4nY2rV7hqL)
+Пароль:     <VPS-пароль-ротирован-09.09.2026-см-vps-credentials>       (был iY4nY2rV7hqL)
 RAM:        3.8 GB             (было 956 MB — теперь build БЕЗ остановки сайтов!)
 Disk:       9.8 GB             (1.1 GB свободно)
 OS:         Ubuntu 26.04 LTS
@@ -458,7 +458,7 @@ python3 << 'PYEOF'
 import paramiko
 cli = paramiko.SSHClient()
 cli.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-cli.connect('188.127.227.250', username='root', password='bF2bB7eT4wdZ', timeout=15, allow_agent=False, look_for_keys=False)
+cli.connect('188.127.227.250', username='root', password='<VPS-пароль-ротирован-09.09.2026-см-vps-credentials>', timeout=15, allow_agent=False, look_for_keys=False)
 
 # Создать папку public если нет
 cli.exec_command('mkdir -p /var/www/seismos/public')
@@ -615,7 +615,7 @@ crontab -l | grep seismos
 
 - **iznaki-chat** — главный консультант, у него всё работает как часы, читайте его `FINAL_VPS_GUIDE.md`
 - **mktu-chat** (это я, Бро #3) — написал этот гайд, спрашивайте
-- VPS: `188.127.227.250`, root / `bF2bB7eT4wdZ`
+- VPS: `188.127.227.250`, root / `<VPS-пароль-ротирован-09.09.2026-см-vps-credentials>`
 - Координация: репа `gabbardtools-a11y/vps-coordination` → `STATE.json` для lock
 - **⚠️ Перед любым действием на VPS — проверяйте lock!** (см. FINAL_VPS_GUIDE.md раздел 1)
 
