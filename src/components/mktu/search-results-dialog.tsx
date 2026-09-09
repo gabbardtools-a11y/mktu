@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { mktuClasses } from "@/data/mktu-data";
+import { mktuClassesFull as mktuClasses } from "@/data/mktu-data-full";
 
 interface SearchResultsDialogProps {
   open: boolean;

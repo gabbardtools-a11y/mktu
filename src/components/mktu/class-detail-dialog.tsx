@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { mktuClasses } from "@/data/mktu-data";
+import { mktuClassesFull as mktuClasses } from "@/data/mktu-data-full";
 import { ClassNotes } from "@/components/mktu/class-notes";
 
 interface ClassDetailDialogProps {
