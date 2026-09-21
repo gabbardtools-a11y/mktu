@@ -1,14 +1,16 @@
 name: Nightly DB Backup
 
-# Каждый день в 03:00 UTC (06:00 МСК)
+# Каждый день в 03:00 UTC (06:00 МСК). Бэкап БД мкту: дамп с VPS -> коммит в ветку db-backups.
+# 21.09.2026: переведён с sshpass/VPS_PASSWORD (мёртв после key-only) на робот-ключ VPS_SSH_KEY, дверь 20101.
 on:
   schedule:
     - cron: '0 3 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 env:
-  VPS_HOST: ${{ secrets.VPS_HOST }}
-  VPS_USER: ${{ secrets.VPS_USER }}
   VPS_DB_PATH: '/var/www/mktu/db/custom.db'
 
 jobs:
@@ -16,40 +18,47 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: 🔑 Install sshpass + sqlite3
+      - name: Install sqlite3
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq sshpass sqlite3
+          sudo apt-get install -y -qq sqlite3
 
-      - name: 📥 Checkout (db-backups branch)
+      - name: Checkout (db-backups branch)
         uses: actions/checkout@v4
         with:
           ref: db-backups
           fetch-depth: 0
 
-      - name: 💾 Dump SQLite from VPS
+      - name: Setup SSH (key, port 20101)
         run: |
-          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ env.VPS_USER }}@${{ env.VPS_HOST }} "
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          printf 'Host *\n  Port 20101\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n' > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: Dump SQLite from VPS
+        run: |
+          ssh -o ConnectTimeout=15 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
             if [ -f ${{ env.VPS_DB_PATH }} ]; then
               sqlite3 ${{ env.VPS_DB_PATH }} .dump > /tmp/mktu-db-dump.sql
               ls -lh /tmp/mktu-db-dump.sql
             else
-              echo '⚠️ DB not found — empty backup'
+              echo 'DB not found - empty backup'
               echo '-- DB not found' > /tmp/mktu-db-dump.sql
             fi
           "
-
-          sshpass -p '${{ secrets.VPS_PASSWORD }}' scp -o StrictHostKeyChecking=no \
-            ${{ env.VPS_USER }}@${{ env.VPS_HOST }}:/tmp/mktu-db-dump.sql \
+          scp -o ConnectTimeout=15 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/mktu-db-dump.sql \
             ./db-backup-$(date +%Y-%m-%d).sql
           ls -lh db-backup-*.sql
 
-      - name: 🗑️ Keep only last 30 days
+      - name: Keep only last 30 days
         run: |
           find . -name "db-backup-*.sql" -mtime +30 -delete || true
           ls -lh db-backup-*.sql | tail -5
 
-      - name: 📤 Commit to db-backups branch
+      - name: Commit to db-backups branch
         run: |
           git config user.name "GitHub Actions Backup"
           git config user.email "actions@github.com"
@@ -57,12 +66,12 @@ jobs:
           git commit -m "Nightly DB backup $(date +%Y-%m-%d)" || echo "Nothing to commit"
           git push origin db-backups
 
-      - name: 📝 Summary
+      - name: Summary
         if: always()
         run: |
-          echo "## 💾 Бэкап БД мкту.рус" >> $GITHUB_STEP_SUMMARY
+          echo "## Бэкап БД мкту.рус" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Дата: $(date +'%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
-          echo "Файл: \`db-backup-$(date +%Y-%m-%d).sql\`" >> $GITHUB_STEP_SUMMARY
+          echo "Файл: db-backup-$(date +%Y-%m-%d).sql" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Все бэкапы: https://github.com/${{ github.repository }}/tree/db-backups" >> $GITHUB_STEP_SUMMARY
