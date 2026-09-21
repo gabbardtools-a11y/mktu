@@ -1,164 +1,94 @@
-name: 🚀 Deploy to VPS
+name: Deploy mktu
 
-# Триггеры: push в main (кроме docs/ и *.md) или ручной запуск
+# ВНИМАНИЕ: автозапуск по push ВЫКЛЮЧЕН — репо может отставать от продакшена
+# (прод обновлялся напрямую при ремонте). Порядок включения для сайта-агента:
+#   1) подтянуть в репо актуальный код (next 16.1.1 и правки), сверить с продом;
+#   2) раскомментировать push-блок ниже — и деплой поедет автоматически, как у эталонного сайта.
+# Пока запуск вручную: вкладка Actions -> Deploy mktu -> Run workflow.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'src/**'
-      - 'public/**'
-      - 'prisma/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'bun.lock'
-      - 'next.config.ts'
-      - 'next.config.js'
-      - 'tsconfig.json'
-      - 'tailwind.config.ts'
-      - 'postcss.config.mjs'
-      - 'components.json'
-      - 'ecosystem.config.cjs'
-      - '.github/workflows/deploy.yml'
-  workflow_dispatch:
-    inputs:
-      reason:
-        description: 'Причина ручного деплоя'
-        required: false
-        default: 'manual'
+  workflow_dispatch: {}
+  # push:
+  #   branches: [main]
 
-# Не запускать параллельные деплои — ждём завершения текущего
 concurrency:
   group: deploy-mktu
   cancel-in-progress: false
 
-env:
-  NODE_VERSION: '22'
-  VPS_HOST: ${{ secrets.VPS_HOST }}
-  VPS_USER: ${{ secrets.VPS_USER }}
-  VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
-
 jobs:
   deploy:
-    name: Build & Deploy
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+      - name: Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          node-version: 22
 
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      - name: 🔨 Build Next.js
-        run: npm run build
-        env:
-          NEXT_TELEMETRY_DISABLED: '1'
-          # NEXT_PUBLIC_* переменные нужны при сборке
-          NEXT_PUBLIC_SITE_URL: 'https://мкту.рус'
-
-      - name: 📋 Prepare standalone bundle
+      - name: Build
         run: |
-          # Next.js standalone: копируем static и public внутрь standalone
-          # (package.json build script уже копирует src/data в standalone)
-          cp -r .next/static .next/standalone/.next/
-          cp -r public .next/standalone/
-          cp ecosystem.config.cjs .next/standalone/
+          npm ci --include=dev --no-audit --no-fund || npm install --include=dev --legacy-peer-deps --no-audit --no-fund
+          npm run build
 
-          # Упаковываем
-          cd .next/standalone
-          tar -czf $GITHUB_WORKSPACE/mktu-deploy.tar.gz .
-
-          # Размер для лога
-          ls -lh $GITHUB_WORKSPACE/mktu-deploy.tar.gz
-
-      - name: 📤 Upload tarball to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ env.VPS_HOST }}
-          username: ${{ env.VPS_USER }}
-          password: ${{ secrets.VPS_PASSWORD }}
-          port: ${{ env.VPS_PORT }}
-          source: mktu-deploy.tar.gz
-          target: /tmp/
-          timeout: 300s
-          strip_components: 0
-
-      - name: 🚀 Deploy on VPS (extract, env, pm2 reload)
-        id: deploy-vps
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ env.VPS_HOST }}
-          username: ${{ env.VPS_USER }}
-          password: ${{ secrets.VPS_PASSWORD }}
-          port: ${{ env.VPS_PORT }}
-          timeout: 300s
-          script: |
-            set -e
-            REMOTE_TGZ="/tmp/mktu-deploy.tar.gz"
-
-            echo "=== 1. Распаковка ==="
-            cd /var/www/mktu
-            # Очищаем только то, что будет перезаписано (не трогаем .env, db/, .git если есть)
-            rm -rf .next public server.js package.json ecosystem.config.cjs
-            tar -xzf "$REMOTE_TGZ"
-            rm -f "$REMOTE_TGZ"
-            echo "✓ Распаковано"
-
-            echo "=== 2. Запись .env (секреты из GitHub Secrets) ==="
-            cat > /var/www/mktu/.env <<'ENVEOF'
-            ROUTERAI_API_KEY=${{ secrets.ROUTERAI_API_KEY }}
-            ROUTERAI_MODEL=openai/gpt-4o-mini
-            DATABASE_URL=file:/var/www/mktu/db/custom.db
-            NEXT_PUBLIC_SITE_URL=https://мкту.рус
-            NEXT_TELEMETRY_DISABLED=1
-            PORT=3000
-            HOSTNAME=127.0.0.1
-            ENVEOF
-            chmod 600 /var/www/mktu/.env
-            echo "✓ .env записан"
-
-            echo "=== 3. PM2 reload ==="
-            pm2 reload mktu || (cd /var/www/mktu && pm2 start ecosystem.config.cjs && pm2 save)
-            pm2 save
-            echo "✓ PM2 перезагружен"
-
-            echo "=== 4. Ожидание прогрева (5 сек) ==="
-            sleep 5
-
-            echo "=== 5. Health check (localhost + публичный домен) ==="
-            LOCAL_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 http://127.0.0.1:3000/)
-            PUBLIC_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://xn--j1adte.xn--p1acf/)
-            echo "localhost:3000 → HTTP $LOCAL_CODE"
-            echo "https://мкту.рус → HTTP $PUBLIC_CODE"
-            if [ "$LOCAL_CODE" = "200" ] && [ "$PUBLIC_CODE" = "200" ]; then
-              echo "✅ Деплой успешен — оба endpoint отвечают 200"
-            else
-              echo "❌ Один из endpoint не отвечает 200!"
-              pm2 logs mktu --lines 30 --nostream
-              exit 1
-            fi
-
-      - name: ✅ Report success
-        if: success()
+      - name: Setup SSH
         run: |
-          echo "🎉 Деплой завершён успешно!"
-          echo "🔗 https://мкту.рус"
-          echo "📊 PM2: mktu (port 3000)"
-          echo "⏱️  Статус шага deploy-vps: ${{ steps.deploy-vps.outcome }}"
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          printf 'Host *\n  Port 20101\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n' > ~/.ssh/config
+          chmod 600 ~/.ssh/config
 
-      - name: ❌ Report failure
-        if: failure()
+      - name: Pack build
         run: |
-          echo "💔 Деплой упал!"
-          echo "📋 Проверь логи выше"
-          echo "🔄 Откат: ssh root@188.127.227.250 'pm2 stop mktu && git -C /var/www/mktu checkout HEAD~1 && pm2 restart mktu'"
-          echo "   (только если /var/www/mktu — git-репозитория; иначе — восстановить из последнего успешного tarball)"
-          echo "🔄 Альтернатива: re-run failed job в Actions UI, или запустить workflow_dispatch с reason='rollback'"
-          exit 1
+          if [ -d .next/standalone ]; then
+            tar -czf /tmp/site.tgz .next/standalone .next/static public
+          else
+            tar -czf /tmp/site.tgz .next public package.json
+          fi
+
+      - name: Upload
+        run: scp -o ConnectTimeout=15 /tmp/site.tgz ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/mktu-site.tgz
+
+      - name: Atomic swap + reload + healthcheck
+        run: |
+          ssh -o ConnectTimeout=15 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'bash -s' << 'REMOTE'
+          set -e
+          D=/var/www/mktu
+          mkdir -p $D/backup
+          if [ -d $D/.next ]; then
+            stamp=$(date +%Y%m%d-%H%M%S)
+            cp -a $D/.next "$D/backup/.next-$stamp" 2>/dev/null || true
+            ls -1dt $D/backup/.next-* 2>/dev/null | tail -n +3 | xargs -r rm -rf
+          fi
+          rm -rf /tmp/mktu-unpack && mkdir -p /tmp/mktu-unpack
+          tar -xzf /tmp/mktu-site.tgz -C /tmp/mktu-unpack
+          if [ -d /tmp/mktu-unpack/.next/standalone ]; then
+            rm -rf $D/.next.new && mkdir -p $D/.next.new
+            mv /tmp/mktu-unpack/.next/standalone $D/.next.new/standalone
+            mkdir -p $D/.next.new/standalone/.next
+            cp -a /tmp/mktu-unpack/.next/static $D/.next.new/standalone/.next/static
+            [ -d /tmp/mktu-unpack/public ] && cp -a /tmp/mktu-unpack/public $D/.next.new/standalone/public || true
+            rm -rf $D/.next.old && [ -d $D/.next ] && mv $D/.next $D/.next.old || true
+            mv $D/.next.new $D/.next
+            rm -rf $D/.next.old
+          else
+            rm -rf $D/.next && mv /tmp/mktu-unpack/.next $D/.next
+          fi
+          # .env не трогаем (живёт на VPS)
+          pm2 restart mktu --update-env
+          sleep 4
+          ok=0
+          for i in 1 2 3 4 5 6 7 8; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 http://127.0.0.1:3000/ || true)
+            echo "healthcheck $i: HTTP $code"
+            [ "$code" = "200" ] && ok=1 && break
+            sleep 3
+          done
+          [ "$ok" = "1" ] || { echo "HEALTHCHECK FAILED"; pm2 logs mktu --nostream --lines 20 --err; exit 1; }
+          systemctl reload caddy 2>/dev/null || true
+          echo "DEPLOY OK: mktu HTTP 200"
+          rm -f /tmp/mktu-site.tgz
+          REMOTE
