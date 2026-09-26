@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Package, Briefcase, Sparkles, ChevronDown, Star, ShoppingBag } from "lucide-react";
+import { Package, Briefcase, Sparkles, ChevronDown, Star, ShoppingBag, Bot, Calculator, Compass, FileSearch, Link2, Lightbulb, Map as MapIcon, Search as SearchIcon, Download } from "lucide-react";
 import { SearchSection, type FilterType } from "@/components/mktu/search-section";
 import { ClassCard } from "@/components/mktu/class-card";
 import { mktuClasses } from "@/data/mktu-data";
@@ -80,15 +80,69 @@ export default function Home() {
       id="class-grid"
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 scroll-mt-16"
     >
-      {/* Hero — одна строка */}
-      <motion.h1
+      {/* HERO — большой блок с ИИ и фичами */}
+      <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-center text-base sm:text-lg font-semibold text-foreground/80 mb-3"
+        className="mb-6"
       >
-        Онлайн-сервис без рекламы и услуг
-      </motion.h1>
+        {/* Заголовок */}
+        <div className="text-center mb-4">
+          <h1 className="text-xl sm:text-3xl font-bold text-foreground mb-2">
+            Международная классификация товаров и услуг
+          </h1>
+          <p className="text-sm sm:text-base text-gold font-medium mb-1">
+            13-я редакция 2026 · 45 классов МКТУ
+          </p>
+          <p className="text-sm sm:text-base text-foreground/60 max-w-2xl mx-auto">
+            Определение МКТУ бесплатно онлайн с помощью ИИ (AI).
+            Полный справочник классов для регистрации товарного знака в Роспатенте.
+          </p>
+        </div>
+
+        {/* CTA кнопки */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
+          <button
+            onClick={() => router.push("/assistant")}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-sm hover:from-blue-400 hover:to-blue-500 transition-all shadow-md shadow-blue-500/30"
+          >
+            <Bot className="size-4" />
+            Спросить ИИ
+          </button>
+          <button
+            onClick={() => router.push("/wizard")}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-gold/10 text-gold border border-gold/30 font-medium text-sm hover:bg-gold/20 transition-colors"
+          >
+            <Compass className="size-4" />
+            Мастер определения
+          </button>
+          <button
+            onClick={() => router.push("/calculator")}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-card text-foreground/70 border border-border font-medium text-sm hover:border-gold/30 transition-colors"
+          >
+            <Calculator className="size-4" />
+            Калькулятор пошлин
+          </button>
+        </div>
+
+        {/* Сетка фич */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mb-4">
+          <FeatureLink href="/assistant" icon={Bot} label="ИИ-помощник" desc="Определит классы с объяснениями" color="blue" />
+          <FeatureLink href="/wizard" icon={Compass} label="Мастер" desc="4 вопроса → список классов" color="gold" />
+          <FeatureLink href="/okved" icon={FileSearch} label="ОКВЭД → МКТУ" desc="84 кода соответствий" color="blue" />
+          <FeatureLink href="/faq-cases" icon={Lightbulb} label="Кейсы" desc="IT, еда, одежда, косметика" color="amber" />
+          <FeatureLink href="/related" icon={Link2} label="Связанные классы" desc="Что ещё нужно вместе" color="gold" />
+          <FeatureLink href="/map" icon={MapIcon} label="Карта классов" desc="15 категорий, 45 классов" color="purple" />
+          <FeatureLink href="/calculator" icon={Calculator} label="Пошлины" desc="2.1 + 2.4 + 2.11 + 2.14" color="green" />
+          <FeatureLink href="/services" icon={Sparkles} label="Все сервисы" desc="10 инструментов" color="amber" />
+        </div>
+
+        {/* Онлайн-сервис строка */}
+        <div className="text-center">
+          <span className="text-xs text-foreground/40">Онлайн-сервис без рекламы и услуг</span>
+        </div>
+      </motion.div>
 
       {/* Hint banner — кликабельный, разворачивает подробную подсказку */}
       <motion.div
@@ -377,5 +431,40 @@ export default function Home() {
           </div>
         )}
     </section>
+  );
+}
+
+// ─────────────────── Карточка фичи в Hero ───────────────────
+
+function FeatureLink({
+  href,
+  icon: Icon,
+  label,
+  desc,
+  color,
+}: {
+  href: string;
+  icon: typeof Bot;
+  label: string;
+  desc: string;
+  color: "blue" | "gold" | "amber" | "green" | "purple";
+}) {
+  const colors = {
+    blue: "bg-blue-500/10 text-blue-400 border-blue-500/20 hover:border-blue-500/40",
+    gold: "bg-gold/10 text-gold border-gold/20 hover:border-gold/40",
+    amber: "bg-amber-500/10 text-amber-400 border-amber-500/20 hover:border-amber-500/40",
+    green: "bg-green-500/10 text-green-400 border-green-500/20 hover:border-green-500/40",
+    purple: "bg-purple-500/10 text-purple-400 border-purple-500/20 hover:border-purple-500/40",
+  };
+
+  return (
+    <a
+      href={href}
+      className={`flex flex-col items-start gap-1 p-2.5 rounded-lg border ${colors[color]} transition-all hover:scale-[1.02] group`}
+    >
+      <Icon className="size-4 mb-0.5" />
+      <div className="text-xs font-semibold text-foreground">{label}</div>
+      <div className="text-[10px] text-foreground/40 leading-tight">{desc}</div>
+    </a>
   );
 }
