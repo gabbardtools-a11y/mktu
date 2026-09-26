@@ -126,8 +126,8 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Сетка фич */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mb-4">
+        {/* Сетка фич — все 10 сервисов */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mb-4">
           <FeatureLink href="/assistant" icon={Bot} label="ИИ-помощник" desc="Определит классы с объяснениями" color="blue" />
           <FeatureLink href="/wizard" icon={Compass} label="Мастер" desc="4 вопроса → список классов" color="gold" />
           <FeatureLink href="/okved" icon={FileSearch} label="ОКВЭД → МКТУ" desc="84 кода соответствий" color="blue" />
@@ -135,7 +135,9 @@ export default function Home() {
           <FeatureLink href="/related" icon={Link2} label="Связанные классы" desc="Что ещё нужно вместе" color="gold" />
           <FeatureLink href="/map" icon={MapIcon} label="Карта классов" desc="15 категорий, 45 классов" color="purple" />
           <FeatureLink href="/calculator" icon={Calculator} label="Пошлины" desc="2.1 + 2.4 + 2.11 + 2.14" color="green" />
-          <FeatureLink href="/services" icon={Sparkles} label="Все сервисы" desc="10 инструментов" color="amber" />
+          <FeatureLink href="/search" icon={SearchIcon} label="Поиск" desc="Глубокий поиск по позициям" color="blue" />
+          <FeatureLink href="/" icon={Package} label="Все классы" desc="45 классов МКТУ" color="gold" />
+          <FeatureLink href="/faq" icon={Sparkles} label="Вопросы" desc="Частые вопросы и ответы" color="amber" />
         </div>
 
         {/* Онлайн-сервис строка */}
