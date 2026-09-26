@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || "https://mktu.ru",
   ),
   title: {
-    default: "МКТУ — Международная (Ниццкая) классификация 2026",
+    default: "МКТУ 2026/2027 товарных знаков Бесплатно определить с ИИ Онлайн",
     template: "%s · МКТУ 2026",
   },
   description:

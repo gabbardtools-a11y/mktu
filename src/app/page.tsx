@@ -90,7 +90,7 @@ export default function Home() {
         {/* Заголовок */}
         <div className="text-center mb-4">
           <h1 className="text-xl sm:text-3xl font-bold text-foreground mb-2">
-            Международная классификация товаров и услуг
+            Международная классификация товаров и услуг для товарных знаков (торговых марок)
           </h1>
           <p className="text-sm sm:text-base text-gold font-medium mb-1">
             13-я редакция 2026 · 45 классов МКТУ
