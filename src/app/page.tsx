@@ -15,6 +15,7 @@ export default function Home() {
   const [filter, setFilter] = useState<FilterType>("all");
   const [viewMode, setViewMode] = useState<"cards" | "list" | "text">("cards");
   const [hintOpen, setHintOpen] = useState(false);
+  const [heroOpen, setHeroOpen] = useState(true);
   const router = useRouter();
   const {
     favorites,
@@ -81,12 +82,15 @@ export default function Home() {
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 scroll-mt-16"
     >
       {/* HERO — большой блок с ИИ и фичами */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-6"
-      >
+      <AnimatePresence initial={false}>
+        {heroOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mb-6 overflow-hidden"
+          >
         {/* Заголовок */}
         <div className="text-center mb-4">
           <h1 className="text-xl sm:text-3xl font-bold text-foreground mb-2">
@@ -144,7 +148,20 @@ export default function Home() {
         <div className="text-center">
           <span className="text-xs text-foreground/40">Онлайн-сервис без рекламы и услуг</span>
         </div>
-      </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Кнопка открыть/закрыть Hero */}
+      <div className="flex justify-center mb-4">
+        <button
+          onClick={() => setHeroOpen((v) => !v)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold/5 border border-gold/15 hover:bg-gold/10 hover:border-gold/30 transition-colors text-xs text-foreground/60"
+        >
+          <ChevronDown className={`size-3.5 text-gold transition-transform ${heroOpen ? "" : "rotate-180"}`} />
+          {heroOpen ? "Свернуть" : "Показать сервисы"}
+        </button>
+      </div>
 
       {/* Hint banner — кликабельный, разворачивает подробную подсказку */}
       <motion.div
