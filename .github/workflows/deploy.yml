@@ -77,7 +77,10 @@ jobs:
             rm -rf $D/.next && mv /tmp/mktu-unpack/.next $D/.next
           fi
           # .env не трогаем (живёт на VPS)
-          pm2 restart mktu --update-env
+          # секреты прокидывает ecosystem.config.cjs v3 (читает /var/www/mktu/.env)
+          pm2 delete mktu 2>/dev/null || true
+          pm2 start /var/www/mktu/ecosystem.config.cjs
+          pm2 save
           sleep 4
           ok=0
           for i in 1 2 3 4 5 6 7 8; do

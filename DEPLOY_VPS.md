@@ -50,7 +50,7 @@ tar -xzf /path/to/mktu-deploy.tar.gz
 
 ```bash
 cat > /var/www/mktu/.env <<'EOF'
-ROUTERAI_API_KEY=sk-vYu9e0NIHwEgj9AZuVOiPPtB__TiK0A5
+ROUTERAI_API_KEY=<секрет живёт на VPS: /var/www/mktu/.env (root:600); ключ ротирован 2026-09-28, старое значение удалено из этого файла>
 ROUTERAI_MODEL=google/gemini-2.5-flash
 NEXT_PUBLIC_SITE_URL=https://мкту.рус
 NEXT_TELEMETRY_DISABLED=1
