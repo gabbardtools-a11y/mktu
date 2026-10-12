@@ -27,13 +27,25 @@ import { getClassIcon } from "@/data/class-icons";
 import { ClassNotes } from "@/components/mktu/class-notes";
 import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
 import { downloadRtf } from "@/lib/rtf-export";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import {
+  tClassName,
+  tClassDesc,
+  tItems,
+  tOfCount,
+  tShownOf,
+  tClassesInCart,
+  type Lang,
+} from "@/lib/i18n/translations";
 
 interface ClassDetailClientProps {
   cls: MktuClass;
+  initialLang?: Lang;
 }
 
-export function ClassDetailClient({ cls }: ClassDetailClientProps) {
+export function ClassDetailClient({ cls, initialLang = "ru" }: ClassDetailClientProps) {
   const router = useRouter();
+  const { lang, t } = useLanguage(initialLang);
 
   const {
     isFavorite,
@@ -66,10 +78,10 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-20 px-4">
         <div className="text-center">
-          <p className="text-foreground/60 text-lg mb-4">Класс не найден</p>
+          <p className="text-foreground/60 text-lg mb-4">{t("cd.notFound")}</p>
           <Button onClick={() => router.push("/")}>
             <ArrowLeft className="size-4 mr-1.5" />
-            На главную
+            {t("common.home")}
           </Button>
         </div>
       </div>
@@ -119,10 +131,10 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
               size="sm"
               onClick={() => router.push("/")}
               className="text-foreground/60 hover:text-foreground hover:bg-muted"
-              title="На главную"
+              title={t("common.home")}
             >
               <ArrowLeft className="size-4" />
-              <span className="hidden sm:inline ml-1.5">На главную</span>
+              <span className="hidden sm:inline ml-1.5">{t("common.home")}</span>
             </Button>
 
             <div className="flex items-center gap-1 flex-shrink-0">
@@ -135,7 +147,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
                     ? "text-gold hover:bg-gold/10"
                     : "text-foreground/40 hover:text-gold hover:bg-gold/5"
                 }
-                title={fav ? "Убрать из избранного" : "В избранное"}
+                title={fav ? t("common.favRemove") : t("common.favAdd")}
               >
                 <Star className={`size-4 ${fav ? "fill-current" : ""}`} />
               </Button>
@@ -149,7 +161,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
                     ? "text-gold hover:bg-gold/10"
                     : "text-foreground/40 hover:text-gold hover:bg-gold/5"
                 }
-                title={inCart ? "Уже в корзине" : "В корзину"}
+                title={inCart ? t("common.cartAlready") : t("common.cartAdd")}
               >
                 <ShoppingBag
                   className={`size-4 ${inCart ? "fill-current" : ""}`}
@@ -175,19 +187,19 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
                   isGoods ? "text-gold/70" : "text-blue-400/70"
                 }`}
               >
-                Класс {cls.id} · {iconLabel} ·{" "}
-                {cls.items.length} позиций
+                {tClassName(lang, cls.id)} · {iconLabel} ·{" "}
+                {tItems(lang, cls.items.length)}
               </h4>
               <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight mt-0.5">
-                {cls.name}
+                {tClassName(lang, cls.id)}
               </h1>
               <p className="text-foreground/60 text-sm leading-relaxed mt-2">
-                {cls.description}
+                {tClassDesc(lang, cls.id, cls.description)}
               </p>
 
               {selectedCount > 0 && (
                 <div className="mt-3 px-3 py-1.5 rounded-md bg-gold/5 border border-gold/20 text-xs text-gold">
-                  Выбрано позиций: {selectedCount} из {cls.items.length}
+                  {t("cd.selectedA")} {tOfCount(lang, selectedCount, cls.items.length)}
                 </div>
               )}
             </div>
@@ -207,9 +219,9 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
             <Info className="size-4 text-blue-400" />
           </div>
           <span className="flex-1 text-left font-medium text-foreground text-sm">
-            Подсказка
+            {t("cd.hint")}
             <span className="block text-xs text-foreground/40 font-normal mt-0.5">
-              Пояснения · что относится к классу · что не относится
+              {t("cd.hintSub")}
             </span>
           </span>
           <ChevronDown
@@ -243,7 +255,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Поиск по позициям класса..."
+            placeholder={t("cd.itemSearch")}
             className="pl-10 pr-10 bg-card border-border"
           />
           {query && (
@@ -260,7 +272,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
         {filteredItems.length > 0 && (
           <div className="mt-2 flex items-center justify-between gap-2 flex-wrap">
             <span className="text-xs text-foreground/40">
-              Показано {filteredItems.length} из {cls.items.length}
+              {tShownOf(lang, filteredItems.length, cls.items.length)}
             </span>
             <div className="flex items-center gap-2">
               {/* Переключатель вида: список / сплошной текст / классификатор */}
@@ -268,7 +280,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
                 <button
                   type="button"
                   onClick={() => setItemView("list")}
-                  title="Вид списком (алфавитный)"
+                  title={t("cd.viewList")}
                   className={`flex items-center justify-center w-7 h-7 rounded transition-colors ${
                     itemView === "list"
                       ? "bg-gold text-background"
@@ -280,7 +292,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
                 <button
                   type="button"
                   onClick={() => setItemView("inline")}
-                  title="Вид сплошным текстом"
+                  title={t("cd.viewInline")}
                   className={`flex items-center justify-center w-7 h-7 rounded transition-colors ${
                     itemView === "inline"
                       ? "bg-gold text-background"
@@ -292,7 +304,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
                 <button
                   type="button"
                   onClick={() => setItemView("official")}
-                  title="Вид классификатора (официальный порядок)"
+                  title={t("cd.viewOfficial")}
                   className={`flex items-center justify-center w-7 h-7 rounded transition-colors ${
                     itemView === "official"
                       ? "bg-gold text-background"
@@ -312,8 +324,8 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
                 {filteredItems.every((it) =>
                   isItemSelectedInCart(cls.id, it),
                 ) && inCart
-                  ? "Снять все"
-                  : "Выбрать все"}
+                  ? t("cd.deselectAll")
+                  : t("cd.selectAll")}
               </Button>
             </div>
           </div>
@@ -324,7 +336,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
       <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pb-6 flex-1">
         {filteredItems.length === 0 ? (
           <div className="text-center py-10 text-foreground/40 text-sm">
-            Ничего не найдено по запросу «{query}»
+            {t("cd.noResultsA")} «{query}»
           </div>
         ) : itemView === "list" ? (
           /* Вид списком — каждый товар на отдельной строке */
@@ -464,8 +476,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
         <div className="sticky bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur-md px-4 sm:px-6 py-3">
           <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
             <div className="text-xs sm:text-sm text-foreground/50">
-              <span className="text-gold font-medium">{cart.length}</span>{" "}
-              классов в корзине
+              <span className="text-gold font-medium">{tClassesInCart(lang, cart.length)}</span>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -475,7 +486,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
                 className="border-gold/30 text-gold hover:bg-gold/5"
               >
                 <ShoppingBag className="size-4 mr-1.5" />
-                Открыть корзину
+                {t("cd.openCart")}
               </Button>
               <Button
                 size="sm"
@@ -483,7 +494,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
                 className="bg-gold text-background hover:bg-gold-dark"
               >
                 <Download className="size-4 mr-1.5" />
-                <span className="hidden sm:inline">Скачать Rtf</span>
+                <span className="hidden sm:inline">{t("cd.download")}</span>
                 <span className="sm:hidden">Rtf</span>
               </Button>
             </div>
@@ -504,11 +515,11 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
                 <span className="text-foreground/40 mr-1">
                   {prevClass.id}.
                 </span>
-                {prevClass.name}
+                {tClassName(lang, prevClass.id)}
               </span>
             </Link>
           ) : (
-            <span className="text-xs text-foreground/30">Это первый класс</span>
+            <span className="text-xs text-foreground/30">{t("cd.first")}</span>
           )}
 
           {nextClass ? (
@@ -517,7 +528,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
               className="flex items-center gap-2 text-sm text-foreground/60 hover:text-foreground transition-colors min-w-0 justify-end"
             >
               <span className="truncate text-right">
-                {nextClass.name}
+                {tClassName(lang, nextClass.id)}
                 <span className="text-foreground/40 ml-1">
                   .{nextClass.id}
                 </span>
@@ -526,7 +537,7 @@ export function ClassDetailClient({ cls }: ClassDetailClientProps) {
             </Link>
           ) : (
             <span className="text-xs text-foreground/30">
-              Это последний класс
+              {t("cd.last")}
             </span>
           )}
         </div>

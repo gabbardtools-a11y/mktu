@@ -15,15 +15,17 @@ import {
   ArrowRight,
   Map as MapIcon,
 } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import type { TranslationKey, Lang } from "@/lib/i18n/translations";
 
 interface ServiceCard {
   href: string;
   icon: typeof Sparkles;
   emoji: string;
-  title: string;
-  description: string;
+  titleKey: TranslationKey;
+  descKey: TranslationKey;
   color: "blue" | "gold" | "amber" | "green" | "purple";
-  badge?: string;
+  badgeKey?: TranslationKey;
 }
 
 const SERVICES: ServiceCard[] = [
@@ -31,92 +33,82 @@ const SERVICES: ServiceCard[] = [
     href: "/assistant",
     icon: Sparkles,
     emoji: "✨",
-    title: "ИИ-помощник",
-    description:
-      "Опишите товар или услугу — ИИ подберёт классы, объяснит почему и даст практический совет.",
+    titleKey: "header.ai",
+    descKey: "s.aiD",
     color: "blue",
-    badge: "Рекомендуем",
+    badgeKey: "s.aiBadge",
   },
   {
     href: "/wizard",
     icon: Compass,
     emoji: "🧭",
-    title: "Мастер определения",
-    description:
-      "Пошаговый опросник: 4 простых вопроса — получите список классов с пояснениями.",
+    titleKey: "header.wizard",
+    descKey: "s.wizardD",
     color: "gold",
   },
   {
     href: "/okved",
     icon: FileSearch,
     emoji: "📋",
-    title: "ОКВЭД → МКТУ",
-    description:
-      "Знаете свой ОКВЭД? Введите код — увидите подходящие классы МКТУ. 80+ соответствий.",
+    titleKey: "f.okved",
+    descKey: "s.okvedD",
     color: "blue",
   },
   {
     href: "/faq-cases",
     icon: Lightbulb,
     emoji: "💡",
-    title: "Частые кейсы",
-    description:
-      "Готовые решения для популярных бизнесов: интернет-магазин, IT, кофейня, производство.",
+    titleKey: "header.cases",
+    descKey: "s.casesD",
     color: "amber",
   },
   {
     href: "/related",
     icon: Link2,
     emoji: "🔗",
-    title: "Связанные классы",
-    description:
-      "Выбрали класс? Посмотрите какие классы часто идут вместе — не пропустите важное.",
+    titleKey: "header.related",
+    descKey: "s.relatedD",
     color: "gold",
   },
   {
     href: "/calculator",
     icon: Calculator,
     emoji: "🧮",
-    title: "Калькулятор пошлин",
-    description:
-      "Расчёт государственных пошлин Роспатента: 2.1 + 2.4 + 2.11 + опц. 2.14.",
+    titleKey: "header.fees",
+    descKey: "s.feesD",
     color: "green",
   },
   {
     href: "/search",
     icon: Search,
     emoji: "🔍",
-    title: "Поиск по позициям",
-    description:
-      "Глубокий поиск по всем позициям всех 45 классов МКТУ. Найдёт даже по части слова.",
+    titleKey: "sv.searchTitle",
+    descKey: "s.searchD",
     color: "blue",
   },
   {
     href: "/",
     icon: Grid3x3,
     emoji: "🗂️",
-    title: "Все 45 классов",
-    description:
-      "Полный каталог классов МКТУ 13-й редакции 2026: товары (1–34) и услуги (35–45).",
+    titleKey: "sv.allTitle",
+    descKey: "s.allD",
     color: "gold",
   },
   {
     href: "/map",
     icon: MapIcon,
     emoji: "🌳",
-    title: "Визуальная карта классов",
-    description:
-      "Дерево из 45 классов по 13 категориям. Для визуалов — раскрывайте и ищите.",
+    titleKey: "sv.mapTitle",
+    descKey: "s.mapD",
     color: "purple",
-    badge: "Новое",
+    badgeKey: "s.mapBadge",
   },
   {
     href: "/faq",
     icon: HelpCircle,
     emoji: "❓",
-    title: "Вопросы и ответы",
-    description:
-      "Что такое МКТУ, как зарегистрировать товарный знак, отличие товаров от услуг.",
+    titleKey: "sv.faqTitle",
+    descKey: "s.faqD",
     color: "amber",
   },
 ];
@@ -149,8 +141,9 @@ const COLOR_STYLES = {
   },
 };
 
-export function ServicesClient() {
+export function ServicesClient({ initialLang = "ru" }: { initialLang?: Lang }) {
   const router = useRouter();
+  const { t } = useLanguage(initialLang);
 
   return (
     <main className="min-h-screen pt-20 pb-12">
@@ -162,11 +155,10 @@ export function ServicesClient() {
           className="text-center mb-8"
         >
           <h1 className="text-2xl sm:text-4xl font-bold text-foreground mb-2">
-            Все сервисы МКТУ
+            {t("sv.title")}
           </h1>
           <p className="text-sm sm:text-base text-foreground/60 max-w-2xl mx-auto">
-            Инструменты для определения класса, расчёта пошлин и подготовки заявки
-            на регистрацию товарного знака. Выберите подходящий.
+            {t("sv.sub")}
           </p>
         </motion.div>
 
@@ -197,28 +189,28 @@ export function ServicesClient() {
                     >
                       <span className="leading-none">{s.emoji}</span>
                     </div>
-                    {s.badge && (
+                    {s.badgeKey && (
                       <span
                         className={`text-[10px] px-2 py-0.5 rounded-full border font-medium ${colors.badge}`}
                       >
-                        {s.badge}
+                        {t(s.badgeKey)}
                       </span>
                     )}
                   </div>
 
                   {/* Заголовок */}
                   <h3 className="text-base font-bold text-foreground mb-1.5 group-hover:text-gold transition-colors">
-                    {s.title}
+                    {t(s.titleKey)}
                   </h3>
 
                   {/* Описание */}
                   <p className="text-xs text-foreground/60 leading-relaxed mb-3">
-                    {s.description}
+                    {t(s.descKey)}
                   </p>
 
                   {/* Ссылка-стрелка */}
                   <div className="flex items-center gap-1 text-xs font-medium text-foreground/50 group-hover:text-gold transition-colors">
-                    Открыть
+                    {t("sv.open")}
                     <ArrowRight className="size-3 group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>
@@ -229,7 +221,7 @@ export function ServicesClient() {
 
         {/* Подсказка внизу */}
         <div className="mt-8 text-center text-xs text-foreground/40">
-          Все сервисы бесплатны · без регистрации · без рекламы
+          {t("sv.note")}
         </div>
       </div>
     </main>

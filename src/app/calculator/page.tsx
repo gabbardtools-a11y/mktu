@@ -3,6 +3,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { Calculator as CalcIcon, Info, FileText, CheckCircle2, Clock } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import { tClassesCount, tItems } from "@/lib/i18n/translations";
 import {
   FEES,
   calculateFees,
@@ -27,6 +29,7 @@ function readInitialFromQuery() {
 }
 
 export default function CalculatorPage() {
+  const { lang, t } = useLanguage();
   const [classes, setClasses] = useState(1);
   const [items, setItems] = useState(1);
   const [paperCert, setPaperCert] = useState(false);
@@ -74,15 +77,14 @@ export default function CalculatorPage() {
           <div className="flex items-center gap-2 text-gold">
             <CalcIcon className="size-6" />
             <span className="text-xs uppercase tracking-wider font-medium">
-              Калькулятор пошлин Роспатента
+              {t("ca.title")}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-            Расчёт государственных пошлин за регистрацию товарного знака
+            {t("ca.sub")}
           </h1>
           <p className="text-sm sm:text-base text-foreground/60 leading-relaxed">
-            Базовые пошлины за 1 класс МКТУ по Положению о патентных и иных пошлинах
-            (актуально на 2026 год). Источник:{" "}
+            {t("ca.basis")}{" "}
             <a
               href="https://rospatent.gov.ru/ru/activities/dues/table"
               target="_blank"
@@ -98,7 +100,7 @@ export default function CalculatorPage() {
         {/* Ввод данных */}
         <section className="rounded-xl border border-border bg-card p-5 sm:p-6 space-y-5">
           <h2 className="text-base sm:text-lg font-semibold text-foreground">
-            Введите параметры заявки
+            {t("ca.input")}
           </h2>
 
           <div className="grid sm:grid-cols-2 gap-5">
@@ -107,14 +109,14 @@ export default function CalculatorPage() {
                 htmlFor="classes"
                 className="block text-sm font-medium text-foreground"
               >
-                Количество классов МКТУ
+                {t("ca.classes")}
               </label>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setClasses((c) => Math.max(1, c - 1))}
                   className="size-10 shrink-0 rounded-md border border-border bg-background hover:bg-accent text-foreground text-lg font-medium transition-colors"
-                  aria-label="Уменьшить"
+                  aria-label={t("ca.dec")}
                 >
                   −
                 </button>
@@ -131,13 +133,13 @@ export default function CalculatorPage() {
                   type="button"
                   onClick={() => setClasses((c) => Math.min(45, c + 1))}
                   className="size-10 shrink-0 rounded-md border border-border bg-background hover:bg-accent text-foreground text-lg font-medium transition-colors"
-                  aria-label="Увеличить"
+                  aria-label={t("ca.inc")}
                 >
                   +
                 </button>
               </div>
               <p className="text-xs text-foreground/50">
-                от 1 до 45 (товары: 1–34, услуги: 35–45)
+                {t("ca.range")}
               </p>
             </div>
 
@@ -146,7 +148,7 @@ export default function CalculatorPage() {
                 htmlFor="items"
                 className="block text-sm font-medium text-foreground"
               >
-                Товаров и услуг в перечне (всего)
+                {t("ca.items")}
               </label>
               <div className="flex items-center gap-2">
                 <button
@@ -176,7 +178,7 @@ export default function CalculatorPage() {
                 </button>
               </div>
               <p className="text-xs text-foreground/50">
-                пошлина 2.4: +500 ₽ за каждую позицию свыше 10 в классе
+                {t("ca.fee24hint")}
               </p>
             </div>
           </div>
@@ -185,10 +187,10 @@ export default function CalculatorPage() {
             <div className="flex gap-2 text-xs text-foreground/60 bg-muted/40 border border-border/60 rounded-md p-3">
               <Info className="size-4 shrink-0 mt-0.5 text-blue-500" />
               <p>
-                Позиций сверх лимита: <strong className="text-foreground">{result.p24ItemsOver}</strong>{" "}
-                (бесплатно {FEES.p24.itemsFreePerClass} × {result.cls} классов ={" "}
-                {FEES.p24.itemsFreePerClass * result.cls}, всего в перечне {result.itm}).
-                Доплата: <strong className="text-foreground">{fmtRub(result.p24ExtraItems)}</strong>
+                {t("ca.overLine")} <strong className="text-foreground">{result.p24ItemsOver}</strong>{" "}
+                ({t("ca.freeA")} {FEES.p24.itemsFreePerClass} {t("ca.freeB")}{" "}
+                {FEES.p24.itemsFreePerClass * result.cls}, {t("ca.freeC")} {result.itm}).
+                {t("ca.extra")} <strong className="text-foreground">{fmtRub(result.p24ExtraItems)}</strong>
               </p>
             </div>
           )}
@@ -206,11 +208,10 @@ export default function CalculatorPage() {
                 <span className="inline-flex items-center justify-center min-w-9 h-5 px-1.5 rounded bg-muted text-[10px] font-bold text-foreground/70">
                   2.14
                 </span>
-                Бумажное свидетельство (+3 000 ₽)
+                {t("ca.paper")}
               </div>
               <p className="text-xs text-foreground/50">
-                Опционально — по умолчанию выдаётся электронное (п. 2.11). Бумажное можно
-                запросить по ходатайству правообладателя.
+                {t("ca.paperHint")}
               </p>
             </div>
           </label>
@@ -221,10 +222,10 @@ export default function CalculatorPage() {
           <div className="px-5 sm:px-6 py-4 border-b border-border bg-muted/30 flex items-center gap-2">
             <Clock className="size-5 text-blue-500" />
             <h2 className="font-semibold text-foreground">
-              При подаче заявки
+              {t("ca.filing")}
             </h2>
             <span className="ml-auto text-xs text-foreground/50">
-              в течение 2 месяцев с даты подачи
+              {t("ca.filingWhen")}
             </span>
           </div>
 
@@ -235,7 +236,7 @@ export default function CalculatorPage() {
               base={FEES.p21.base}
               extra={result.p21ExtraClasses}
               total={result.p21Total}
-              hint={`база 4 000 ₽ + ${Math.max(0, result.cls - 1)} × 1 000 ₽ за доп. класс`}
+              hint={`${t("ca.base")} 4 000 ₽ + ${Math.max(0, result.cls - 1)} × 1 000 ₽ ${t("ca.perExtraClass")}`}
             />
             <FeeRow
               code={FEES.p24.code}
@@ -244,9 +245,9 @@ export default function CalculatorPage() {
               extra={result.p24ExtraClasses + result.p24ExtraItems}
               total={result.p24Total}
               hint={
-                `база 13 000 ₽ + ${Math.max(0, result.cls - 1)} × 2 500 ₽ за доп. класс` +
+                `${t("ca.base")} 13 000 ₽ + ${Math.max(0, result.cls - 1)} × 2 500 ₽ ${t("ca.perExtraClass")}` +
                 (result.p24ExtraItems > 0
-                  ? ` + ${result.p24ItemsOver} × 500 ₽ за доп. позиции`
+                  ? ` + ${result.p24ItemsOver} × 500 ₽ ${t("ca.perExtraItems")}`
                   : "")
               }
             />
@@ -254,7 +255,7 @@ export default function CalculatorPage() {
 
           <div className="px-5 sm:px-6 py-4 bg-blue-500/5 border-t border-blue-500/20 flex items-baseline justify-between gap-4">
             <span className="text-sm font-medium text-foreground">
-              Итого при подаче заявки
+              {t("ca.filingTotal")}
             </span>
             <span className="text-xl sm:text-2xl font-bold text-blue-500 dark:text-blue-400">
               {fmtRub(result.totalAtFiling)}
@@ -267,10 +268,10 @@ export default function CalculatorPage() {
           <div className="px-5 sm:px-6 py-4 border-b border-border bg-muted/30 flex items-center gap-2">
             <CheckCircle2 className="size-5 text-green-500" />
             <h2 className="font-semibold text-foreground">
-              После решения о регистрации
+              {t("ca.reg")}
             </h2>
             <span className="ml-auto text-xs text-foreground/50">
-              продлевает знак на 10 лет
+              {t("ca.regWhen")}
             </span>
           </div>
 
@@ -281,7 +282,7 @@ export default function CalculatorPage() {
               base={FEES.p211.base}
               extra={result.p211ExtraClasses}
               total={result.p211Total}
-              hint={`база 18 000 ₽ + ${Math.max(0, result.cls - 5)} × 2 000 ₽ за класс свыше 5`}
+              hint={`${t("ca.base")} 18 000 ₽ + ${Math.max(0, result.cls - 5)} × 2 000 ₽ ${t("ca.perClassOver5")}`}
             />
             {paperCert && (
               <FeeRow
@@ -290,14 +291,14 @@ export default function CalculatorPage() {
                 base={FEES.p214.base}
                 extra={0}
                 total={FEES.p214.base}
-                hint="по ходатайству правообладателя · фиксированная пошлина, не зависит от числа классов"
+                hint={t("ca.hint214")}
               />
             )}
           </div>
 
           <div className="px-5 sm:px-6 py-4 bg-green-500/5 border-t border-green-500/20 flex items-baseline justify-between gap-4">
             <span className="text-sm font-medium text-foreground">
-              Итого за регистрацию{paperCert ? " (с бумажным свидетельством)" : ""}
+              {t("ca.regTotal")}{paperCert ? t("ca.withPaper") : ""}
             </span>
             <span className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">
               {fmtRub(result.totalRegistration)}
@@ -310,10 +311,10 @@ export default function CalculatorPage() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="space-y-1">
               <div className="text-xs uppercase tracking-wider text-foreground/50 font-medium">
-                Всего за весь процесс регистрации
+                {t("ca.grand")}
               </div>
               <div className="text-sm text-foreground/70">
-                {result.cls} {pluralClasses(result.cls)} · {result.itm} {pluralItems(result.itm)} в перечне
+                {tClassesCount(lang, result.cls)} · {tItems(lang, result.itm)} {t("ca.inList")}
               </div>
             </div>
             <div className="text-3xl sm:text-4xl font-bold text-gold">
@@ -328,43 +329,26 @@ export default function CalculatorPage() {
             <FileText className="size-4 shrink-0 mt-0.5 text-foreground/40" />
             <div className="space-y-2">
               <p>
-                <strong className="text-foreground">2.1 + 2.4 платятся одновременно</strong> —
-                в течение 2 месяцев с даты подачи заявки на регистрацию товарного знака.
-                Это базовые пошлины за 1 класс МКТУ; сверху начисляется доплата за каждый
-                дополнительный класс и за позиции свыше 10 в одном классе (только для 2.4).
+                {t("ca.n1")}
               </p>
               <p>
-                <strong className="text-foreground">2.11 платится после решения о регистрации</strong> —
-                пошлина за регистрацию товарного знака и выдачу свидетельства в форме
-                электронного документа. Свидетельство действует 10 лет с даты подачи заявки,
-                после чего может быть продлено (п. 2.22 — отдельная пошлина).
+                {t("ca.n2")}
               </p>
               <p>
-                <strong className="text-foreground">2.14 — опциональная бумажная выдача</strong> —
-                если нужно свидетельство на бумажном носителе (в дополнение к электронному),
-                подаётся отдельное ходатайство с уплатой 3 000 ₽. Большинству заявителей
-                достаточно электронного свидетельства — оно имеет ту же юридическую силу.
+                {t("ca.n3")}
               </p>
               <p>
-                <strong className="text-foreground">Льготных категорий для товарных знаков нет</strong> —
-                в отличие от патентов на изобретения, для регистрации ТЗ пошлины не
-                уменьшаются для каких-либо категорий заявителей.
+                {t("ca.n4")}
               </p>
               <p>
-                <strong className="text-foreground">Допущено упрощение:</strong> на этой
-                странице позиции распределяются равномерно по классам. Если распределение
-                неравномерное (например, 25 в одном классе и 5 в другом), фактическая
-                пошлина может быть выше. <strong className="text-foreground">Для точного
-                расчёта по вашему перечню — добавьте классы в корзину,</strong> там
-                калькулятор считает по каждому классу отдельно.
+                {t("ca.n5")}
               </p>
             </div>
           </div>
         </section>
 
         <p className="text-center text-xs text-foreground/40 pt-2">
-          Данные актуальны на 2026 год · Положение о патентных и иных пошлинах, утв.
-          Постановлением Правительства РФ
+          {t("ca.footer")}
         </p>
       </motion.div>
     </main>
@@ -388,6 +372,7 @@ function FeeRow({
   total: number;
   hint: string;
 }) {
+  const { t } = useLanguage();
   return (
     <div className="px-5 sm:px-6 py-4">
       <div className="flex items-start gap-3">
@@ -401,7 +386,7 @@ function FeeRow({
           <div className="text-xs text-foreground/50">{hint}</div>
           {extra > 0 && (
             <div className="text-xs text-foreground/40">
-              база {fmtRub(base)} + доплата {fmtRub(extra)}
+              {t("ca.base")} {fmtRub(base)} + {fmtRub(extra)}
             </div>
           )}
         </div>

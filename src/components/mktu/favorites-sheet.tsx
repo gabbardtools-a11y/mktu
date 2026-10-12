@@ -12,7 +12,13 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { mktuClasses } from "@/data/mktu-data";
 import type { CartClass } from "@/hooks/use-favorites-cart";
-import { pluralRu } from "@/lib/plural";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import {
+  tClassName,
+  tClassDesc,
+  tItems,
+  tClassesInFav,
+} from "@/lib/i18n/translations";
 
 interface FavoritesSheetProps {
   open: boolean;
@@ -39,6 +45,7 @@ export function FavoritesSheet({
   onOpenCart,
 }: FavoritesSheetProps) {
   const favClasses = mktuClasses.filter((c) => favorites.includes(c.id));
+  const { lang, t } = useLanguage();
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -50,7 +57,7 @@ export function FavoritesSheet({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Star className="size-5 text-gold fill-current" />
-              <SheetTitle className="text-foreground">Избранное</SheetTitle>
+              <SheetTitle className="text-foreground">{t("header.favorites")}</SheetTitle>
             </div>
             {favorites.length > 0 && (
               <Button
@@ -60,14 +67,14 @@ export function FavoritesSheet({
                 className="text-foreground/40 hover:text-red-400 hover:bg-red-400/5 text-xs"
               >
                 <Trash2 className="size-3.5 mr-1.5" />
-                Очистить
+                {t("common.clear")}
               </Button>
             )}
           </div>
           <SheetDescription className="text-foreground/40 text-sm">
             {favorites.length === 0
-              ? "Список пуст"
-              : `${favorites.length} ${pluralRu(favorites.length, ["класс", "класса", "классов"])} в избранном`}
+              ? t("fs.listEmpty")
+              : tClassesInFav(lang, favorites.length)}
           </SheetDescription>
         </SheetHeader>
 
@@ -78,11 +85,10 @@ export function FavoritesSheet({
                 <Star className="size-8 text-foreground/20" />
               </div>
               <p className="text-foreground/40 text-sm mb-2">
-                Избранное пусто
+                {t("fs.empty")}
               </p>
               <p className="text-foreground/30 text-xs max-w-xs">
-                Нажимайте на звёздочку в карточке класса, чтобы сохранить его
-                здесь для быстрого доступа.
+                {t("fs.emptyHint")}
               </p>
             </div>
           ) : (
@@ -118,10 +124,10 @@ export function FavoritesSheet({
                         className="flex-1 text-left min-w-0"
                       >
                         <div className="font-medium text-foreground text-sm">
-                          {cls.name}
+                          {tClassName(lang, cls.id)}
                         </div>
                         <div className="text-xs text-foreground/40">
-                          {cls.itemsCount} позиций
+                          {tItems(lang, cls.itemsCount)}
                         </div>
                       </button>
                       <button
@@ -133,7 +139,7 @@ export function FavoritesSheet({
                     </div>
 
                     <p className="text-xs text-foreground/50 leading-relaxed mb-3 line-clamp-2">
-                      {cls.description}
+                      {tClassDesc(lang, cls.id, cls.description)}
                     </p>
 
                     <div className="flex items-center gap-2 pt-2 border-t border-border/50">
@@ -146,7 +152,7 @@ export function FavoritesSheet({
                         }}
                         className="text-gold hover:bg-gold/5 text-xs h-7"
                       >
-                        Открыть товары
+                        {t("fs.openItems")}
                       </Button>
                       <div className="flex-1" />
                       <Button
@@ -163,7 +169,7 @@ export function FavoritesSheet({
                         <ShoppingBag
                           className={`size-3.5 mr-1 ${inCart ? "fill-current" : ""}`}
                         />
-                        {inCart ? "В корзине" : "В корзину"}
+                        {inCart ? t("common.cartOn") : t("common.cartAdd")}
                       </Button>
                     </div>
                   </div>
@@ -179,7 +185,7 @@ export function FavoritesSheet({
                 className="w-full border-gold/30 text-gold hover:bg-gold/5 mt-2"
               >
                 <ShoppingBag className="size-4 mr-2" />
-                Перейти к корзине
+                {t("fs.toCartPage")}
               </Button>
             </div>
           )}

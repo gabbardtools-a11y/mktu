@@ -1,26 +1,18 @@
 import type { Metadata } from "next";
+import { getLang } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/translations";
 import { RelatedClient } from "./related-client";
 
-export const metadata: Metadata = {
-  title: "Связанные классы МКТУ: что ещё нужно",
-  description:
-    "Кросс-ссылки между классами МКТУ. Если выбрали класс — посмотрите какие классы часто идут вместе. Помогает собрать полную заявку на регистрацию товарного знака.",
-  keywords: [
-    "связанные классы МКТУ",
-    "соседние классы МКТУ",
-    "дополнительные классы",
-    "какие классы ещё нужны",
-    "кросс-ссылки МКТУ",
-  ],
-  alternates: { canonical: "/related" },
-  openGraph: {
-    title: "Связанные классы МКТУ — мкту.рус",
-    description: "Если выбрали класс — посмотрите какие классы часто идут вместе.",
-    type: "website",
-    locale: "ru_RU",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getLang();
+  return {
+    title: t("meta.related.title", lang),
+    description: t("meta.related.desc", lang),
+  };
+}
 
-export default function RelatedPage() {
-  return <RelatedClient />;
+export default async function RelatedPage() {
+  const lang = await getLang();
+
+  return <RelatedClient initialLang={lang} />;
 }

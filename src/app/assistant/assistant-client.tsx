@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Sparkles, Send, Trash2, Lightbulb, User, Bot, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import type { Lang } from "@/lib/i18n/translations";
 
 interface Message {
   role: "user" | "assistant";
@@ -23,7 +25,8 @@ const EXAMPLES = [
   "Производство мебели на заказ",
 ];
 
-export function AssistantClient() {
+export function AssistantClient({ initialLang = "ru" }: { initialLang?: Lang }) {
+  const { lang, t } = useLanguage(initialLang);
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -42,7 +45,6 @@ export function AssistantClient() {
     if (q && q.trim() && messages.length === 0) {
       send(q.trim());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Прокрутка вниз при новом сообщении
@@ -157,14 +159,13 @@ export function AssistantClient() {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-medium mb-3">
             <Sparkles className="size-3.5" />
-            ИИ-помощник
+            {t("as.title")}
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-            Определите классы МКТУ с ИИ
+            {t("as.sub1")}
           </h1>
           <p className="text-sm text-foreground/60 max-w-xl mx-auto">
-            Опишите ваш товар или услугу — ИИ подберёт подходящие классы,
-            объяснит почему и даст практический совет.
+            {t("as.sub2")}
           </p>
         </motion.div>
 
@@ -178,17 +179,17 @@ export function AssistantClient() {
                   <Sparkles className="size-8 text-blue-400" />
                 </div>
                 <p className="text-foreground/70 text-sm mb-1">
-                  Опишите, что хотите зарегистрировать
+                  {t("as.greet1")}
                 </p>
                 <p className="text-foreground/40 text-xs mb-6">
-                  Например: «мобильное приложение для доставки еды»
+                  {t("as.greet2")}
                 </p>
 
                 {/* Примеры */}
                 <div className="w-full max-w-md space-y-2">
                   <div className="flex items-center gap-1.5 text-xs text-foreground/50 mb-2 justify-center">
                     <Lightbulb className="size-3.5" />
-                    Попробуйте примеры:
+                    {t("as.try")}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {EXAMPLES.slice(0, 6).map((ex) => (
@@ -224,12 +225,12 @@ export function AssistantClient() {
             {loading && messages[messages.length - 1]?.content === "" && (
               <div className="flex items-center gap-2 text-xs text-foreground/40 pl-1">
                 <Bot className="size-3.5" />
-                <span className="animate-pulse">ИИ думает…</span>
+                <span className="animate-pulse">{t("as.thinking")}</span>
               </div>
             )}
             {error && (
               <div className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-md p-3">
-                Ошибка: {error}
+                {t("as.error")} {error}
               </div>
             )}
           </div>
@@ -247,7 +248,7 @@ export function AssistantClient() {
                     send();
                   }
                 }}
-                placeholder="Опишите товар или услугу…"
+                placeholder={t("as.ph")}
                 rows={1}
                 className="flex-1 min-w-0 resize-none rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/40"
                 disabled={loading}
@@ -259,7 +260,7 @@ export function AssistantClient() {
                   variant="outline"
                   className="border-red-500/30 text-red-400 hover:bg-red-500/10 h-9"
                 >
-                  Стоп
+                  {t("as.stop")}
                 </Button>
               ) : (
                 <Button
@@ -267,14 +268,14 @@ export function AssistantClient() {
                   disabled={!input.trim()}
                   size="sm"
                   className="bg-blue-500 hover:bg-blue-600 text-white h-9 px-3"
-                  title="Отправить (Enter)"
+                  title={t("as.send")}
                 >
                   <Send className="size-4" />
                 </Button>
               )}
             </div>
             <div className="flex items-center justify-between mt-2 text-[10px] text-foreground/40">
-              <span>Enter — отправить · Shift+Enter — новая строка</span>
+              <span>{t("as.hint")}</span>
               {messages.length > 0 && (
                 <button
                   onClick={clear}
@@ -294,22 +295,22 @@ export function AssistantClient() {
             onClick={() => router.push("/wizard")}
             className="text-left p-3 rounded-lg border border-border bg-card hover:border-blue-500/30 transition-colors"
           >
-            <div className="font-medium text-foreground mb-1">🧭 Мастер определения</div>
-            <div className="text-foreground/50">Пошаговый опросник для новичков</div>
+            <div className="font-medium text-foreground mb-1">{t("header.wizard")}</div>
+            <div className="text-foreground/50">{t("header.wizardDesc")}</div>
           </button>
           <button
             onClick={() => router.push("/okved")}
             className="text-left p-3 rounded-lg border border-border bg-card hover:border-blue-500/30 transition-colors"
           >
-            <div className="font-medium text-foreground mb-1">📋 Из ОКВЭД в МКТУ</div>
-            <div className="text-foreground/50">Знаете ОКВЭД? Найдём классы МКТУ</div>
+            <div className="font-medium text-foreground mb-1">{t("as.toolO")}</div>
+            <div className="text-foreground/50">{t("as.toolOD")}</div>
           </button>
           <button
             onClick={() => router.push("/faq-cases")}
             className="text-left p-3 rounded-lg border border-border bg-card hover:border-blue-500/30 transition-colors"
           >
-            <div className="font-medium text-foreground mb-1">💡 Частые кейсы</div>
-            <div className="text-foreground/50">IT, общепит, производство — готовые ответы</div>
+            <div className="font-medium text-foreground mb-1">{t("fc.title")}</div>
+            <div className="text-foreground/50">{t("header.casesDesc")}</div>
           </button>
         </div>
       </div>
@@ -332,6 +333,7 @@ function MessageBubble({
   onHome: () => void;
   onContinue: () => void;
 }) {
+  const { t } = useLanguage();
   const isUser = msg.role === "user";
   return (
     <div className={`flex gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
@@ -361,14 +363,14 @@ function MessageBubble({
               className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-md bg-gold/10 text-gold border border-gold/30 hover:bg-gold/20 transition-colors"
             >
               <ArrowLeft className="size-3.5" />
-              На главную
+              {t("common.home")}
             </button>
             <button
               onClick={onContinue}
               className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 transition-colors"
             >
               <Sparkles className="size-3.5" />
-              Продолжить спрашивать
+              {t("as.again")}
             </button>
           </div>
         )}

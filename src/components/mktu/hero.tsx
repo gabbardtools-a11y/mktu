@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Package, BookOpen, Briefcase, X } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import type { Lang } from "@/lib/i18n/translations";
 
 const HERO_CLOSED_KEY = "mktu-hero-closed";
 const COUNTDOWN_SECONDS = 10;
@@ -10,28 +12,29 @@ const COUNTDOWN_SECONDS = 10;
 const stats = [
   {
     value: "34",
-    label: "Классов товаров",
+    key: "hero.statGoods" as const,
     color: "text-gold",
     bg: "bg-gold/10",
     Icon: Package,
   },
   {
     value: "11",
-    label: "Классов услуг",
+    key: "hero.statServices" as const,
     color: "text-blue-400",
     bg: "bg-blue-500/10",
     Icon: Briefcase,
   },
   {
     value: "13-я",
-    label: "Редакция МКТУ",
+    key: "hero.statEdition" as const,
     color: "text-emerald-400",
     bg: "bg-emerald-500/10",
     Icon: BookOpen,
   },
 ];
 
-export function Hero() {
+export function Hero({ lang: initialLang = "ru" }: { lang?: Lang }) {
+  const { lang, t } = useLanguage(initialLang);
   const [closed, setClosed] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
@@ -107,8 +110,8 @@ export function Hero() {
           <button
             type="button"
             onClick={handleClose}
-            title="Закрыть блок"
-            aria-label="Закрыть блок"
+            title={t("hero.close")}
+            aria-label={t("hero.close")}
             className="group relative flex items-center justify-center w-10 h-10 rounded-full bg-card/80 backdrop-blur-sm border-2 border-border hover:border-gold/50 text-foreground/50 hover:text-foreground transition-all shadow-sm"
           >
             {/* Countdown ring (SVG) */}
@@ -195,7 +198,7 @@ export function Hero() {
             className="mb-4 inline-block"
           >
             <span className="px-4 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold text-xs sm:text-sm font-medium tracking-wide">
-              13-я редакция • 2026
+              {t("hero.badge")}
             </span>
           </motion.div>
 
@@ -220,8 +223,7 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-foreground/60 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-2 leading-relaxed"
           >
-            Международная классификация товаров и услуг для регистрации товарных
-            знаков. Полный справочник всех 45 классов МКТУ.
+            {t("hero.sub1")}
           </motion.p>
 
           <motion.p
@@ -230,7 +232,7 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="text-foreground/50 text-sm sm:text-base md:text-lg mb-8 font-light"
           >
-            Бесплатный онлайн сервис для определения МКТУ. Без рекламы и услуг.
+            {t("hero.sub2")}
           </motion.p>
 
           <motion.div
@@ -239,9 +241,9 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.35 }}
             className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-8"
           >
-            {stats.map(({ value, label, color, bg, Icon }) => (
+            {stats.map(({ value, key, color, bg, Icon }) => (
               <div
-                key={label}
+                key={key}
                 className="flex items-center gap-2.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50"
               >
                 <div
@@ -254,7 +256,7 @@ export function Hero() {
                     {value}
                   </div>
                   <div className="text-foreground/50 text-[10px] sm:text-xs">
-                    {label}
+                    {t(key)}
                   </div>
                 </div>
               </div>
@@ -270,7 +272,7 @@ export function Hero() {
             onClick={scrollToSearch}
             className="bg-gold text-background hover:bg-gold-dark font-semibold text-base px-8 h-12 rounded-lg shadow-lg shadow-gold/20 hover:shadow-gold/30 transition-all"
           >
-            Найти классы
+            {t("hero.cta")}
           </motion.button>
         </div>
 
@@ -281,10 +283,10 @@ export function Hero() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
           className="relative z-10 mt-10 sm:mt-12 flex flex-col items-center gap-1.5 cursor-pointer"
-          aria-label="Прокрутите вниз"
+          aria-label={t("hero.scroll")}
         >
           <span className="text-foreground/40 text-[10px] sm:text-xs tracking-widest">
-            Прокрутите вниз
+            {t("hero.scroll")}
           </span>
           <div className="flex flex-col items-center gap-0">
             {[0, 1, 2].map((i) => (

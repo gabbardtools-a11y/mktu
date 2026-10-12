@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import type { CartClass } from "@/hooks/use-favorites-cart";
 import { calculateFees, fmtRub } from "@/lib/fees";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import { tOverItems } from "@/lib/i18n/translations";
 
 interface CartFeesCalculatorProps {
   cart: CartClass[];
@@ -24,6 +26,7 @@ export function CartFeesCalculator({
   paperCert,
   onPaperCertChange,
 }: CartFeesCalculatorProps) {
+  const { lang, t } = useLanguage();
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
@@ -55,7 +58,7 @@ export function CartFeesCalculator({
       >
         <Calculator className="size-4 text-gold shrink-0" />
         <span className="text-sm font-medium text-foreground flex-1 text-left">
-          Пошлины Роспатента
+          {t("cfc.title")}
         </span>
         <span className="text-sm font-bold text-gold tabular-nums">
           {fmtRub(result.totalProject)}
@@ -81,7 +84,7 @@ export function CartFeesCalculator({
               <div className="space-y-1.5">
                 <div className="flex items-center gap-1.5 text-xs text-foreground/50">
                   <Clock className="size-3 text-blue-500" />
-                  <span>При подаче (2.1 + 2.4)</span>
+                  <span>{t("cfc.filing")}</span>
                 </div>
                 <FeeLine code="2.1" total={result.p21Total} />
                 <FeeLine
@@ -89,12 +92,12 @@ export function CartFeesCalculator({
                   total={result.p24Total}
                   sub={
                     result.p24ExtraItems > 0
-                      ? `вкл. ${result.p24ItemsOver} × 500 ₽ за позиции свыше 10`
+                      ? tOverItems(lang, result.p24ItemsOver)
                       : undefined
                   }
                 />
                 <div className="flex items-baseline justify-between pl-1 pt-0.5">
-                  <span className="text-xs text-foreground/60">Итого при подаче</span>
+                  <span className="text-xs text-foreground/60">{t("cfc.filingTotal")}</span>
                   <span className="text-sm font-semibold text-blue-500 dark:text-blue-400 tabular-nums">
                     {fmtRub(result.totalAtFiling)}
                   </span>
@@ -105,7 +108,7 @@ export function CartFeesCalculator({
               <div className="space-y-1.5 pt-2 border-t border-border/30">
                 <div className="flex items-center gap-1.5 text-xs text-foreground/50">
                   <CheckCircle2 className="size-3 text-green-500" />
-                  <span>Регистрация (2.11)</span>
+                  <span>{t("cfc.reg")}</span>
                 </div>
                 <FeeLine code="2.11" total={result.p211Total} />
 
@@ -119,14 +122,14 @@ export function CartFeesCalculator({
                     onClick={(e) => e.stopPropagation()}
                   />
                   <span className="flex-1 text-xs text-foreground/60">
-                    <span className="font-mono text-foreground/70">2.14</span> бумажное
-                    свидетельство (+3 000 ₽)
+                    <span className="font-mono text-foreground/70">2.14</span> {t("cfc.paper")}
+                    (+3 000 ₽)
                   </span>
                 </label>
 
                 <div className="flex items-baseline justify-between pl-1 pt-0.5">
                   <span className="text-xs text-foreground/60">
-                    Итого за регистрацию{paperCert ? " (с бумагой)" : ""}
+                    {t("cfc.regTotal")}{paperCert ? t("cfc.withPaper") : ""}
                   </span>
                   <span className="text-sm font-semibold text-green-600 dark:text-green-400 tabular-nums">
                     {fmtRub(result.totalRegistration)}
@@ -138,7 +141,7 @@ export function CartFeesCalculator({
               <div className="pt-2 border-t border-border/30 space-y-2">
                 <div className="flex items-baseline justify-between">
                   <span className="text-xs uppercase tracking-wider text-foreground/50 font-medium">
-                    Всего
+                    {t("cfc.total")}
                   </span>
                   <span className="text-base font-bold text-gold tabular-nums">
                     {fmtRub(result.totalProject)}
@@ -150,7 +153,7 @@ export function CartFeesCalculator({
                   onClick={() => router.push(`/calculator?${query}`)}
                   className="w-full flex items-center justify-center gap-1 text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors py-1"
                 >
-                  Подробнее на калькуляторе
+                  {t("cfc.details")}
                   <ArrowUpRight className="size-3" />
                 </button>
               </div>

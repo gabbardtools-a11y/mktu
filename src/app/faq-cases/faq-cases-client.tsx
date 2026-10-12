@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Sparkles, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import type { TranslationKey } from "@/lib/i18n/translations";
+import type { Lang } from "@/lib/i18n/translations";
 
 // ─────────────────── Кейсы ───────────────────
 
@@ -223,7 +226,8 @@ const CASES: CaseItem[] = [
 
 // ─────────────────── Компонент ───────────────────
 
-export function FaqCasesClient() {
+export function FaqCasesClient({ initialLang = "ru" }: { initialLang?: Lang }) {
+  const { lang, t } = useLanguage(initialLang);
   const router = useRouter();
   const [open, setOpen] = useState<string | null>(CASES[0].id);
 
@@ -237,14 +241,13 @@ export function FaqCasesClient() {
           className="text-center mb-6"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-medium mb-3">
-            💡 Частые кейсы
+            {t("fc.title")}
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-            Классы МКТУ для популярных бизнесов
+            {t("fc.sub")}
           </h1>
           <p className="text-sm text-foreground/60 max-w-xl mx-auto">
-            Готовые решения с пояснениями. Найдите свой кейс — увидите какие классы
-            нужны и почему. Разворачивайте карточки для деталей.
+            {t("fc.desc")}
           </p>
         </motion.div>
 
@@ -265,16 +268,16 @@ export function FaqCasesClient() {
         <div className="mt-8 rounded-lg border border-blue-500/20 bg-blue-500/5 p-4 text-center">
           <div className="flex items-center justify-center gap-1.5 text-sm font-medium text-blue-400 mb-1">
             <Sparkles className="size-4" />
-            Не нашли свой кейс?
+            {t("fc.notFoundCase")}
           </div>
           <p className="text-xs text-foreground/60 mb-3">
-            Спросите ИИ-помощника — он определит классы для любого бизнеса
+            {t("fc.notFoundText")}
           </p>
           <button
             onClick={() => router.push("/assistant")}
             className="inline-flex items-center gap-1.5 text-sm text-blue-500 hover:text-blue-400 font-medium"
           >
-            Открыть ИИ-помощник
+            {t("fc.openAi")}
             <ArrowRight className="size-4" />
           </button>
         </div>
@@ -296,6 +299,7 @@ function CaseCard({
   onToggle: () => void;
   onClassClick: (id: number) => void;
 }) {
+  const { lang, t } = useLanguage();
   return (
     <div className="rounded-lg border border-border bg-card overflow-hidden">
       <button
@@ -330,7 +334,7 @@ function CaseCard({
               {/* Классы */}
               <div>
                 <h3 className="text-xs uppercase tracking-wider text-foreground/40 font-medium mb-2 mt-2">
-                  Рекомендуемые классы
+                  {t("fc.recommended")}
                 </h3>
                 <div className="space-y-1.5">
                   {item.classes.map((c) => (
@@ -340,18 +344,18 @@ function CaseCard({
                         className={`flex items-center justify-center size-9 rounded-md font-bold text-xs flex-shrink-0 hover:scale-105 transition-transform ${
                           c.id <= 34 ? "bg-gold/10 text-gold" : "bg-blue-500/10 text-blue-400"
                         }`}
-                        title="Открыть класс"
+                        title={t("rl.openClass")}
                       >
                         {c.id}
                       </button>
                       <div className="flex-1 min-w-0 pt-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-[10px] uppercase tracking-wider text-foreground/40">
-                            {c.id <= 34 ? "Товары" : "Услуги"}
+                            {t(c.id <= 34 ? "common.goods" : "common.services")}
                           </span>
                           {c.required === "sometimes" && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded bg-foreground/10 text-foreground/50">
-                              опционально
+                              {t("fc.optional")}
                             </span>
                           )}
                         </div>
@@ -365,7 +369,7 @@ function CaseCard({
               {/* Совет */}
               {item.tip && (
                 <div className="flex gap-2 text-xs text-foreground/70 bg-green-500/5 border border-green-500/20 rounded-md p-2.5">
-                  <span className="text-green-500 font-bold flex-shrink-0">💡 Совет:</span>
+                  <span className="text-green-500 font-bold flex-shrink-0">{t("fc.tipLabel")}</span>
                   <p className="leading-relaxed">{item.tip}</p>
                 </div>
               )}
@@ -373,7 +377,7 @@ function CaseCard({
               {/* Предупреждение */}
               {item.warning && (
                 <div className="flex gap-2 text-xs text-foreground/70 bg-amber-500/5 border border-amber-500/20 rounded-md p-2.5">
-                  <span className="text-amber-500 font-bold flex-shrink-0">⚠ Важно:</span>
+                  <span className="text-amber-500 font-bold flex-shrink-0">{t("fc.warningLabel")}</span>
                   <p className="leading-relaxed">{item.warning}</p>
                 </div>
               )}

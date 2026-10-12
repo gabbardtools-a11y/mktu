@@ -6,6 +6,7 @@ import { Footer } from "@/components/mktu/footer";
 import { FavoritesSheet } from "@/components/mktu/favorites-sheet";
 import { CartSheet } from "@/components/mktu/cart-sheet";
 import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
+import type { Lang } from "@/lib/i18n/translations";
 
 /**
  * AppShell — общая обёртка для всех страниц.
@@ -13,7 +14,13 @@ import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
  * State избранного/корзины живёт в контексте (FavoritesCartProvider в layout),
  * поэтому при навигации между страницами счётчики и данные не теряются.
  */
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  lang = "ru",
+}: {
+  children: React.ReactNode;
+  lang?: Lang;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const {
@@ -49,6 +56,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header
+        lang={lang}
         favoritesCount={mounted ? favorites.length : 0}
         cartCount={mounted ? cart.length : 0}
         onOpenFavorites={() => setFavOpen(true)}
@@ -57,7 +65,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <main className="flex-1">{children}</main>
 
-      {!isClassDetail && <Footer />}
+      {!isClassDetail && <Footer lang={lang} />}
 
       <FavoritesSheet
         open={favOpen}

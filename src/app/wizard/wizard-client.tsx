@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, RefreshCw, ShoppingBag, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import type { Lang } from "@/lib/i18n/translations";
+import type { TranslationKey } from "@/lib/i18n/translations";
 
 // ─────────────────── Типы ───────────────────
 
@@ -20,18 +23,18 @@ interface Answer {
 // ─────────────────── Категории ───────────────────
 
 const CATEGORIES = [
-  { id: "food", label: "Еда и напитки", icon: "🍞", hint: "Производство, продажа" },
-  { id: "clothing", label: "Одежда и обувь", icon: "👕", hint: "Производство, бренд" },
-  { id: "it", label: "IT и ПО", icon: "💻", hint: "Софт, приложения, SaaS" },
-  { id: "beauty", label: "Косметика и красота", icon: "💄", hint: "Средства, салоны" },
-  { id: "services", label: "Услуги", icon: "🤝", hint: "Консалтинг, сервис" },
-  { id: "manufacturing", label: "Производство", icon: "🏭", hint: "Завод, цех" },
-  { id: "retail", label: "Торговля", icon: "🛒", hint: "Магазин, маркетплейс" },
-  { id: "education", label: "Образование", icon: "📚", hint: "Курсы, обучение" },
-  { id: "finance", label: "Финансы", icon: "💰", hint: "Банки, инвестиции" },
-  { id: "health", label: "Медицина", icon: "⚕️", hint: "Клиники, препараты" },
-  { id: "transport", label: "Транспорт", icon: "🚚", hint: "Доставка, перевозки" },
-  { id: "other", label: "Другое", icon: "✨", hint: "Опишу в свободной форме" },
+  { id: "food", labelKey: "wz.cat.food", icon: "🍞", hintKey: "wz.cat.foodH" },
+  { id: "clothing", labelKey: "wz.cat.clothing", icon: "👕", hintKey: "wz.cat.clothingH" },
+  { id: "it", labelKey: "wz.cat.it", icon: "💻", hintKey: "wz.cat.itH" },
+  { id: "beauty", labelKey: "wz.cat.beauty", icon: "💄", hintKey: "wz.cat.beautyH" },
+  { id: "services", labelKey: "wz.cat.services", icon: "🤝", hintKey: "wz.cat.servicesH" },
+  { id: "manufacturing", labelKey: "wz.cat.manufacturing", icon: "🏭", hintKey: "wz.cat.manufacturingH" },
+  { id: "retail", labelKey: "wz.cat.retail", icon: "🛒", hintKey: "wz.cat.retailH" },
+  { id: "education", labelKey: "wz.cat.education", icon: "📚", hintKey: "wz.cat.educationH" },
+  { id: "finance", labelKey: "wz.cat.finance", icon: "💰", hintKey: "wz.cat.financeH" },
+  { id: "health", labelKey: "wz.cat.health", icon: "⚕️", hintKey: "wz.cat.healthH" },
+  { id: "transport", labelKey: "wz.cat.transport", icon: "🚚", hintKey: "wz.cat.transportH" },
+  { id: "other", labelKey: "wz.cat.other", icon: "✨", hintKey: "wz.cat.otherH" },
 ];
 
 // ─────────────────── Матрица категория → классы МКТУ ───────────────────
@@ -152,7 +155,8 @@ function suggestClasses(answer: Answer): ClassSuggestion[] {
 
 // ─────────────────── Компонент ───────────────────
 
-export function WizardClient() {
+export function WizardClient({ initialLang = "ru" }: { initialLang?: Lang }) {
+  const { lang, t } = useLanguage(initialLang);
   const router = useRouter();
   const [step, setStep] = useState<Step>("type");
   const [answer, setAnswer] = useState<Answer>({});
@@ -205,13 +209,13 @@ export function WizardClient() {
         {/* Заголовок */}
         <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-medium mb-3">
-            🧭 Мастер
+            {t("wz.title")}
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
-            Определение класса МКТУ
+            {t("wz.sub1")}
           </h1>
           <p className="text-sm text-foreground/60">
-            Ответьте на 4 коротких вопроса — получите список классов с пояснениями
+            {t("wz.sub2")}
           </p>
         </div>
 
@@ -219,7 +223,7 @@ export function WizardClient() {
         {step !== "result" && (
           <div className="mb-6">
             <div className="flex items-center justify-between text-xs text-foreground/40 mb-1.5">
-              <span>Шаг {currentIdx + 1} из {steps.length - 1}</span>
+              <span>{t("wz.stepA")} {currentIdx + 1} {t("wz.stepB")} {steps.length - 1}{t("wz.stepC")}</span>
               <span>{Math.round(progress)}%</span>
             </div>
             <div className="h-1.5 rounded-full bg-muted overflow-hidden">
@@ -245,32 +249,32 @@ export function WizardClient() {
                 exit={{ opacity: 0, x: -20 }}
                 className="flex-1 flex flex-col"
               >
-                <h2 className="text-lg font-semibold text-foreground mb-1">Что регистрируем?</h2>
-                <p className="text-xs text-foreground/50 mb-4">Товар — это физический продукт. Услуга — деятельность.</p>
+                <h2 className="text-lg font-semibold text-foreground mb-1">{t("wz.q1")}</h2>
+                <p className="text-xs text-foreground/50 mb-4">{t("wz.q1h")}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
                   <button
                     onClick={() => next({ type: "goods" })}
                     className="rounded-lg border border-border bg-background p-5 hover:border-gold/40 hover:bg-gold/5 transition-all text-left group"
                   >
                     <div className="text-3xl mb-2">📦</div>
-                    <div className="font-medium text-foreground mb-1">Товары</div>
-                    <div className="text-xs text-foreground/50">Физический продукт</div>
+                    <div className="font-medium text-foreground mb-1">{t("wz.tGoods")}</div>
+                    <div className="text-xs text-foreground/50">{t("wz.tGoodsD")}</div>
                   </button>
                   <button
                     onClick={() => next({ type: "services" })}
                     className="rounded-lg border border-border bg-background p-5 hover:border-gold/40 hover:bg-gold/5 transition-all text-left group"
                   >
                     <div className="text-3xl mb-2">🤝</div>
-                    <div className="font-medium text-foreground mb-1">Услуги</div>
-                    <div className="text-xs text-foreground/50">Деятельность, сервис</div>
+                    <div className="font-medium text-foreground mb-1">{t("wz.tServices")}</div>
+                    <div className="text-xs text-foreground/50">{t("wz.tServicesD")}</div>
                   </button>
                   <button
                     onClick={() => next({ type: "both" })}
                     className="rounded-lg border border-border bg-background p-5 hover:border-gold/40 hover:bg-gold/5 transition-all text-left group"
                   >
                     <div className="text-3xl mb-2">📦🤝</div>
-                    <div className="font-medium text-foreground mb-1">И то и другое</div>
-                    <div className="text-xs text-foreground/50">Например, товар + доставка</div>
+                    <div className="font-medium text-foreground mb-1">{t("wz.tBoth")}</div>
+                    <div className="text-xs text-foreground/50">{t("wz.tBothD")}</div>
                   </button>
                 </div>
               </motion.div>
@@ -285,8 +289,8 @@ export function WizardClient() {
                 exit={{ opacity: 0, x: -20 }}
                 className="flex-1 flex flex-col"
               >
-                <h2 className="text-lg font-semibold text-foreground mb-1">К какой категории относится?</h2>
-                <p className="text-xs text-foreground/50 mb-4">Выберите ближайшую — это сузит список классов</p>
+                <h2 className="text-lg font-semibold text-foreground mb-1">{t("wz.q2")}</h2>
+                <p className="text-xs text-foreground/50 mb-4">{t("wz.q2h")}</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 flex-1">
                   {CATEGORIES.map((c) => (
                     <button
@@ -297,8 +301,8 @@ export function WizardClient() {
                       }`}
                     >
                       <div className="text-2xl mb-1">{c.icon}</div>
-                      <div className="text-sm font-medium text-foreground">{c.label}</div>
-                      <div className="text-[10px] text-foreground/40">{c.hint}</div>
+                      <div className="text-sm font-medium text-foreground">{t(c.labelKey as TranslationKey)}</div>
+                      <div className="text-[10px] text-foreground/40">{t(c.hintKey as TranslationKey)}</div>
                     </button>
                   ))}
                 </div>
@@ -314,27 +318,27 @@ export function WizardClient() {
                 exit={{ opacity: 0, x: -20 }}
                 className="flex-1 flex flex-col"
               >
-                <h2 className="text-lg font-semibold text-foreground mb-1">Опишите подробнее</h2>
-                <p className="text-xs text-foreground/50 mb-4">1-3 слова о конкретном продукте/услуге</p>
+                <h2 className="text-lg font-semibold text-foreground mb-1">{t("wz.q3")}</h2>
+                <p className="text-xs text-foreground/50 mb-4">{t("wz.q3h")}</p>
                 <textarea
                   autoFocus
                   value={answer.detail ?? ""}
                   onChange={(e) => setAnswer({ ...answer, detail: e.target.value })}
-                  placeholder="Например: кофе, мобильное приложение, одежда для детей…"
+                  placeholder={t("wz.q3ph")}
                   rows={3}
                   className="flex-1 min-h-[80px] rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-gold/30 resize-none"
                 />
                 <div className="flex gap-2 mt-4">
                   <Button variant="outline" size="sm" onClick={back} className="text-xs">
                     <ArrowLeft className="size-3.5 mr-1" />
-                    Назад
+                    {t("wz.back")}
                   </Button>
                   <Button
                     onClick={() => next({})}
                     size="sm"
                     className="bg-gold text-background hover:bg-gold-dark text-xs ml-auto"
                   >
-                    Далее
+                    {t("wz.next")}
                     <ArrowRight className="size-3.5 ml-1" />
                   </Button>
                 </div>
@@ -350,32 +354,32 @@ export function WizardClient() {
                 exit={{ opacity: 0, x: -20 }}
                 className="flex-1 flex flex-col"
               >
-                <h2 className="text-lg font-semibold text-foreground mb-1">Как продаёте?</h2>
-                <p className="text-xs text-foreground/50 mb-4">От этого зависит нужен ли класс 35 (реклама/продажи)</p>
+                <h2 className="text-lg font-semibold text-foreground mb-1">{t("wz.q4")}</h2>
+                <p className="text-xs text-foreground/50 mb-4">{t("wz.q4h")}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
                   <button
                     onClick={() => next({ sales: "physical" })}
                     className="rounded-lg border border-border bg-background p-5 hover:border-gold/40 hover:bg-gold/5 transition-all text-left"
                   >
                     <div className="text-3xl mb-2">🏪</div>
-                    <div className="font-medium text-foreground mb-1">Физически</div>
-                    <div className="text-xs text-foreground/50">Магазин, точка</div>
+                    <div className="font-medium text-foreground mb-1">{t("wz.sellPhys")}</div>
+                    <div className="text-xs text-foreground/50">{t("wz.sellPhysD")}</div>
                   </button>
                   <button
                     onClick={() => next({ sales: "online" })}
                     className="rounded-lg border border-border bg-background p-5 hover:border-gold/40 hover:bg-gold/5 transition-all text-left"
                   >
                     <div className="text-3xl mb-2">💻</div>
-                    <div className="font-medium text-foreground mb-1">Онлайн</div>
-                    <div className="text-xs text-foreground/50">Сайт, маркетплейс</div>
+                    <div className="font-medium text-foreground mb-1">{t("wz.sellOnline")}</div>
+                    <div className="text-xs text-foreground/50">{t("wz.sellOnlineD")}</div>
                   </button>
                   <button
                     onClick={() => next({ sales: "both" })}
                     className="rounded-lg border border-border bg-background p-5 hover:border-gold/40 hover:bg-gold/5 transition-all text-left"
                   >
                     <div className="text-3xl mb-2">🏪💻</div>
-                    <div className="font-medium text-foreground mb-1">Оба</div>
-                    <div className="text-xs text-foreground/50">Офлайн + онлайн</div>
+                    <div className="font-medium text-foreground mb-1">{t("wz.sellBoth")}</div>
+                    <div className="text-xs text-foreground/50">{t("wz.sellBothD")}</div>
                   </button>
                 </div>
                 <div className="flex gap-2 mt-4">
@@ -395,10 +399,10 @@ export function WizardClient() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex-1 flex flex-col"
               >
-                <h2 className="text-lg font-semibold text-foreground mb-1">Рекомендуемые классы</h2>
+                <h2 className="text-lg font-semibold text-foreground mb-1">{t("wz.result")}</h2>
                 <p className="text-xs text-foreground/50 mb-4">
-                  На основе: {answer.type === "goods" ? "товары" : answer.type === "services" ? "услуги" : "товары+услуги"}
-                  {answer.category && ` · ${CATEGORIES.find((c) => c.id === answer.category)?.label}`}
+                  {t("wz.basedOn")} {answer.type === "goods" ? t("wz.basedGoods") : answer.type === "services" ? t("wz.basedServices") : t("wz.basedBoth")}
+                  {answer.category && ` · ${t((CATEGORIES.find((c) => c.id === answer.category)?.labelKey ?? "wz.cat.other") as TranslationKey)}`}
                   {answer.detail && ` · ${answer.detail}`}
                 </p>
 
@@ -406,8 +410,7 @@ export function WizardClient() {
                   <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
                     <div className="text-4xl mb-3">🤔</div>
                     <p className="text-foreground/70 text-sm mb-4">
-                      Не получилось определить автоматически. Попробуйте ИИ-помощник —
-                      он справится с любым описанием.
+                      {t("wz.fail")}
                     </p>
                     <Button
                       onClick={() => router.push("/assistant")}
@@ -415,7 +418,7 @@ export function WizardClient() {
                       size="sm"
                     >
                       <Sparkles className="size-4 mr-1.5" />
-                      Открыть ИИ-помощник
+                      {t("wz.openAi")}
                     </Button>
                   </div>
                 ) : (
@@ -424,7 +427,7 @@ export function WizardClient() {
                     {suggestions.filter((s) => s.role === "main").length > 0 && (
                       <div className="mb-4">
                         <h3 className="text-xs uppercase tracking-wider text-foreground/40 font-medium mb-2">
-                          Основные
+                          {t("wz.main")}
                         </h3>
                         <div className="space-y-2">
                           {suggestions.filter((s) => s.role === "main").map((s) => (
@@ -438,7 +441,7 @@ export function WizardClient() {
                     {suggestions.filter((s) => s.role === "extra").length > 0 && (
                       <div className="mb-4">
                         <h3 className="text-xs uppercase tracking-wider text-foreground/40 font-medium mb-2">
-                          Дополнительные (если применимо)
+                          {t("wz.extra")}
                         </h3>
                         <div className="space-y-2">
                           {suggestions.filter((s) => s.role === "extra").map((s) => (
@@ -451,14 +454,14 @@ export function WizardClient() {
                     {/* Подсказка ИИ */}
                     <div className="mt-auto pt-4 border-t border-border/50">
                       <div className="rounded-md bg-blue-500/5 border border-blue-500/20 p-3 text-xs text-foreground/70">
-                        💡 Хотите точнее?{" "}
+                        {t("wz.tip")}{" "}
                         <button
                           onClick={() => router.push("/assistant")}
                           className="text-blue-500 hover:text-blue-400 underline underline-offset-2"
                         >
-                          Спросите ИИ-помощника
+                          {t("wz.askAi")}
                         </button>{" "}
-                        — он учтёт все нюансы.
+                        {t("wz.tipTail")}
                       </div>
                     </div>
                   </>
@@ -467,7 +470,7 @@ export function WizardClient() {
                 <div className="flex gap-2 mt-4">
                   <Button variant="outline" size="sm" onClick={reset} className="text-xs">
                     <RefreshCw className="size-3.5 mr-1" />
-                    Начать заново
+                    {t("wz.restart")}
                   </Button>
                   <Button
                     onClick={() => router.push("/")}
@@ -495,6 +498,7 @@ function ClassCard({
   suggestion: ClassSuggestion;
   onOpen: (id: number) => void;
 }) {
+  const { lang, t } = useLanguage();
   const isGoods = suggestion.id <= 34;
   return (
     <div className="rounded-lg border border-border bg-background p-3 hover:border-gold/30 transition-colors">
@@ -504,14 +508,14 @@ function ClassCard({
           className={`flex items-center justify-center size-10 rounded-md font-bold text-sm flex-shrink-0 ${
             isGoods ? "bg-gold/10 text-gold" : "bg-blue-500/10 text-blue-400"
           } hover:scale-105 transition-transform`}
-          title="Открыть класс"
+          title={t("rl.openClass")}
         >
           {suggestion.id}
         </button>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
             <span className="text-[10px] uppercase tracking-wider text-foreground/40">
-              {isGoods ? "Товары" : "Услуги"}
+              {isGoods ? t("common.goods") : t("common.services")}
             </span>
           </div>
           <p className="text-xs text-foreground/70 leading-relaxed">{suggestion.why}</p>

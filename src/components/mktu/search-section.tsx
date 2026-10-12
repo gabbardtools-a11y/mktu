@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/lib/i18n/useLanguage";
 // AiChatDialog больше не нужен — ИИ-кнопка ведёт на /assistant
 
 export type FilterType = "all" | "goods" | "services";
@@ -54,6 +55,7 @@ export function SearchSection({
   onClearCart,
 }: SearchSectionProps) {
   const router = useRouter();
+  const { t } = useLanguage();
 
   // Если в URL есть ?q=..., синхронизируем поле при первом монтировании
   useEffect(() => {
@@ -66,13 +68,13 @@ export function SearchSection({
     }
   }, []);
 
-  const filterButtons: { key: FilterType | "list" | "text" | "cards"; label: string; Icon: typeof Package }[] =
+  const filterButtons: { key: FilterType | "list" | "text" | "cards"; labelKey: string; Icon: typeof Package }[] =
     [
-      { key: "cards", label: "Карточки", Icon: LayoutGrid },
-      { key: "list", label: "Список", Icon: List },
-      { key: "text", label: "Текст", Icon: AlignJustify },
-      { key: "goods", label: "Товары", Icon: Package },
-      { key: "services", label: "Услуги", Icon: Briefcase },
+      { key: "cards", labelKey: "ss.cards", Icon: LayoutGrid },
+      { key: "list", labelKey: "ss.list", Icon: List },
+      { key: "text", labelKey: "ss.text", Icon: AlignJustify },
+      { key: "goods", labelKey: "common.goods", Icon: Package },
+      { key: "services", labelKey: "common.services", Icon: Briefcase },
     ];
 
   const handleSearch = () => {
@@ -96,7 +98,7 @@ export function SearchSection({
                   handleSearch();
                 }
               }}
-              placeholder="Поиск по классам и позициям — например: косметика, программное обеспечение, кофе..."
+              placeholder={t("ss.placeholder")}
               className="pl-9 pr-9 h-9 text-sm bg-card border-border focus-visible:border-gold/40 focus-visible:ring-gold/20"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -125,7 +127,7 @@ export function SearchSection({
             className="flex items-center justify-center gap-1.5 h-9 px-3 rounded-md bg-gold text-background hover:bg-gold-dark font-semibold text-sm transition-all flex-shrink-0"
           >
             <Search className="size-4" />
-            <span className="hidden sm:inline">Найти</span>
+            <span className="hidden sm:inline">{t("ss.find")}</span>
           </button>
 
           <motion.button
@@ -136,8 +138,8 @@ export function SearchSection({
             }}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
-            title="ИИ-помощник — определит классы МКТУ с объяснениями"
-            aria-label="ИИ-помощник"
+            title={t("ss.aiTitle")}
+            aria-label={t("header.ai")}
             className="flex items-center justify-center w-9 h-9 sm:w-auto sm:h-9 sm:px-4 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 border-2 border-blue-400 text-white hover:from-blue-400 hover:to-blue-500 hover:border-blue-300 transition-all group flex-shrink-0 shadow-md shadow-blue-500/30"
           >
             <Sparkles
@@ -145,7 +147,7 @@ export function SearchSection({
               strokeWidth={2.5}
             />
             <span className="hidden sm:inline ml-1.5 text-sm font-bold tracking-wide text-white">
-              ИИ
+              {t("ss.ai")}
             </span>
           </motion.button>
 
@@ -153,8 +155,8 @@ export function SearchSection({
           <button
             type="button"
             onClick={() => router.push("/services")}
-            title="Все сервисы МКТУ"
-            aria-label="Все сервисы МКТУ"
+            title={t("header.allServices")}
+            aria-label={t("header.allServices")}
             className="flex items-center justify-center w-9 h-9 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 border-2 border-blue-400 text-white hover:from-blue-400 hover:to-blue-500 hover:border-blue-300 transition-all flex-shrink-0 shadow-md shadow-blue-500/30"
           >
             <Plus className="size-5 text-white" strokeWidth={2.5} />
@@ -171,7 +173,7 @@ export function SearchSection({
         className="flex items-center justify-center gap-2 mb-6 mt-4 flex-wrap"
       >
         <div className="flex items-center gap-2">
-          {filterButtons.map(({ key, label, Icon }) => {
+          {filterButtons.map(({ key, labelKey, Icon }) => {
             const isActive =
               key === "list"
                 ? viewMode === "list"
@@ -205,7 +207,7 @@ export function SearchSection({
                 }
               >
                 <Icon className="size-3.5" />
-                {label}
+                {t(labelKey as never)}
               </Button>
             );
           })}
@@ -226,7 +228,7 @@ export function SearchSection({
             }`}
           >
             <Star className="size-3.5 mr-1" />
-            Очистить
+            {t("common.clear")}
             {favoritesCount > 0 && (
               <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded-full bg-gold/10 text-gold">
                 {favoritesCount}
@@ -250,7 +252,7 @@ export function SearchSection({
             }`}
           >
             <Trash2 className="size-3.5 mr-1" />
-            Очистить
+            {t("common.clear")}
             {cartCount > 0 && (
               <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded-full bg-red-500/10 text-red-400">
                 {cartCount}

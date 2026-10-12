@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Star, ShoppingBag, ArrowRight } from "lucide-react";
 import type { MktuClassCompact } from "@/data/mktu-data";
 import { getClassIcon } from "@/data/class-icons";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import { tClassName, tClassDesc, tItems } from "@/lib/i18n/translations";
 
 interface ClassCardProps {
   cls: MktuClassCompact;
@@ -24,6 +26,7 @@ export function ClassCard({
   onAddToCart,
 }: ClassCardProps) {
   const router = useRouter();
+  const { lang, t } = useLanguage();
   const isGoods = cls.type === "goods";
   const { icon: Icon, label: iconLabel } = getClassIcon(cls.id);
 
@@ -67,7 +70,7 @@ export function ClassCard({
           </div>
           <div>
             <div className="font-bold text-foreground text-base sm:text-lg leading-tight">
-              {cls.name}
+              {tClassName(lang, cls.id)}
             </div>
             <div
               className={`text-[10px] sm:text-xs uppercase tracking-wider font-medium ${
@@ -92,7 +95,7 @@ export function ClassCard({
                 ? "text-gold hover:bg-gold/10"
                 : "text-foreground/30 hover:text-gold hover:bg-gold/5"
             }`}
-            title={isFavorite ? "Убрать из избранного" : "В избранное"}
+            title={isFavorite ? t("common.favRemove") : t("common.favAdd")}
           >
             <Star className={`size-4 ${isFavorite ? "fill-current" : ""}`} />
           </motion.button>
@@ -108,7 +111,7 @@ export function ClassCard({
                 ? "text-gold hover:bg-gold/10"
                 : "text-foreground/30 hover:text-gold hover:bg-gold/5"
             }`}
-            title={isInCart ? "В корзине" : "В корзину"}
+            title={isInCart ? t("common.cartOn") : t("common.cartAdd")}
           >
             <ShoppingBag
               className={`size-4 ${isInCart ? "fill-current" : ""}`}
@@ -118,18 +121,17 @@ export function ClassCard({
       </div>
 
       <p className="text-foreground/60 text-sm sm:text-base leading-relaxed line-clamp-3 mb-4 min-h-[3.5rem]">
-        {cls.description}
+        {tClassDesc(lang, cls.id, cls.description)}
       </p>
 
       <div className="flex items-center justify-between pt-3 border-t border-border/50">
         <span className="text-xs sm:text-sm text-foreground/40">
-          <span className="text-gold font-medium">{cls.itemsCount}</span>{" "}
-          позиций
+          <span className="text-gold font-medium">{tItems(lang, cls.itemsCount)}</span>{" "}
         </span>
         <span
           className="text-xs sm:text-sm font-medium transition-colors flex items-center gap-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 group-hover:translate-x-0.5"
         >
-          Подробнее →
+          {t("cc.more")}
           <ArrowRight className="size-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
         </span>
       </div>

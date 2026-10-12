@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Link2, Search } from "lucide-react";
 import { mktuClasses } from "@/data/mktu-data";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import type { Lang } from "@/lib/i18n/translations";
 
 // ─────────────────── Матрица связей классов ───────────────────
 // Ключ — id класса, значение — массив связанных классов с пояснением.
@@ -161,7 +163,8 @@ const RELATIONS: Record<number, RelatedRef[]> = {
 
 // ─────────────────── Компонент ───────────────────
 
-export function RelatedClient() {
+export function RelatedClient({ initialLang = "ru" }: { initialLang?: Lang }) {
+  const { lang, t } = useLanguage(initialLang);
   const router = useRouter();
   const [selected, setSelected] = useState<number | null>(null);
   const [query, setQuery] = useState("");
@@ -187,14 +190,14 @@ export function RelatedClient() {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-medium mb-3">
             <Link2 className="size-3.5" />
-            Связанные классы
+            {t("rl.title")}
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-            Что ещё нужно вместе с этим классом
+            {t("rl.sub")}
           </h1>
           <p className="text-sm text-foreground/60 max-w-xl mx-auto">
-            Выберите класс — увидите какие классы часто идут вместе.
-            Это поможет собрать полную заявку и не пропустить важное.
+            {t("rl.desc1")}
+            {t("rl.desc2")}
           </p>
         </motion.div>
 
@@ -207,7 +210,7 @@ export function RelatedClient() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Поиск класса…"
+                placeholder={t("rl.searchPh")}
                 className="w-full rounded-md border border-border bg-card pl-10 pr-4 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-gold/30"
               />
             </div>
@@ -240,7 +243,7 @@ export function RelatedClient() {
               <div className="rounded-lg border border-dashed border-border bg-card/50 p-8 text-center h-full flex flex-col items-center justify-center">
                 <div className="text-4xl mb-3 opacity-50">👈</div>
                 <p className="text-sm text-foreground/50">
-                  Выберите класс слева — увидите связанные
+                  {t("rl.pickLeft")}
                 </p>
               </div>
             ) : related.length === 0 ? (
@@ -249,13 +252,13 @@ export function RelatedClient() {
                   {mktuClasses.find((c) => c.id === selected)?.name}
                 </div>
                 <p className="text-xs text-foreground/50">
-                  Для этого класса нет типичных пар. Скорее всего, он самодостаточен.
+                  {t("rl.noPairs")}
                 </p>
               </div>
             ) : (
               <div className="rounded-lg border border-border bg-card p-4">
                 <div className="text-xs uppercase tracking-wider text-foreground/40 font-medium mb-3">
-                  Вместе с классом {selected}
+                  {t("rl.withClass")} {selected}
                 </div>
                 <div className="space-y-2">
                   {related.map((r) => {
@@ -272,7 +275,7 @@ export function RelatedClient() {
                             className={`flex items-center justify-center size-8 rounded text-xs font-bold flex-shrink-0 hover:scale-105 transition-transform ${
                               r.id <= 34 ? "bg-gold/10 text-gold" : "bg-blue-500/10 text-blue-400"
                             }`}
-                            title="Открыть класс"
+                            title={t("rl.openClass")}
                           >
                             {r.id}
                           </button>

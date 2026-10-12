@@ -25,6 +25,9 @@ import {
   Sparkles,
 } from "lucide-react";
 import { mktuClasses } from "@/data/mktu-data";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import { tItems, tMapStats, type TranslationKey,
+  type Lang } from "@/lib/i18n/translations";
 
 // ─────────────────── Категории для визуальной карты ───────────────────
 
@@ -40,123 +43,123 @@ interface Category {
 const CATEGORIES: Category[] = [
   {
     id: "materials",
-    title: "Материалы и сырьё",
+    title: "mp.cat1",
     icon: FlaskConical,
     color: "purple",
     classIds: [1, 2, 4, 16, 17],
-    hint: "Химреактивы, краски, масла, бумага/картон, резина/пластик",
+    hint: "mp.cat1h",
   },
   {
     id: "tools",
-    title: "Металлы и инструменты",
+    title: "mp.cat2",
     icon: Wrench,
     color: "gold",
     classIds: [6, 7, 8],
-    hint: "Металлы, машины, ручные инструменты",
+    hint: "mp.cat2h",
   },
   {
     id: "tech",
-    title: "Техника и электроника",
+    title: "mp.cat3",
     icon: Cpu,
     color: "blue",
     classIds: [9, 10, 11, 12, 13, 14],
-    hint: "ПО, медприборы, освещение, транспорт, оружие, ювелирка",
+    hint: "mp.cat3h",
   },
   {
     id: "beauty",
-    title: "Косметика и фармацевтика",
+    title: "mp.cat4",
     icon: HeartPulse,
     color: "amber",
     classIds: [3, 5],
-    hint: "Косметика, парфюмерия, лекарства, ветеринарные препараты",
+    hint: "mp.cat4h",
   },
   {
     id: "art",
-    title: "Искусство и развлечения",
+    title: "mp.cat5",
     icon: Music,
     color: "purple",
     classIds: [15, 28],
-    hint: "Музыкальные инструменты, игрушки, игры, спорт",
+    hint: "mp.cat5h",
   },
   {
     id: "home",
-    title: "Дом и мебель",
+    title: "mp.cat6",
     icon: Home,
     color: "amber",
     classIds: [19, 20, 21, 27],
-    hint: "Стройматериалы, мебель, посуда, ковры/покрытия",
+    hint: "mp.cat6h",
   },
   {
     id: "textile",
-    title: "Текстиль и одежда",
+    title: "mp.cat7",
     icon: Shirt,
     color: "gold",
     classIds: [22, 23, 24, 25, 26],
-    hint: "Веревки, нити, ткани, одежда, галантерея",
+    hint: "mp.cat7h",
   },
   {
     id: "accessories",
-    title: "Кожа, сумки, зонты",
+    title: "mp.cat8",
     icon: Briefcase,
     color: "gold",
     classIds: [18],
-    hint: "Кожа, багаж, сумки, зонты, трости, сбруя",
+    hint: "mp.cat8h",
   },
   {
     id: "food",
-    title: "Еда и напитки",
+    title: "mp.cat9",
     icon: UtensilsCrossed,
     color: "amber",
     classIds: [29, 30, 31, 32, 33],
-    hint: "Мясо/молоко, кофе/чай, сельхоз, безалкогольные, алкоголь",
+    hint: "mp.cat9h",
   },
   {
     id: "tobacco",
-    title: "Табак",
+    title: "mp.cat10",
     icon: Cigarette,
     color: "gold",
     classIds: [34],
-    hint: "Табачные изделия, электронки",
+    hint: "mp.cat10h",
   },
   {
     id: "business",
-    title: "Бизнес и финансы",
+    title: "mp.cat11",
     icon: BriefcaseBusiness,
     color: "blue",
     classIds: [35, 36],
-    hint: "Реклама/торговля, финансы/страхование/недвижимость",
+    hint: "mp.cat11h",
   },
   {
     id: "construction",
-    title: "Строительство и ремонт",
+    title: "mp.cat12",
     icon: Building2,
     color: "gold",
     classIds: [37],
-    hint: "Строительство, монтаж, ремонт, добыча",
+    hint: "mp.cat12h",
   },
   {
     id: "transport",
-    title: "Связь и транспорт",
+    title: "mp.cat13",
     icon: Truck,
     color: "blue",
     classIds: [38, 39, 40],
-    hint: "Телеком, перевозки/доставка, обработка материалов",
+    hint: "mp.cat13h",
   },
   {
     id: "education",
-    title: "Образование и IT",
+    title: "mp.cat14",
     icon: GraduationCap,
     color: "green",
     classIds: [41, 42],
-    hint: "Образование/развлечения, научные/IT-услуги",
+    hint: "mp.cat14h",
   },
   {
     id: "people",
-    title: "Услуги для людей",
+    title: "mp.cat15",
     icon: HeartHandshake,
     color: "amber",
     classIds: [43, 44, 45],
-    hint: "Общепит/жильё, медицина/красота, юр./охранные услуги",
+    hint: "mp.cat15h",
   },
 ];
 
@@ -198,7 +201,8 @@ const COLOR_STYLES = {
   },
 };
 
-export function MapClient() {
+export function MapClient({ initialLang = "ru" }: { initialLang?: Lang }) {
+  const { lang, t } = useLanguage(initialLang);
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set());
@@ -268,14 +272,13 @@ export function MapClient() {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-medium mb-3">
             <Sparkles className="size-3.5" />
-            Визуальная карта
+            {t("mp.title")}
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-            Все 45 классов МКТУ как дерево
+            {t("mp.sub")}
           </h1>
           <p className="text-sm text-foreground/60 max-w-2xl mx-auto">
-            Для тех, кто мыслит визуально. Классы сгруппированы по 13 категориям —
-            раскрывайте, ищите, переходите на страницу класса.
+            {t("mp.desc")}
           </p>
         </motion.div>
 
@@ -287,7 +290,7 @@ export function MapClient() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Поиск по названию…"
+              placeholder={t("mp.searchPh")}
               className="w-full rounded-md border border-border bg-card pl-10 pr-4 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-purple-500/30"
             />
           </div>
@@ -295,13 +298,13 @@ export function MapClient() {
             onClick={expandAll}
             className="text-xs px-3 py-2 rounded-md border border-border bg-card hover:bg-muted/40 text-foreground/70 transition-colors whitespace-nowrap"
           >
-            Раскрыть всё
+            {t("mp.expandAll")}
           </button>
           <button
             onClick={collapseAll}
             className="text-xs px-3 py-2 rounded-md border border-border bg-card hover:bg-muted/40 text-foreground/70 transition-colors whitespace-nowrap"
           >
-            Свернуть всё
+            {t("mp.collapseAll")}
           </button>
         </div>
 
@@ -316,9 +319,9 @@ export function MapClient() {
               >
                 <Package className="size-5 text-gold flex-shrink-0" />
                 <div className="flex-1">
-                  <div className="font-bold text-foreground">Товары</div>
+                  <div className="font-bold text-foreground">{t("common.goods")}</div>
                   <div className="text-xs text-foreground/50">
-                    Классы 1–34 · {goodsCats.reduce((acc, c) => acc + c.classes.length, 0)} классов в {goodsCats.length} категориях
+                    {tMapStats(lang, "1–34", goodsCats.reduce((acc, c) => acc + c.classes.length, 0), goodsCats.length)}
                   </div>
                 </div>
                 <ChevronRight
@@ -362,9 +365,9 @@ export function MapClient() {
               >
                 <Briefcase className="size-5 text-blue-400 flex-shrink-0" />
                 <div className="flex-1">
-                  <div className="font-bold text-foreground">Услуги</div>
+                  <div className="font-bold text-foreground">{t("common.services")}</div>
                   <div className="text-xs text-foreground/50">
-                    Классы 35–45 · {servicesCats.reduce((acc, c) => acc + c.classes.length, 0)} классов в {servicesCats.length} категориях
+                    {tMapStats(lang, "35–45", servicesCats.reduce((acc, c) => acc + c.classes.length, 0), servicesCats.length)}
                   </div>
                 </div>
                 <ChevronRight
@@ -401,14 +404,14 @@ export function MapClient() {
 
           {categoriesWithClasses.length === 0 && (
             <div className="text-center py-12 text-foreground/50 text-sm">
-              Ничего не найдено. Попробуйте другой запрос.
+              {t("mp.empty")}
             </div>
           )}
         </div>
 
         {/* Подсказка */}
         <div className="mt-8 text-center text-xs text-foreground/40">
-          45 классов · 13 категорий · кликните на класс чтобы открыть детали
+          {t("mp.hint")}
         </div>
       </div>
     </main>
@@ -428,6 +431,7 @@ function CategoryNode({
   onToggle: () => void;
   onClassClick: (id: number) => void;
 }) {
+  const { lang, t } = useLanguage();
   const colors = COLOR_STYLES[category.color];
   const Icon = category.icon;
 
@@ -444,8 +448,8 @@ function CategoryNode({
           <Icon className="size-4" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-semibold text-foreground">{category.title}</div>
-          <div className="text-[11px] text-foreground/50 truncate">{category.hint}</div>
+          <div className="text-sm font-semibold text-foreground">{t(category.title as TranslationKey)}</div>
+          <div className="text-[11px] text-foreground/50 truncate">{t(category.hint as TranslationKey)}</div>
         </div>
         <span className="text-[10px] text-foreground/40 mr-1">
           {category.classes.length}
@@ -486,7 +490,7 @@ function CategoryNode({
                     </div>
                   </div>
                   <div className="text-[10px] text-foreground/40 flex-shrink-0 pt-1">
-                    {cls.itemsCount} поз.
+                    {tItems(lang, cls.itemsCount)}
                   </div>
                 </button>
               ))}

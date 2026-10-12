@@ -10,6 +10,16 @@ import { Button } from "@/components/ui/button";
 import type { MktuClass } from "@/data/mktu-data";
 import { useFavoritesCart } from "@/components/mktu/favorites-cart-context";
 import { AiChatDialog } from "@/components/mktu/ai-chat-dialog";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import {
+  t,
+  tClassName,
+  tItems,
+  tOfSelected,
+  tClassesCount,
+  tFoundClasses,
+  type Lang,
+} from "@/lib/i18n/translations";
 
 interface ClassSearchResult {
   classId: number;
@@ -18,8 +28,9 @@ interface ClassSearchResult {
   matchedItems: string[];
 }
 
-function SearchPageInner({ classes }: { classes: MktuClass[] }) {
+function SearchPageInner({ classes, initialLang = "ru" }: { classes: MktuClass[]; initialLang?: Lang }) {
   const router = useRouter();
+  const { lang, t } = useLanguage(initialLang);
   const searchParams = useSearchParams();
   const initialQuery = searchParams?.get("q") ?? "";
 
@@ -88,7 +99,7 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
 
   const buildPrompt = () => {
     const q = query.trim();
-    return q ? `Определить МКТУ: ${q}` : "Определить МКТУ";
+    return q ? `${t("sc.docTitle")}: ${q}` : t("sc.docTitle");
   };
 
   return (
@@ -102,10 +113,10 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
               size="sm"
               onClick={() => router.push("/")}
               className="text-foreground/60 hover:text-foreground hover:bg-muted"
-              title="На главную"
+              title={t("common.home")}
             >
               <ArrowLeft className="size-4" />
-              <span className="hidden sm:inline ml-1.5">Главная</span>
+              <span className="hidden sm:inline ml-1.5">{t("common.homeShort")}</span>
             </Button>
             <div className="flex items-center gap-2 min-w-0">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gold/10 border border-gold/30 flex-shrink-0">
@@ -113,11 +124,10 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
               </div>
               <div className="min-w-0">
                 <h1 className="text-sm sm:text-base font-bold text-foreground leading-tight">
-                  Результаты поиска
+                  {t("sc.title")}
                 </h1>
                 <div className="text-xs text-foreground/50">
-                  Найдено классов:{" "}
-                  <span className="text-gold font-medium">{results.length}</span>
+                  {tFoundClasses(lang, results.length)}
                 </div>
               </div>
             </div>
@@ -130,7 +140,7 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Поиск по классам и позициям..."
+                placeholder={t("sc.placeholder")}
                 className="pl-10 pr-10 h-11 text-sm bg-card border-border focus-visible:border-gold/40 focus-visible:ring-gold/20"
               />
               {query && (
@@ -148,12 +158,12 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
               onClick={() => setAiOpen(true)}
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              title="Поиск с помощью ИИ"
+              title={t("sc.aiTitle")}
               className="flex items-center justify-center w-11 h-11 sm:w-auto sm:px-3 rounded-md bg-gradient-to-br from-blue-500/15 to-emerald-500/15 border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:border-blue-500/50 transition-all flex-shrink-0"
             >
               <Sparkles className="size-4" strokeWidth={2.2} />
               <span className="hidden sm:inline ml-1.5 text-sm font-semibold">
-                ИИ
+                {t("ss.ai")}
               </span>
             </motion.button>
           </div>
@@ -166,17 +176,17 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
           {results.length === 0 ? (
             <div className="text-center py-16">
               <p className="text-foreground/40 text-lg mb-2">
-                Ничего не найдено
+                {t("home.empty")}
               </p>
               <p className="text-foreground/30 text-sm mb-6">
-                Попробуйте изменить запрос или используйте ИИ-поиск
+                {t("sc.emptySub")}
               </p>
               <Button
                 onClick={() => setAiOpen(true)}
                 className="bg-gradient-to-br from-blue-500/15 to-emerald-500/15 border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:border-blue-500/50"
               >
                 <Sparkles className="size-4 mr-1.5" />
-                Поиск с ИИ
+                {t("sc.aiBtn")}
               </Button>
             </div>
           ) : (
@@ -196,11 +206,11 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gold/30 bg-gold/5 text-gold hover:bg-gold/10 hover:border-gold/50 transition-colors text-xs sm:text-sm font-medium"
                 >
                   {results.every((r) => expandedClasses.has(r.classId))
-                    ? "Свернуть все"
-                    : "Раскрыть найденные позиции в классах"}
+                    ? t("sc.collapseAll")
+                    : t("sc.expandAll")}
                 </button>
                 <span className="text-xs text-foreground/40 flex-shrink-0">
-                  {results.length} классов
+                  {tClassesCount(lang, results.length)}
                 </span>
               </div>
 
@@ -245,14 +255,14 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="font-semibold text-foreground text-sm">
-                          {result.className}
+                          {tClassName(lang, result.classId)}
                         </div>
                         <div className="text-xs text-foreground/40 mt-0.5">
-                          {result.classType === "goods" ? "Товары" : "Услуги"} ·{" "}
-                          {result.matchedItems.length} позиций
+                          {t(result.classType === "goods" ? "common.goods" : "common.services")} ·{" "}
+                          {tItems(lang, result.matchedItems.length)}
                           {selectedCount > 0 && (
                             <span className="text-gold ml-1">
-                              · выбрано {selectedCount}
+                              · {t("cs.selectedWord")} {selectedCount}
                             </span>
                           )}
                         </div>
@@ -333,8 +343,7 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
                           {/* Select all / open full class page */}
                           <div className="mt-2 flex items-center justify-between gap-2 pt-2 border-t border-border/30 flex-wrap">
                             <span className="text-xs text-foreground/30">
-                              {selectedCount} из {result.matchedItems.length}{" "}
-                              выбрано
+                              {tOfSelected(lang, selectedCount, result.matchedItems.length)}
                             </span>
                             <div className="flex items-center gap-2">
                               <Button
@@ -367,14 +376,14 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
                                 {result.matchedItems.every((it) =>
                                   isItemSelectedInCart(result.classId, it),
                                 )
-                                  ? "Снять все"
-                                  : "Выбрать все"}
+                                  ? t("cd.deselectAll")
+                                  : t("cd.selectAll")}
                               </Button>
                               <Link
                                 href={`/class/${result.classId}`}
                                 className="text-xs text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-7 px-2 rounded-md inline-flex items-center"
                               >
-                                Весь класс →
+                                {t("sc.wholeClass")}
                               </Link>
                             </div>
                           </div>
@@ -398,16 +407,22 @@ function SearchPageInner({ classes }: { classes: MktuClass[] }) {
   );
 }
 
-export default function SearchClient({ classes }: { classes: MktuClass[] }) {
+export default function SearchClient({
+  classes,
+  initialLang = "ru",
+}: {
+  classes: MktuClass[];
+  initialLang?: Lang;
+}) {
   return (
     <Suspense
       fallback={
         <div className="min-h-screen pt-32 flex items-center justify-center text-foreground/40">
-          Загрузка…
+          {t("sc.loading", initialLang)}
         </div>
       }
     >
-      <SearchPageInner classes={classes} />
+      <SearchPageInner classes={classes} initialLang={initialLang} />
     </Suspense>
   );
 }

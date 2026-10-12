@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Search, ArrowRight, Info } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import type { Lang } from "@/lib/i18n/translations";
 
 // ─────────────────── Таблица соответствий ОКВЭД → МКТУ ───────────────────
 // Источник: анализ популярных ОКВЭД и их типичного соответствия классам МКТУ.
@@ -133,7 +135,8 @@ const MAPPINGS: OkvedMapping[] = [
   { code: "43", title: "Спецстроительные работы", classes: [{ id: 37, note: "Ремонт" }, { id: 1, note: "Если материалы" }] },
 ];
 
-export function OkvedClient() {
+export function OkvedClient({ initialLang = "ru" }: { initialLang?: Lang }) {
+  const { lang, t } = useLanguage(initialLang);
   const router = useRouter();
   const [query, setQuery] = useState("");
 
@@ -157,14 +160,13 @@ export function OkvedClient() {
           className="text-center mb-6"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-medium mb-3">
-            📋 ОКВЭД → МКТУ
+            {t("ok.title")}
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-            Конвертер кодов ОКВЭД в классы МКТУ
+            {t("ok.sub")}
           </h1>
           <p className="text-sm text-foreground/60 max-w-xl mx-auto">
-            Знаете свой ОКВЭД? Введите код или название деятельности —
-            покажем подходящие классы МКТУ для регистрации товарного знака.
+            {t("ok.desc")}
           </p>
         </motion.div>
 
@@ -175,7 +177,7 @@ export function OkvedClient() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Например: 47.5 или «одежда»…"
+            placeholder={t("ok.placeholder")}
             className="w-full rounded-md border border-border bg-card pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/40"
             autoFocus
           />
@@ -185,10 +187,7 @@ export function OkvedClient() {
         <div className="flex gap-2 text-xs text-foreground/50 bg-muted/30 border border-border/50 rounded-md p-3 mb-6">
           <Info className="size-4 shrink-0 mt-0.5 text-foreground/40" />
           <p>
-            Соответствия справочные — определены на основе типичной практики.
-            Для точного определения класса рекомендуется консультация патентного поверенного,
-            так как один ОКВЭД может соответствовать разным классам МКТУ в зависимости от
-            конкретных товаров/услуг.
+            {t("ok.disclaimer")}
           </p>
         </div>
 
@@ -196,12 +195,12 @@ export function OkvedClient() {
         <div className="space-y-2">
           {filtered.length === 0 ? (
             <div className="text-center py-12 text-foreground/50 text-sm">
-              Ничего не найдено. Попробуйте{" "}
+              {t("ok.noResults")}{" "}
               <button
                 onClick={() => router.push("/assistant")}
                 className="text-blue-500 hover:text-blue-400 underline underline-offset-2"
               >
-                ИИ-помощник
+                {t("header.ai")}
               </button>
               .
             </div>
@@ -212,7 +211,7 @@ export function OkvedClient() {
 
         {/* Счётчик */}
         <div className="text-center text-xs text-foreground/40 mt-6">
-          Показано {filtered.length} из {MAPPINGS.length} кодов
+          {t("ok.shown")} {filtered.length} {t("home.of")} {MAPPINGS.length} {t("ok.codesWord")}
         </div>
       </div>
     </main>

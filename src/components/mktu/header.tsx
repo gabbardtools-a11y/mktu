@@ -24,8 +24,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { useTheme, type Theme } from "@/hooks/use-theme";
 import { mktuClasses } from "@/data/mktu-data";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import { t as tt, tClassName, type Lang, type TranslationKey } from "@/lib/i18n/translations";
 
 interface HeaderProps {
+  lang?: Lang;
   favoritesCount: number;
   cartCount: number;
   onOpenFavorites: () => void;
@@ -36,20 +39,22 @@ interface HeaderProps {
 const THEME_BUTTONS: {
   theme: Theme;
   icon: typeof Moon;
-  label: string;
+  key: TranslationKey;
 }[] = [
-  { theme: "dark", icon: Moon, label: "Тёмная" },
-  { theme: "light", icon: Sun, label: "Светлая" },
-  { theme: "navy", icon: MoonStar, label: "Тёмно-синяя" },
+  { theme: "dark", icon: Moon, key: "theme.dark" },
+  { theme: "light", icon: Sun, key: "theme.light" },
+  { theme: "navy", icon: MoonStar, key: "theme.navy" },
 ];
 
 export function Header({
+  lang: initialLang = "ru",
   favoritesCount,
   cartCount,
   onOpenFavorites,
   onOpenCart,
 }: HeaderProps) {
   const { theme, setTheme, mounted } = useTheme();
+  const { lang, t, switchLang } = useLanguage(initialLang);
   const router = useRouter();
   const [gridOpen, setGridOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -96,12 +101,12 @@ export function Header({
                 size="sm"
                 onClick={() => setGridOpen((v) => !v)}
                 className="text-foreground/70 hover:text-gold hover:bg-gold/5"
-                title="Все классы 1–45"
-                aria-label="Все классы 1–45"
+                title={t("header.allClasses")}
+                aria-label={t("header.allClasses")}
                 aria-expanded={gridOpen}
               >
                 <Grid3x3 className="size-4" />
-                <span className="hidden sm:inline ml-1.5">Классы</span>
+                <span className="hidden sm:inline ml-1.5">{t("header.classes")}</span>
               </Button>
 
               <AnimatePresence>
@@ -114,7 +119,7 @@ export function Header({
                     className="fixed left-2 right-2 top-16 p-3 rounded-xl border border-border bg-card shadow-xl shadow-foreground/10 z-50"
                   >
                     <div className="text-xs text-foreground/40 mb-2 px-1">
-                      Все классы МКТУ — нажмите для перехода
+                      {t("header.gridHint")}
                     </div>
                     <div className="grid grid-cols-[repeat(15,minmax(0,1fr))] gap-0.5">
                       {mktuClasses.map((cls) => {
@@ -127,7 +132,7 @@ export function Header({
                               setGridOpen(false);
                               router.push(`/class/${cls.id}`);
                             }}
-                            title={`Класс ${cls.id} — ${cls.name}`}
+                            title={tClassName(lang, cls.id)}
                             className={`flex items-center justify-center aspect-square rounded text-sm font-bold transition-all hover:scale-110 ${
                               isGoods
                                 ? "bg-gold/10 text-gold/90 hover:bg-gold hover:text-background"
@@ -142,11 +147,11 @@ export function Header({
                     <div className="flex items-center gap-4 mt-2 pt-2 border-t border-border/50 text-[10px] text-foreground/40">
                       <span className="flex items-center gap-1">
                         <span className="w-2.5 h-2.5 rounded-sm bg-gold/30" />
-                        Товары (1–34)
+                        {t("header.goodsLegend")}
                       </span>
                       <span className="flex items-center gap-1">
                         <span className="w-2.5 h-2.5 rounded-sm bg-blue-500/30" />
-                        Услуги (35–45)
+                        {t("header.servicesLegend")}
                       </span>
                     </div>
                   </motion.div>
@@ -161,11 +166,11 @@ export function Header({
                 size="sm"
                 onClick={() => setServicesOpen((v) => !v)}
                 className="bg-card text-gold hover:text-gold-light border border-gold shadow-[0_0_6px_rgba(255,210,77,0.4)] hover:shadow-[0_0_10px_rgba(255,210,77,0.7)] font-medium transition-all"
-                title="Все сервисы МКТУ"
+                title={t("header.allServices")}
                 aria-expanded={servicesOpen}
               >
                 <Sparkles className="size-4 text-gold" strokeWidth={2.5} />
-                <span className="hidden sm:inline ml-1.5 font-bold tracking-wide">Сервисы</span>
+                <span className="hidden sm:inline ml-1.5 font-bold tracking-wide">{t("header.services")}</span>
                 <ChevronDown
                   className={`size-3 ml-0.5 transition-transform ${servicesOpen ? "rotate-180" : ""}`}
                 />
@@ -187,8 +192,8 @@ export function Header({
                     >
                       <Sparkles className="size-4 text-blue-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <div className="text-sm font-medium text-foreground">ИИ-помощник</div>
-                        <div className="text-[11px] text-foreground/50">Определит классы с объяснениями</div>
+                        <div className="text-sm font-medium text-foreground">{t("header.ai")}</div>
+                        <div className="text-[11px] text-foreground/50">{t("header.aiDesc")}</div>
                       </div>
                     </Link>
                     <Link
@@ -198,8 +203,8 @@ export function Header({
                     >
                       <Compass className="size-4 text-gold mt-0.5 flex-shrink-0" />
                       <div>
-                        <div className="text-sm font-medium text-foreground">Мастер определения</div>
-                        <div className="text-[11px] text-foreground/50">Пошаговый опросник для новичков</div>
+                        <div className="text-sm font-medium text-foreground">{t("header.wizard")}</div>
+                        <div className="text-[11px] text-foreground/50">{t("header.wizardDesc")}</div>
                       </div>
                     </Link>
                     <Link
@@ -210,7 +215,7 @@ export function Header({
                       <FileSearch className="size-4 text-blue-400 mt-0.5 flex-shrink-0" />
                       <div>
                         <div className="text-sm font-medium text-foreground">ОКВЭД → МКТУ</div>
-                        <div className="text-[11px] text-foreground/50">Конвертер кодов деятельности</div>
+                        <div className="text-[11px] text-foreground/50">{t("header.okvedDesc")}</div>
                       </div>
                     </Link>
                     <Link
@@ -220,8 +225,8 @@ export function Header({
                     >
                       <Link2 className="size-4 text-gold mt-0.5 flex-shrink-0" />
                       <div>
-                        <div className="text-sm font-medium text-foreground">Связанные классы</div>
-                        <div className="text-[11px] text-foreground/50">Что ещё нужно вместе с классом</div>
+                        <div className="text-sm font-medium text-foreground">{t("header.related")}</div>
+                        <div className="text-[11px] text-foreground/50">{t("header.relatedDesc")}</div>
                       </div>
                     </Link>
                     <Link
@@ -231,8 +236,8 @@ export function Header({
                     >
                       <Lightbulb className="size-4 text-amber-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <div className="text-sm font-medium text-foreground">Частые кейсы</div>
-                        <div className="text-[11px] text-foreground/50">IT, общепит, торговля — готовые ответы</div>
+                        <div className="text-sm font-medium text-foreground">{t("header.cases")}</div>
+                        <div className="text-[11px] text-foreground/50">{t("header.casesDesc")}</div>
                       </div>
                     </Link>
                     <div className="border-t border-border/50 my-1" />
@@ -243,8 +248,8 @@ export function Header({
                     >
                       <Calculator className="size-4 text-gold mt-0.5 flex-shrink-0" />
                       <div>
-                        <div className="text-sm font-medium text-foreground">Калькулятор пошлин</div>
-                        <div className="text-[11px] text-foreground/50">Роспатент: 2.1 + 2.4 + 2.11</div>
+                        <div className="text-sm font-medium text-foreground">{t("header.fees")}</div>
+                        <div className="text-[11px] text-foreground/50">{t("header.feesDesc")}</div>
                       </div>
                     </Link>
                     <a
@@ -256,13 +261,39 @@ export function Header({
                     >
                       <Search className="size-4 text-blue-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <div className="text-sm font-medium text-foreground">Проверка знака</div>
-                        <div className="text-[11px] text-foreground/50">Поиск по реестру товарных знаков</div>
+                        <div className="text-sm font-medium text-foreground">{t("header.check")}</div>
+                        <div className="text-[11px] text-foreground/50">{t("header.checkDesc")}</div>
                       </div>
                     </a>
                   </motion.div>
                 )}
               </AnimatePresence>
+            </div>
+
+            {/* Переключатель языков [ RU ][ EN ][ 中 ] — эталон aipat/iznaki */}
+            <div
+              className="inline-flex items-center overflow-hidden rounded-full border border-border/60"
+              title={t("lang.switch")}
+            >
+              {(["ru", "en", "zh"] as Lang[]).map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  onClick={() => switchLang(l)}
+                  className={`px-1.5 sm:px-2 py-1.5 text-[11px] font-bold transition-colors ${
+                    lang === l
+                      ? l === "ru"
+                        ? "bg-blue-600 text-white"
+                        : l === "en"
+                          ? "bg-emerald-600 text-white"
+                          : "bg-red-600 text-white"
+                      : "text-foreground/50 hover:text-foreground"
+                  }`}
+                  title={l === "ru" ? "Русский" : l === "en" ? "English" : "中文 — Chinese"}
+                >
+                  {l === "ru" ? "RU" : l === "en" ? "EN" : "中"}
+                </button>
+              ))}
             </div>
 
             <Button
@@ -288,7 +319,7 @@ export function Header({
                   root.style.fontSize = `${next}px`;
                   localStorage.setItem("mktu-fontsize", String(next));
                 }}
-                title="Уменьшить шрифт"
+                title={t("header.fontDown")}
                 className="flex items-center justify-center w-7 h-7 rounded text-foreground/60 hover:text-foreground hover:bg-muted transition-colors text-sm font-bold"
               >
                 A−
@@ -302,7 +333,7 @@ export function Header({
                   root.style.fontSize = `${next}px`;
                   localStorage.setItem("mktu-fontsize", String(next));
                 }}
-                title="Увеличить шрифт"
+                title={t("header.fontUp")}
                 className="flex items-center justify-center w-7 h-7 rounded text-foreground/60 hover:text-foreground hover:bg-muted transition-colors text-base font-bold"
               >
                 A+
@@ -311,14 +342,15 @@ export function Header({
 
             {/* 4 отдельных кнопки тем */}
             <div className="flex items-center gap-0.5 sm:gap-1 px-1 sm:px-2 py-1 rounded-md bg-muted/40 border border-border/50">
-              {THEME_BUTTONS.map(({ theme: t, icon: Icon, label }) => {
+              {THEME_BUTTONS.map(({ theme: t, icon: Icon, key }) => {
+                const label = tt(key, lang);
                 const isActive = mounted && theme === t;
                 return (
                   <button
                     key={t}
                     type="button"
                     onClick={() => setTheme(t)}
-                    aria-label={`Тема: ${label}`}
+                    aria-label={`${tt("header.themePrefix", lang)}${label}`}
                     title={label}
                     className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-md transition-all ${
                       isActive
@@ -339,7 +371,7 @@ export function Header({
               size="sm"
               onClick={onOpenFavorites}
               className="relative text-foreground/70 hover:text-gold hover:bg-gold/5"
-              title="Избранное"
+              title={t("header.favorites")}
             >
               <Star className="size-4" />
               {favoritesCount > 0 && (
@@ -358,7 +390,7 @@ export function Header({
               size="sm"
               onClick={onOpenCart}
               className="relative text-foreground/70 hover:text-gold hover:bg-gold/5"
-              title="Корзина"
+              title={t("header.cart")}
             >
               <ShoppingBag className="size-4" />
               {cartCount > 0 && (

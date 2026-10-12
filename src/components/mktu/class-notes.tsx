@@ -10,6 +10,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { getNotes } from "@/data/mktu-notes";
+import { useLanguage } from "@/lib/i18n/useLanguage";
 
 interface ClassNotesProps {
   classId: number;
@@ -23,6 +24,7 @@ interface ClassNotesProps {
 }
 
 export function ClassNotes({ classId, expanded }: ClassNotesProps) {
+  const { t } = useLanguage();
   const notes = getNotes(classId);
   // По умолчанию все секции закрыты — пользователь сам открывает нужные
   const [openSection, setOpenSection] = useState<
@@ -59,7 +61,7 @@ export function ClassNotes({ classId, expanded }: ClassNotesProps) {
   }[] = [
     {
       key: "explanation",
-      title: "Пояснения",
+      title: t("cn.explanations"),
       icon: Info,
       iconColor: "text-blue-400",
       iconBg: "bg-blue-500/10",
@@ -67,7 +69,7 @@ export function ClassNotes({ classId, expanded }: ClassNotesProps) {
     },
     {
       key: "includes",
-      title: "К классу относятся, в частности",
+      title: t("cn.includes"),
       icon: CheckCircle2,
       iconColor: "text-emerald-400",
       iconBg: "bg-emerald-500/10",
@@ -76,7 +78,7 @@ export function ClassNotes({ classId, expanded }: ClassNotesProps) {
     },
     {
       key: "excludes",
-      title: "К классу не относятся, в частности",
+      title: t("cn.excludes"),
       icon: XCircle,
       iconColor: "text-red-400",
       iconBg: "bg-red-500/10",

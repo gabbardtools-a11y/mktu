@@ -1,27 +1,18 @@
 import type { Metadata } from "next";
+import { getLang } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/translations";
 import { FaqCasesClient } from "./faq-cases-client";
 
-export const metadata: Metadata = {
-  title: "Частые кейсы: классы МКТУ для популярных бизнесов",
-  description:
-    "Готовые решения: какой класс МКТУ для интернет-магазина, IT-стартапа, кофейни, производства одежды. С пояснениями и типичными ошибками.",
-  keywords: [
-    "какой класс МКТУ для",
-    "класс МКТУ интернет-магазин",
-    "класс МКТУ IT-стартап",
-    "класс МКТУ кофейня",
-    "класс МКТУ производство",
-    "частые вопросы МКТУ",
-  ],
-  alternates: { canonical: "/faq-cases" },
-  openGraph: {
-    title: "Частые кейсы МКТУ — мкту.рус",
-    description: "Готовые ответы: классы МКТУ для интернет-магазина, IT, общепита, производства.",
-    type: "website",
-    locale: "ru_RU",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getLang();
+  return {
+    title: t("meta.faqcases.title", lang),
+    description: t("meta.faqcases.desc", lang),
+  };
+}
 
-export default function FaqCasesPage() {
-  return <FaqCasesClient />;
+export default async function FaqCasesPage() {
+  const lang = await getLang();
+
+  return <FaqCasesClient initialLang={lang} />;
 }

@@ -1,27 +1,18 @@
 import type { Metadata } from "next";
+import { getLang } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/translations";
 import { AssistantClient } from "./assistant-client";
 
-export const metadata: Metadata = {
-  title: "ИИ-помощник по классам МКТУ",
-  description:
-    "Бесплатный ИИ-помощник определит подходящие классы МКТУ для вашего товарного знака. Объяснит почему именно эти классы, подскажет дополнительные и даст практический совет.",
-  keywords: [
-    "ИИ МКТУ",
-    "определить класс МКТУ",
-    "какой класс МКТУ выбрать",
-    "помощник МКТУ",
-    "AI классификация товарных знаков",
-  ],
-  alternates: { canonical: "/assistant" },
-  openGraph: {
-    title: "ИИ-помощник по классам МКТУ — мкту.рус",
-    description:
-      "Бесплатный ИИ-помощник определит подходящие классы МКТУ и объяснит почему именно они.",
-    type: "website",
-    locale: "ru_RU",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getLang();
+  return {
+    title: t("meta.assistant.title", lang),
+    description: t("meta.assistant.desc", lang),
+  };
+}
 
-export default function AssistantPage() {
-  return <AssistantClient />;
+export default async function AssistantPage() {
+  const lang = await getLang();
+
+  return <AssistantClient initialLang={lang} />;
 }

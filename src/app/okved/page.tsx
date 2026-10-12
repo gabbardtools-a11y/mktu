@@ -1,26 +1,18 @@
 import type { Metadata } from "next";
+import { getLang } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/translations";
 import { OkvedClient } from "./okved-client";
 
-export const metadata: Metadata = {
-  title: "ОКВЭД → МКТУ: соответствие кодов",
-  description:
-    "Конвертер ОКВЭД в классы МКТУ. Введите ваш код ОКВЭД — получите подходящие классы МКТУ для регистрации товарного знака. Таблица соответствий для популярных видов деятельности.",
-  keywords: [
-    "ОКВЭД МКТУ",
-    "соответствие ОКВЭД и МКТУ",
-    "конвертер ОКВЭД в МКТУ",
-    "какой класс МКТУ по ОКВЭД",
-    "таблица соответствий ОКВЭД МКТУ",
-  ],
-  alternates: { canonical: "/okved" },
-  openGraph: {
-    title: "ОКВЭД → МКТУ: конвертер кодов — мкту.рус",
-    description: "Введите код ОКВЭД — получите подходящие классы МКТУ.",
-    type: "website",
-    locale: "ru_RU",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getLang();
+  return {
+    title: t("meta.okved.title", lang),
+    description: t("meta.okved.desc", lang),
+  };
+}
 
-export default function OkvedPage() {
-  return <OkvedClient />;
+export default async function OkvedPage() {
+  const lang = await getLang();
+
+  return <OkvedClient initialLang={lang} />;
 }

@@ -7,13 +7,24 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { faqItems } from "@/data/faq-data";
+import { useLanguage } from "@/lib/i18n/useLanguage";
+import { t, type TranslationKey,
+  type Lang } from "@/lib/i18n/translations";
 
-export default function FaqClient() {
+export default function FaqClient({ initialLang = "ru" }: { initialLang?: Lang }) {
   const router = useRouter();
+  const { t: tr } = useLanguage(initialLang);
   const [openIdx, setOpenIdx] = useState<number | null>(0);
   const [search, setSearch] = useState("");
 
-  const filtered = faqItems.filter(
+  // Вопросы/ответы берём из словаря (RU/EN/ZH); иконки и multiline — из faq-data
+  const localized = faqItems.map((item, i) => ({
+    ...item,
+    question: tr(`faq.q${i + 1}` as TranslationKey),
+    answer: tr(`faq.a${i + 1}` as TranslationKey),
+  }));
+
+  const filtered = localized.filter(
     (item) =>
       item.question.toLowerCase().includes(search.toLowerCase()) ||
       item.answer.toLowerCase().includes(search.toLowerCase()),
@@ -30,19 +41,18 @@ export default function FaqClient() {
               size="sm"
               onClick={() => router.push("/")}
               className="text-foreground/60 hover:text-foreground hover:bg-muted"
-              title="На главную"
+              title={tr("common.home")}
             >
               <ArrowLeft className="size-4" />
-              <span className="hidden sm:inline ml-1.5">Главная</span>
+              <span className="hidden sm:inline ml-1.5">{tr("common.homeShort")}</span>
             </Button>
           </div>
 
           <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-1">
-            Часто задаваемые вопросы
+            {tr("fq.title")}
           </h1>
           <p className="text-foreground/60 text-sm">
-            Ответы на основные вопросы о МКТУ, выборе классов и использовании
-            справочника.
+            {tr("fq.sub")}
           </p>
 
           <div className="relative mt-3">
@@ -50,7 +60,7 @@ export default function FaqClient() {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Поиск по вопросам..."
+              placeholder={tr("fq.searchPh")}
               className="pl-10 pr-10 h-11 text-sm bg-card border-border"
             />
             {search && (
@@ -72,10 +82,10 @@ export default function FaqClient() {
           {filtered.length === 0 ? (
             <div className="text-center py-16">
               <p className="text-foreground/40 text-lg mb-2">
-                Ничего не найдено
+                {tr("home.empty")}
               </p>
               <p className="text-foreground/30 text-sm">
-                Попробуйте изменить запрос
+                {tr("fq.emptySub")}
               </p>
             </div>
           ) : (
@@ -142,18 +152,16 @@ export default function FaqClient() {
 
           <div className="mt-8 p-5 rounded-xl bg-gold/5 border border-gold/20 text-center">
             <p className="text-foreground/60 text-sm">
-              Не нашли ответ на свой вопрос?
+              {tr("fq.moreTitle")}
             </p>
             <p className="text-foreground/40 text-xs mt-1">
-              Используйте поиск по классам на главной странице — он автоматически
-              найдёт подходящие позиции по ключевым словам, либо нажмите «ИИ» в
-              строке поиска.
+              {tr("fq.moreText")}
             </p>
             <Button
               onClick={() => router.push("/")}
               className="mt-4 bg-gold text-background hover:bg-gold-dark"
             >
-              Перейти к поиску
+              {tr("fq.goSearch")}
             </Button>
           </div>
         </div>

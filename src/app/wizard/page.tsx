@@ -1,26 +1,18 @@
 import type { Metadata } from "next";
+import { getLang } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/translations";
 import { WizardClient } from "./wizard-client";
 
-export const metadata: Metadata = {
-  title: "Мастер определения класса МКТУ",
-  description:
-    "Пошаговый опросник поможет определить подходящие классы МКТУ для регистрации товарного знака. Ответьте на 4 вопроса — получите список классов с пояснениями.",
-  keywords: [
-    "определить класс МКТУ",
-    "мастер МКТУ",
-    "какой класс МКТУ",
-    "подобрать классы МКТУ",
-    "опросник МКТУ",
-  ],
-  alternates: { canonical: "/wizard" },
-  openGraph: {
-    title: "Мастер определения класса МКТУ — мкту.рус",
-    description: "Пошаговый опросник для определения классов МКТУ за 4 вопроса.",
-    type: "website",
-    locale: "ru_RU",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getLang();
+  return {
+    title: t("meta.wizard.title", lang),
+    description: t("meta.wizard.desc", lang),
+  };
+}
 
-export default function WizardPage() {
-  return <WizardClient />;
+export default async function WizardPage() {
+  const lang = await getLang();
+
+  return <WizardClient initialLang={lang} />;
 }

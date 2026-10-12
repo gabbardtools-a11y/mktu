@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { FavoritesCartProvider } from "@/components/mktu/favorites-cart-context";
 import { AppShell } from "@/components/mktu/app-shell";
+import { getLang } from "@/lib/i18n/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -95,13 +96,15 @@ const themeInitScript = `
 })();
 `;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const lang = await getLang();
+
   return (
-    <html lang="ru" className="navy" suppressHydrationWarning>
+    <html lang={lang} className="navy" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
@@ -109,7 +112,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
         <FavoritesCartProvider>
-          <AppShell>{children}</AppShell>
+          <AppShell lang={lang}>{children}</AppShell>
         </FavoritesCartProvider>
         <Toaster />
       </body>
