@@ -35,7 +35,10 @@ module.exports = {
         {
           NODE_ENV: "production",
           PORT: 3000,
-          HOSTNAME: "127.0.0.1",
+          // HOSTNAME УДАЛЁН (R17, фикс 500 на /en|/zh): при заданном HOSTNAME
+          // прокси-слой Next строит абсолютный initURL из hostname:port процесса,
+          // игнорируя Host от Caddy → rewrite миддлвари становится кросс-доменным.
+          // Флот-стандарт iqin/aipat — HOSTNAME не задан; бинд 0.0.0.0 как у всех.
           NEXT_TELEMETRY_DISABLED: 1,
         },
         fileEnv
